@@ -101,7 +101,6 @@ public:
 
 };
 
-
 class LoginForm : public Form
 {
 private:
@@ -235,100 +234,298 @@ public:
 #include "Framework\Utils\Memory\Module.h"
 #include "Framework\Utils\Memory\Pattern.h"
 
-void main( int argc, char** argv, char**envp )
+void readBinaryFile( byte** _Buffer, uint &_Length, const dx::String &_File )
 {
-	char* bytes = new char[1000];
-	dx::memset( ccast<byte*>( bytes ), 0, 1000 );
-	bytes[800] = 0xA;
-	bytes[801] = 0xB;
-	bytes[802] = 0xC;
-	bytes[803] = 0xD;
-	bytes[804] = rand( ) % 255 + 1;
-	bytes[805] = rand( ) % 255 + 1;
-	bytes[806] = rand( ) % 255 + 1;
-	bytes[807] = rand( ) % 255 + 1;
-	bytes[808] = 0xCA;
+	auto dwAttrib = GetFileAttributes( _File.c_str( ) );
 
-	auto mem = new dx::InternalImpl( );
-	if ( !mem->Setup( "FindFile.exe" ) )
-		std::cerr << "Failed to setup memory.\n";
-	
-	dx::Module base{ (uint)bytes, 1000, "Base" };
-	
-	dx::Pattern pattern{ "0A 0B 0C 0D ?? ?? ?? ?? CA" /* Pattern to be searched for */, 
-					     &base /* The module or region in memory to search. */, 
-					     mem /* The memory reader/writer being used. */ };
-
-	dx::Clock clock;
-	clock.Start( );
-	auto addr = pattern.Scan( );
-	clock.End( );
-	if ( addr.getOffset( ) != 0 )
+	if ( !(dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		 !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) )
 	{
-		std::cout << "Found pattern correctly.\n";
-		std::cout << "Module base: [0x"  << std::hex << base.Image( ) << "]" << std::endl;
-		std::cout << "Offset from base: [" << std::dec << addr.getOffset( ) << "]" << std::endl;
-		std::cout << "Exact address: [0x" << std::hex << addr.get_addr( ) << "]" << std::endl;
+		std::cout << "Files are invalid.\n";
+		std::cin.get( );
+		exit( 1 );
+	}
+	
+	std::ifstream file( _File.c_str( ) );
+	file.seekg( 0, std::ios::end );
+	auto size = file.tellg( );
+	file.seekg( 0, std::ios::beg );
+
+	*_Buffer = new byte[size];
+	file.read( (char*)*_Buffer, size );
+	file.close( );
+
+	_Length = size;
+}
+
+dx::String to_hex( const int &_Byte )
+{
+	std::stringstream stream;
+	stream << std::hex << _Byte;
+	return stream.str( ).c_str( );
+}
+
+dx::Pattern ComposePattern( byte** _Ptr, dx::MemoryBase* _Mem, dx::Module* _Module, uint _Length )
+{
+	dx::String _pattern;
+	for ( auto ptr = *_Ptr, max = (*_Ptr + _Length); ptr < max; ++ptr )
+	{
+		_pattern.append( to_hex( *ptr ) );
+		if ( ptr + 1 < max )
+			_pattern.append( " " );
+	}
+	*_Ptr += _Length - 1;
+	return dx::Pattern( _pattern, _Module, _Mem );
+}
+
+std::string Line( unsigned l )
+{
+	int m = l-1; return "\r" + (m<0?"\33["+std::to_string(-m)+'A':std::string(m, '\0'));
+}
+
+class PatternScanner : public dx::Form
+{
+private:
+	dx::Textbox *_file1, *_file2;
+	dx::Button *_scan, *_stop, *_pause;
+	dx::ListBox *_errors, *_logs;
+	dx::TabControl *_control;
+	dx::Tab *_tab1, *_tab2;
+	
+public:
+	void Initalize( )
+	{
+		auto render = this->getWin32( )->getRenderer( );
+		auto canvas = this->getCanvas( );
+		
+		// Fonts
+		render->PrepareFont( "Caviar", "Caviar Dreams", 20, 75 );
+		render->PrepareFont( "CaviarT", "Caviar Dreams", 25, 200 );
+		render->PrepareFont( "CaviarS", "Caviar Dreams", 18, 50 );
+
+
+
+		
+		_file1 = new dx::Textbox( ), _file2 = new dx::Textbox( );
+		_scan = new dx::Button( ), _stop = new dx::Button( ), _pause = new dx::Button( );
+		_errors = new dx::ListBox( ), _logs = new dx::ListBox( );
+		_control = new dx::TabControl( );
+		_tab1 = new dx::Tab( ), _tab2 = new dx::Tab( );
+		_window = new Window( );
+
+
+		_window->setName( "PatternScanner::_window" );
+		_window->setText( "Compare files" );
+		_window->setFont( "CaviarT" );
+		_window->setSize( { 800, 600 } );
+		_window->setAbsolutePosition( { 300, 300 } );
+
+
+		_control->setFont( "Caviar" );
+		_control->setSize( { 100, 30 } );
+		_control->setPadding( { 5, 55 } );
+		_control->setType( Horizontal );
+		
+
+		// -----------------------------------------
+		// TAB One
+		// -----------------------------------------
+		_tab1->setText( "Scanner" );
+		
+		
+		// File
+		_file1->setHiddenText( "File A" );
+		_file1->setFont( "Caviar" );
+		_file1->setSize( { 200, 30 } );
+		_file1->setPadding( { 10, 55 } );
+		_file1->setAllignment( Middle );
+
+		// File2
+		_file2->setHiddenText( "File B" );
+		_file2->setFont( "Caviar" );
+		_file2->setSize( { 200, 30 } );
+		_file2->setPadding( { 10, 90 } );
+		_file2->setAllignment( Middle );
+
+		// Scan
+		_scan->setText( "Scan" );
+		_scan->setFont( "Caviar" );
+		_scan->setAllignment( Middle );
+		_scan->setSize( { 100, 30 } );
+		_scan->setPadding( { 10, 125 } );
+		_scan->OnComponentClicked( ) += BIND_METHOD_2( &PatternScanner::Scan, this );
+
+		// Pause
+		_pause->setText( "Pause" );
+		_pause->setFont( "Caviar" );
+		_pause->setAllignment( Middle );
+		_pause->setSize( { 100, 30 } );
+		_pause->setPadding( { 115, 125 } );
+		_pause->OnComponentClicked( ) += BIND_METHOD_2( &PatternScanner::Pause, this );
+
+		// Stop
+		_stop->setText( "Pause" );
+		_stop->setFont( "Caviar" );
+		_stop->setAllignment( Middle );
+		_stop->setSize( { 100, 30 } );
+		_stop->setPadding( { 220, 125 } );
+		_stop->OnComponentClicked( ) += BIND_METHOD_2( &PatternScanner::Stop, this );
+	
+		// -----------------------------------------
+		// TAB Two
+		// -----------------------------------------
+		_tab2->setText( "Error?" );
+
+
+		// Winodw/control
+		_canvas->add( _window );
+		_window->addChild( _control );
+		_control->addTab( _tab1 );
+		_control->addTab( _tab2 );
+
+		// Tab One
+		_tab1->addChild( _file1 );
+		_tab1->addChild( _file2 );
+		_tab1->addChild( _scan );
+		_tab1->addChild( _stop );
+		_tab1->addChild( _pause );
+
+		// Tab Two
+		_tab2->addChild( _errors );
+		_tab2->addChild( _logs );
+
+		_window->setStylesheet( Style::DEFAULT_STYLE );
 	}
 
-	std::cout << "It took " << std::dec << clock.Nano( ) << " nanoseconds to scan 1000 bytes.";
+	bool Scan( dx::Component *sender, Vector2 area )
+	{
+		printf( "Scan.\n" );
+		return true;
+	}
 
+	bool Pause( dx::Component *sender, Vector2 area )
+	{
+		printf("Pause.\n");
+		return true;
+	}
+
+	bool Stop( dx::Component *sender, Vector2 area )
+	{
+		printf("Stop.\n");
+		return true;
+	}
+
+	void Tick( )
+	{
+		_window->Tick( );
+	}
+
+};
+
+void main( int argc, char** argv, char**envp )
+{
 
 	auto window = new Win32Window( );
-	WindowParams params;
-	params.type = WindowParams::type_standard; 
-	params.size = { 1280, 800 };
+	auto params = WindowParams( );
 	params.pos = { 0, 0 };
-	params.szClass = "D9Overlay";
-	params.szTitle = "D9Title";
+	params.size = { 1920, 1080 };
+	params.szClass = "Overlayed_";
+	params.szTitle = "Overlayed_";
+	params.transparency_key = 0x0;
+	params.type = WindowParams::type_overlay;
 
 	if ( !window->Create( &params ) )
 	{
-		::MessageBoxA( nullptr, "Failed to create a Win32 window.", "Error", MB_OK );
+		std::cerr << "Failed creating window..\n";
+		std::cin.get( );
 		return;
 	}
+	auto disp = new WinDispatcher( );
+
+	window->LaunchForm( new PatternScanner( ) );
 	auto render = window->getRenderer( );
-	auto dispatcher = std::make_unique<WinDispatcher>();
+	window->OverrideDispatcher( disp );
 
-	window->OnWindowClose() += [&]()->bool
-	{
-		auto id = ::MessageBox(window->getHWND(), "Are you sure you want to exit?", "Sure?", MB_YESNO);
-		if (id == IDYES)
-			return false;
-		return true;
-	};
-
-	window->OnWindowResize() += [&](Vector2 sz, HWND)->bool
-	{
-		render->Reset( sz );
-		return true;
-	};
-
-
-	window->LaunchForm( new LoginForm( ) );
 	render->Reset( { 1920, 1080 } );
-
-	clock.Start( );
-	int iFrameC = 0, iAvgFrames = 60;
-	//window->OverrideDispatcher( dispatcher.get( ) );
 	while( window->PollEvents( ) )
 	{
-		render->Begin( 0x0 );
+		render->Begin( params.transparency_key );
 		window->PaintForms( );
-		render->String( 15, 15, "CaviarT", Colors::White, ("FPS: [" + std::to_string( iAvgFrames ) + "]").c_str( ) );
 		render->Present( );
-
-		if ( clock.Milli( ) > 1000)
-		{ 
-			iAvgFrames = iFrameC;
-			iFrameC = 0;
-			clock.Start( );
-		}
-		clock.End( );
-		++iFrameC;
-
 		window->TickForms( );
-		Sleep( 1 );
 	}
 
+
+	
+	/*srand( 123456u );
+	if ( argc < 3 ) {
+		std::cout << "To few arguments.\n";
+		std::cin.get( );
+		return;
+	}
+	auto Reader = new dx::InternalImpl( );
+	Reader->Setup( "CCompare" );
+
+	std::cout << "File A: " << argv[1] << std::endl;
+	std::cout << "File B: " << argv[2] << std::endl;
+	std::cout << "Reading files into ram..." << std::endl;
+	
+	byte *a_ptr, *b_ptr;
+	uint a_len, b_len;
+	readBinaryFile( &a_ptr, a_len, argv[1] );
+	readBinaryFile( &b_ptr, b_len, argv[2] );
+	auto length = min( a_len, b_len );
+
+	auto avgLen = a_len / b_len % 24;
+	if ( avgLen == 0 )
+		avgLen = 1;
+
+	avgLen *= 16;
+	std::cout << "Average pattern length: " << avgLen << ".\n";
+	
+	
+	std::cout << "Compiling patterns...\n";
+	std::vector<dx::Pattern> a_patterns;
+	dx::Module aModule{ (ulong)a_ptr, a_len, "aModule" }, bModule{ (ulong)b_ptr, b_len, "bModule" };
+
+	// Compile pattern for file A
+	for ( auto ptr = a_ptr; (ptr + avgLen) < (a_ptr + length); ++ptr )
+	{
+		a_patterns.push_back( ComposePattern( &ptr, Reader, &bModule, avgLen ) );
+	}
+
+	std::cout << "Compiled " << a_patterns.size( ) << " amount of patterns for file A.\n";
+
+	std::cout << "Testing them on file B...\n";
+	int accuracyCount = 0, count = 0;
+	float dt = 0.0f;
+	std::thread thread{ 
+		[ac = &count, constant = a_patterns.size( ), delta = &dt]() 
+		{
+			while (true) 
+			{ 
+				std::cout << Line(10) << "Progress : Time passed: " << (float)((float)*ac / (float)constant) * (float)100
+				<< "%" << " | " << *delta << "s";
+				Sleep(15); 
+			}
+		} };
+	Timer timer;
+	for ( auto &x : a_patterns )
+	{
+		++count;
+		dt += timer.GetDeltaTime( );
+		auto addr = x.Scan( );
+		if ( addr.IsNullOrZero( ) )
+			continue;
+		++accuracyCount;
+	}
+	++count;
+	TerminateThread( thread.native_handle( ), 0 );
+
+	std::cout << "\n\nAmount of patterns found in file B: " << accuracyCount << std::endl;
+	// (_barPos.x / (getSize().x - _barSize.x)) * getMax();
+	std::cout << "Percentage: " << (float)( (float)accuracyCount / (float)a_patterns.size( ) ) * (float)100 << "% accurate.\n";
+	delete[] a_ptr, b_ptr;
+	std::cin.get( );*/
 }
+

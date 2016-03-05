@@ -35,6 +35,8 @@ namespace Utils {
 			void ChangeMemoryBase( MemoryBase *_Memory );
 			void ChangePattern( const Utils::String &_Pattern );
 			Address Scan( );
+
+			bool isDummy( );
 		};
 
 	}

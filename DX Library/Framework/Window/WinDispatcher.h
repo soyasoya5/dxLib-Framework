@@ -20,6 +20,9 @@ public:
 	// This dispatcher also provides some simple functions
 	// if you dont wanna do event based coding.
 	bool isKeyDown( const uint& key );
+
+	bool isCapitalToggled( );
+	bool isShiftHeld( );
 	
 
 	void ManipulateKeystate( const uint &tick, const uint &key, const byte& state );

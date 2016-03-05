@@ -387,6 +387,7 @@ namespace Utils {
 		void insert( const std::pair<uint, uint>& pos, const String& strs );
 		void insert(const uint& pos, const uint& off, const String& str);
 		void insert( const uint& pos, const String& str );
+		void append( const String &_Str );
 
 		std::vector<Utils::String> split( const char& splitter ) const;
 		std::vector<Utils::String> split( const String& splitter ) const;

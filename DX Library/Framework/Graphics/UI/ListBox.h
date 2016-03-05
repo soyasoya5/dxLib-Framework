@@ -5,13 +5,13 @@
 
 namespace Graphics {
 	namespace UI {
-		class Label;
+		class RichLabel;
 		class Scrollbar;
 
 		class ListBox : public Component
 		{
 			std::vector<std::pair<Utils::String, Utils::String>> _todos;
-			std::vector<Label*> _items;
+			std::vector<RichLabel*> _items;
 			Scrollbar* _bar;
 			bool _reCalc;
 			std::atomic<bool> _can;
@@ -39,10 +39,11 @@ namespace Graphics {
 			void removeItem( const Utils::String &str );
 			void removeItem( const int &idx );
 			void ClearItems( );
-			void addItem( const Utils::String &name, const Utils::String &value="" );
+			void addItem( const Utils::String &_Text, const Utils::String &value="" );
+			void addItem( const Utils::String & _Text, const Utils::String &_Value, const Color & _Color  );
 			void addItem_safe( const Utils::String& name, const Utils::String &value="" );
 
-			std::vector<Label*> Range( ) { return _items; }
+			std::vector<RichLabel*> Range( ) { return _items; }
 			Event<bool, Component*>& OnItemSelected();
 		};
 

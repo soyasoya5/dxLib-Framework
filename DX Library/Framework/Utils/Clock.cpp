@@ -29,3 +29,23 @@ double Utils::Clock::Nano()
 	std::chrono::duration<double, std::nano> time = _start - _end;
 	return std::abs( time.count( ) );
 }
+
+Utils::Timer::Timer()
+{
+	__int64 countsPerSec = 0;
+	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
+	secsPerCount = 1.0f / (float)countsPerSec;
+
+	prevTimeStamp = 0;
+	QueryPerformanceCounter((LARGE_INTEGER*)&prevTimeStamp);
+}
+
+float Utils::Timer::GetDeltaTime()
+{
+	_int64 currentTimeStamp = 0;
+	QueryPerformanceCounter((LARGE_INTEGER*)&currentTimeStamp);
+	float timeDiff = (currentTimeStamp - prevTimeStamp) * secsPerCount;
+	prevTimeStamp = currentTimeStamp;
+
+	return timeDiff;
+}

@@ -10,7 +10,7 @@ Utils::Memory::Address::Address(Module * _Module, const uint & _Offset)
 
 bool Utils::Memory::Address::IsNullOrZero()
 {
-	return _module == nullptr || _offset == 0;
+	return _module == nullptr || _module->isDummy( );
 }
 
 Module * Utils::Memory::Address::getModule( )
@@ -91,11 +91,23 @@ void Utils::Memory::Pattern::ChangePattern(const Utils::String & _Pattern)
 	_pattern = _Pattern;
 }
 
+
 Address Utils::Memory::Pattern::Scan()
 {
 	auto pattern = break_pattern( );
 	byte* bytes = new byte[_module->Size( )];
-	ScopeExit<byte>( bytes, [](byte* ptr) { delete[] ptr; } );
+	auto delete_function = []( byte* ptr )
+	{
+		// Optimizer apparently think this function is uesless
+		// and will delete it, however adding these nops prevent that.
+		__asm nop;
+		__asm nop;
+		__asm nop;
+		delete[] ptr;
+	};
+
+	ScopeExit<byte> guard( bytes, 
+					       delete_function);
 
 	// Read module into memory.
 	if ( !_memory->read_bytes( *_module, 0, bytes, _module->Size( ) ) )
@@ -110,4 +122,9 @@ Address Utils::Memory::Pattern::Scan()
 		++count;
 	}
 	return Address{ &_memory->moduleAt( "_Dummy" ), 0x0 };
+}
+
+bool Utils::Memory::Pattern::isDummy()
+{
+	return _module->isDummy( );
 }

@@ -1,5 +1,5 @@
 #include "ListBox.h"
-#include "Label.h"
+#include "RichLabel.h"
 #include "Scrollbar.h"
 #include "../Renderer/Renderer.h"
 
@@ -252,11 +252,15 @@ namespace Graphics {
 
 		void ListBox::addItem(const Utils::String & name, const Utils::String & value)
 		{
-			auto item = new Label( );
-			item->setText( name );
-			item->setHiddenText( value );
+			addItem( name, value, Colors::White );
+		}
+
+		void ListBox::addItem(const Utils::String & _Text, const Utils::String &_Value, const Color & _Color)
+		{
+			auto item = new RichLabel( );
+			item->appendText( _Text, _Color );
+			item->setHiddenText( _Value );
 			item->setFont( getFont( ) );
-			item->setStylesheet( getStylesheet( ) );
 			item->setMax( 1 );
 
 			item->OnComponentClicked( ) += [&]( Component* sender, Vector2 pressed )->bool

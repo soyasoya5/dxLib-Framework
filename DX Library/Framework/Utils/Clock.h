@@ -21,4 +21,19 @@ namespace Utils {
 		double Nano( );
 	};
 
+
+	class Timer
+	{
+	private:
+		float secsPerCount;
+		__int64 prevTimeStamp;
+
+	public:
+		Timer();
+		~Timer() {}
+
+		float GetDeltaTime();
+	
+	};
+
 }

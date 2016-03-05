@@ -7,6 +7,8 @@
 #include <fstream>
 #include <ctime>
 #include <mutex>
+#include <thread>
+#include <future>
 
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -396,9 +398,10 @@ class ScopeExit
 	_Type *_val;
 	std::function<void(_Type*)> _dest;
 public:
-	ScopeExit( _Type *_Val, std::function<void(_Type*)> Destructor )
+	ScopeExit( _Type *_Val, std::function<void(_Type*)> _Destructor )
 	{
 		_val = _Val;
+		_dest = _Destructor;
 	}
 
 	~ScopeExit( )
@@ -484,7 +487,7 @@ namespace Graphics {
 		class Label;
 		class LinkedLabel;
 		class RichLabel;
-		class Listbox;
+		class ListBox;
 		class Srollbar;
 		class Tab;
 		class TabControl;

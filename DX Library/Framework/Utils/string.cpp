@@ -440,6 +440,11 @@ namespace Utils {
 		return insert( { pos, str.length( ) } , str );
 	}
 
+	void Utils::String::append(const String & _Str)
+	{
+		__append( _Str.c_str( ), _Str.length( ) );
+	}
+
 	std::vector<Utils::String> Utils::String::split(const char & splitter) const
 	{
 		std::vector<Utils::String> ret;
