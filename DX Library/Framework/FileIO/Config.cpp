@@ -10,7 +10,7 @@ namespace FileIO
 		if ( _file.empty( ) )
 			return '\0'; // eof
 		char c = *_file.begin( );
-		_file.erase( _file.begin() );
+		_file.erase( { 0, 1 } );
 		++_count;
 
 
@@ -30,7 +30,7 @@ namespace FileIO
 		}
 		if (isalpha((unsigned char)c))
 		{
-			std::string id = "";
+			Utils::String id = "";
 			while (isalnum((unsigned char)c) || c == '_')
 			{
 				id += c;
@@ -73,7 +73,7 @@ namespace FileIO
 		}
 		else if (isdigit((unsigned char)c))
 		{
-			std::string dig = "";
+			Utils::String dig = "";
 			while (isdigit((unsigned char)c))
 			{
 				dig.push_back(c);
@@ -87,7 +87,7 @@ namespace FileIO
 		}
 		else if (isop(c))
 		{
-			std::string id;
+			Utils::String id;
 			id += c;
 			c = getNextChar();
 			if (isop(c))
@@ -126,7 +126,7 @@ namespace FileIO
 				return Token(eToken_slash, id, _count, _line);
 			return Token(eToken_eof, id, _count, _line);
 		}
-		std::string id;
+		Utils::String id;
 		id.push_back(c);
 		switch (c)
 		{
@@ -230,7 +230,7 @@ namespace FileIO
 		return _count;
 	}
 
-	std::string Tokenizer::TokToString(eToken tok)
+	Utils::String Tokenizer::TokToString(eToken tok)
 	{
 #define CASIFY(x) case x: return #x;
 		switch (tok)
@@ -293,17 +293,17 @@ namespace FileIO
 		_prevToken.tok = eToken_eof;
 	}
 
-	std::string ReadFile(std::string file)
+	Utils::String ReadFile(Utils::String file)
 	{
-		std::ifstream t(file);
+		std::ifstream t( file.c_str( ) );
 		std::string str;
 
-		t.seekg(0, std::ios::end);
-		str.reserve(t.tellg());
-		t.seekg(0, std::ios::beg);
-		str.assign((std::istreambuf_iterator<char>(t)),
-			std::istreambuf_iterator<char>());
-		return str;
+		t.seekg( 0, std::ios::end);
+		str.reserve( t.tellg( ) );
+		t.seekg( 0, std::ios::beg );
+		str.assign( (std::istreambuf_iterator<char>( t ) ),
+					 std::istreambuf_iterator<char>( ) );
+		return str.c_str( );
 	}
 
 	bool ConfigElement::__dim(const uint &idx)
@@ -319,14 +319,14 @@ namespace FileIO
 	}
 
 
-	std::string ConfigElement::Value(const uint & val_idx, const uint & val_idx_arr)
+	Utils::String ConfigElement::Value(const uint & val_idx, const uint & val_idx_arr)
 	{
 		if ( !__dim( val_idx, val_idx_arr ) )
 			return "";
 		return _values[val_idx][val_idx_arr];
 	}
 
-	bool ConfigElement::setValue(const uint & val_idx, const uint & val_idx_arr, const std::string & value)
+	bool ConfigElement::setValue(const uint & val_idx, const uint & val_idx_arr, const Utils::String & value)
 	{
 		if ( !__dim( val_idx, val_idx_arr ) )
 			return false;
@@ -363,7 +363,7 @@ namespace FileIO
 		return true;
 	}
 
-	ConfigElement& Config::Element(const std::string & name)
+	ConfigElement& Config::Element(const Utils::String & name)
 	{
 		for (auto&x : _elems)
 			if (x.Name() == name)
@@ -376,7 +376,7 @@ namespace FileIO
 		return _elems[idx];
 	}
 
-	bool Config::Exists(const std::string &name)
+	bool Config::Exists(const Utils::String &name)
 	{
 		for (auto&x : _elems)
 			if (x.Name() == name)
@@ -415,16 +415,16 @@ namespace FileIO
 		return element;
 	}
 
-	std::vector<std::vector<std::string>> Config::ParseBrackets(iterator &iter)
+	std::vector<std::vector<Utils::String>> Config::ParseBrackets(iterator &iter)
 	{
-		std::vector<std::vector<std::string>> ret;
+		std::vector<std::vector<Utils::String>> ret;
 		if (*iter != "[")
 			return ret;
 		++iter;
 
 		while (*iter != "]" && *iter != Tokenizer::eToken_eof)
 		{
-			std::vector<std::string> _vals;
+			std::vector<Utils::String> _vals;
 			if ( *iter == "," ) {
 				++iter;
 				continue;
@@ -451,7 +451,7 @@ namespace FileIO
 		return ret;
 	}
 
-	void Config::ReplaceVector(std::vector<std::string>& vec, std::vector<std::string> vec2)
+	void Config::ReplaceVector(std::vector<Utils::String>& vec, std::vector<Utils::String> vec2)
 	{
 		vec.clear();
 		for (auto&x : vec2)

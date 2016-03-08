@@ -4,6 +4,7 @@
 #include <sstream>
 #include "../../dx.h"
 #include "../../Utils/string.h"
+#include <map>
 
 namespace Graphics {
 	namespace Style {
@@ -21,57 +22,66 @@ namespace Graphics {
 		class StyleElement
 		{
 		private:
-			std::string _element;
-			std::vector<std::vector<std::string>> _values;
+			Utils::String _element;
+			std::vector<std::vector<Utils::String>> _values;
 
 			bool __dim( const uint& );
 			bool __dim( const uint&, const uint& );
 		public:
 			StyleElement() = default;
 
-			std::string& Name( ) { return _element; }
-			std::string  Value( const uint& idx, const uint& val_idx_arr );
-			bool setValue( const uint& val_idx, const uint& val_idx_arr, const std::string& value );
-			std::vector<std::vector<std::string>>& Array( ) { return _values; };
+			Utils::String& Name( ) { return _element; }
+			Utils::String  Value( const uint& idx, const uint& val_idx_arr );
+			bool setValue( const uint& val_idx, const uint& val_idx_arr, const Utils::String& value );
+			std::vector<std::vector<Utils::String>>& Array( ) { return _values; };
 		};
 
 		class Stylesheet : public Object
 		{
 		public:
 			typedef std::vector<StyleElement> List;
-
+			bool changed_since;
+			std::map<uint, Color> _map;
 		public:
 			Stylesheet( const List& types, const Utils::String& );
 			Stylesheet() = default;
 			
 
 			// E.g the Red of "Style_foreground"
-			uint get_value( const std::string& element, const uint& val_idx, const uint& val_idx_arr )
+			uint get_value( const Utils::String& element, const uint& val_idx, const uint& val_idx_arr )
 			{
 				auto values = get_value_str( element, val_idx, val_idx_arr );
 				if ( values.empty( ) )
 					return uint( );
-				if ( values.find( "0x" ) != values.npos )
+				if ( values.contains( "0x" ) )
 				{
 					uint t;
-					std::stringstream ss( values );
+					std::stringstream ss( values.c_str( ) );
 					ss >> std::hex >> t;
 					return t;
 				}
 				uint t;
-				std::stringstream ss( values );
+				std::stringstream ss( values.c_str( ) );
 				ss >> t;
 				return t;
 			}
 
-			Color get_argb( const std::string& element, const uint& val_idx )
+			Color get_argb( const Utils::String& element, const uint& val_idx )
 			{
-				return D3DCOLOR_ARGB( get_value( element, val_idx, A), get_value(element, val_idx, R), get_value(element, val_idx, G), get_value(element, val_idx, B) );
+				auto hash = element.hash( ) + ( val_idx * element.length( ) );
+				Color argb = Colors::White;
+
+				if ( changed_since )
+				{
+					argb = D3DCOLOR_ARGB( get_value( element, val_idx, A), get_value( element, val_idx, R ), get_value( element, val_idx, G ), get_value( element, val_idx, B ) );
+					_map[hash] = argb;
+				}
+				return _map[hash];
 			}
 
 
-			std::string get_value_str( const std::string& element, const uint& val_idx, const uint& val_idx_arr );
-			bool set_value( const std::string& element, const uint& val_idx, const uint& val_idx_arr, const std::string& value );
+			Utils::String get_value_str( const Utils::String& element, const uint& val_idx, const uint& val_idx_arr );
+			bool set_value( const Utils::String& element, const uint& val_idx, const uint& val_idx_arr, const Utils::String& value );
 			Utils::String& getName( ) { return _name; }
 
 		private:

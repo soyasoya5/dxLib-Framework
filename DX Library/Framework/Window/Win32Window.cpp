@@ -192,11 +192,11 @@ LRESULT Win32Window::HandleInput(HWND hwnd, uint msg, WPARAM wParam, LPARAM lPar
 		return 0;
 		break;
 	case WM_MOVE:
-		OnWindowMove().Invoke( Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) } );
+		OnWindowMove().Invoke( this, Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) } );
 		return 0;
 		break;
 	case WM_SIZE:
-		OnWindowResize().Invoke( Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) }, hwnd);
+		OnWindowResize().Invoke( this, Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) }, hwnd);
 		return 0;
 		break;
 	case WM_LBUTTONDOWN:
@@ -229,7 +229,7 @@ LRESULT Win32Window::HandleInput(HWND hwnd, uint msg, WPARAM wParam, LPARAM lPar
 		break;
 	case WM_CLOSE:
 	{
-		auto res = OnWindowClose().Invoke();
+		auto res = OnWindowClose( ).Invoke( this );
 		if ( !res.empty( ) && res[0] )
 			return 0;
 		else
@@ -244,12 +244,12 @@ LRESULT Win32Window::HandleInput(HWND hwnd, uint msg, WPARAM wParam, LPARAM lPar
 
 	if (IsIconic(hwnd)) {
 		if (!_prevState)
-			OnWindowMinimize().Invoke();
+			OnWindowMinimize( ).Invoke( this );
 		_prevState = true;
 	}
 	else {
 		if (_prevState)
-			OnWindowMaximize().Invoke();
+			OnWindowMaximize( ).Invoke( this );
 		_prevState = false;
 
 	}
@@ -305,12 +305,12 @@ void Win32Window::LaunchForm(Graphics::Form *f)
 	f->_win32window = this;
 	f->_canvas = _canvas;
 	f->Initalize( );
-	this->OnWindowMinimize( ) += [&min = this->_min] ( )mutable->bool
+	this->OnWindowMinimize( ) += [&min = this->_min] ( pointer<Win32Window> sender )mutable->bool
 	{
 		min = true;
 		return true;
 	};
-	this->OnWindowMaximize( ) += [&min = this->_min]( ) mutable->bool
+	this->OnWindowMaximize( ) += [&min = this->_min]( pointer<Win32Window> sender ) mutable->bool
 	{
 		min = false;
 		return true;
@@ -338,27 +338,27 @@ bool Win32Window::TickForms()
 	return true;
 }
 
-Event<bool, Vector2>& Win32Window::OnWindowMove()
+Event<bool, pointer<Win32Window>, Vector2>& Win32Window::OnWindowMove()
 {
 	return _OnWindowMove;
 }
 
-Event<bool, Vector2, HWND>& Win32Window::OnWindowResize()
+Event<bool, pointer<Win32Window>, Vector2, HWND>& Win32Window::OnWindowResize()
 {
 	return _OnWindowResize;
 }
 
-Event<bool>& Win32Window::OnWindowMinimize()
+Event<bool, pointer<Win32Window>>& Win32Window::OnWindowMinimize()
 {
 	return _OnWindowMinimize;
 }
 
-Event<bool>& Win32Window::OnWindowMaximize()
+Event<bool, pointer<Win32Window>>& Win32Window::OnWindowMaximize()
 {
 	return _OnWindowMaximize;
 }
 
-Event<bool>& Win32Window::OnWindowClose()
+Event<bool, pointer<Win32Window>>& Win32Window::OnWindowClose()
 {
 	return _OnWindowClose;
 }

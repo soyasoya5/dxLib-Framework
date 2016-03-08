@@ -33,6 +33,10 @@ namespace Graphics {
 		public:
 			void Paint( Renderer::D9Renderer* ) override;
 
+			bool OnMouseMove( Vector2 ) override;
+			bool OnLeftMouseDown( Vector2 ) override;
+			bool OnLeftMouseUp( Vector2 ) override;
+
 
 			void appendText( const Utils::String &text, const Color &color = D3DCOLOR_ARGB( 255, 255, 255, 255 ) );
 			Vector2 getTextSize_unsafe( Renderer::D9Renderer* );

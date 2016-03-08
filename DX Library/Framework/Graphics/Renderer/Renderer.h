@@ -7,6 +7,7 @@ namespace Graphics {
 	namespace FontMetrics { class Font; };
 	namespace Renderer {
 
+
 		class D9Renderer : public Object
 		{
 		private:

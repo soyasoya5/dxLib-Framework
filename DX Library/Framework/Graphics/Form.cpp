@@ -81,10 +81,10 @@ namespace Graphics {
 		for (auto &x : text)
 			*message += x;
 		message->setName( name + "_message" );
-		message->setFont( "CaviarS" );
+		message->setFont( "Caviar" );
 		message->setPadding( { 25, 55 } );
-		if ( !render->fontAt( "CaviarS" ) )
-			render->PrepareFont( "CaviarS", "Caviar Dreams", 20, 100 );
+		if ( !render->fontAt( "Caviar" ) )
+			render->PrepareFont( "Caviar", "Caviar Dreams", 20, 75 );
 		auto dummy = message->getTextSize_unsafe( render );
 		window->setSize( message->getTextSize_unsafe( render ) + Vector2{ 150, 150 } );
 		if ( window->getSize( ) < Vector2{ 300, 300 } )
@@ -97,7 +97,7 @@ namespace Graphics {
 			auto button = new UI::Button( );
 			button->setName( name + "_continue" );
 			button->setText( "Continue" );
-			button->setFont( "CaviarS" );
+			button->setFont( "Caviar" );
 			button->setAllignment( UI::Middle );
 			
 			auto window_size = window->getSize( );
@@ -135,7 +135,7 @@ namespace Graphics {
 			auto button = new UI::Button( );
 			button->setName( name + "_ok" );
 			button->setText( "Okay" );
-			button->setFont( "CaviarS" );
+			button->setFont( "Caviar" );
 			button->setAllignment( UI::Middle );
 			
 			auto window_size = window->getSize( );
@@ -174,7 +174,7 @@ namespace Graphics {
 			auto yes = new UI::Button( );
 			yes->setName( name + "_yes" );
 			yes->setText( "Yes" );
-			yes->setFont( "CaviarS" );
+			yes->setFont( "Caviar" );
 			yes->setAllignment( UI::Middle );
 			
 			auto window_size = window->getSize( );
@@ -208,7 +208,7 @@ namespace Graphics {
 			auto no = new UI::Button( );
 			no->setName( name + "_no" );
 			no->setText( "No" );
-			no->setFont( "CaviarS" );
+			no->setFont( "Caviar" );
 			no->setAllignment( UI::Middle );
 			
 			
@@ -249,7 +249,7 @@ namespace Graphics {
 			auto cancel = new UI::Button( );
 			cancel->setName( name + "_cancel" );
 			cancel->setText( "Cancel" );
-			cancel->setFont( "CaviarS" );
+			cancel->setFont( "Caviar" );
 			cancel->setAllignment( UI::Middle );
 
 			auto window_size = window->getSize( );
@@ -283,7 +283,7 @@ namespace Graphics {
 			auto yes = new UI::Button( );
 			yes->setName( name + "_yes" );
 			yes->setText( "Yes" );
-			yes->setFont( "CaviarS" );
+			yes->setFont( "Caviar" );
 			yes->setAllignment( UI::Middle );
 			
 			yes->setPadding( cancel->getPadding( ) - Vector2{ 105, 0 } );
@@ -316,7 +316,7 @@ namespace Graphics {
 			auto no = new UI::Button( );
 			no->setName( name + "_no" );
 			no->setText( "No" );
-			no->setFont( "CaviarS" );
+			no->setFont( "Caviar" );
 			no->setAllignment( UI::Middle );
 			
 			

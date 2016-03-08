@@ -37,39 +37,36 @@ namespace Graphics {
 
 		bool Label::OnMouseMove(Vector2 mouse)
 		{
-			if (!isVisible() || !isEnabled())
+			if ( !isVisible( ) || !isEnabled( ) )
 				return true;
 
-			if (Collides(mouse))
+			if ( Collides( mouse ) )
 			{
-				if (!_hovered)
-					OnMouseEnter().Invoke(this, mouse);
+				if ( !_hovered )
+					OnMouseEnter( ).Invoke( this, mouse );
 				_hovered = true;
 			}
 			else
 			{
-				if (_hovered)
-					OnMouseLeave().Invoke(this, mouse);
+				if ( _hovered )
+					OnMouseLeave( ).Invoke( this, mouse );
 				_hovered = false;
 			}
-			return __super::OnMouseMove(mouse);
+			return __super::OnMouseMove( mouse );
 		}
 
 		bool Label::OnLeftMouseDown(Vector2 mouse)
 		{
-			if (!isVisible() || !isEnabled())
+			if ( !isVisible( ) || !isEnabled( ) )
 				return true;
 
-			if (Collides(mouse))
-			{
+			if ( Collides( mouse ) )
 				_focusing = true;
-			}
 			else {
 				_focusing = false;
+				_selected = false;
 			}
-			_selected = false;
-
-			return __super::OnLeftMouseDown(mouse);
+			return __super::OnLeftMouseDown( mouse );
 		}
 
 		bool Label::OnLeftMouseUp(Vector2 mouse)

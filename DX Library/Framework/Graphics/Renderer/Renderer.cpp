@@ -8,7 +8,7 @@ namespace Graphics {
 
 		D9Renderer::D9Renderer(Win32Window * window)
 		{
-			if (FAILED(Direct3DCreate9Ex(D3D_SDK_VERSION, &_d3d)))
+			/*if (FAILED(Direct3DCreate9Ex(D3D_SDK_VERSION, &_d3d)))
 				return;
 
 			D3DPRESENT_PARAMETERS params;
@@ -25,7 +25,7 @@ namespace Graphics {
 			params.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 			if (SUCCEEDED(_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, window->getHWND(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &params, &_device)))
-				window->_render = this;
+				window->_render = this;*/
 			_windowptr = window;
 		}
 
@@ -43,7 +43,7 @@ namespace Graphics {
 			params.AutoDepthStencilFormat = D3DFMT_D16;
 			params.MultiSampleType = D3DMULTISAMPLE_NONE;
 			params.BackBufferWidth = this->_windowptr->getParams().size.x;
-			params.BackBufferHeight = this->_windowptr->getParams().size.x;
+			params.BackBufferHeight = this->_windowptr->getParams().size.y;
 			params.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 			if (SUCCEEDED(_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, _windowptr->_hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &params, &_device)))
@@ -221,7 +221,8 @@ namespace Graphics {
 
 		void D9Renderer::Screenshot(Utils::String file)
 		{
-			file += ".jpg";
+			if ( !file.contains( "." ) )
+				file += ".jpg";
 			LPDIRECT3DSURFACE9 back;
 			_device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &back);
 			if (!back)

@@ -15,14 +15,14 @@ namespace Graphics {
 			return __dim( pos ) && ( pos2 <= _values[pos].size( ) && pos2 >= 0 );
 		}
 
-		std::string StyleElement::Value(const uint & val_idx, const uint & val_idx_arr)
+		Utils::String StyleElement::Value(const uint & val_idx, const uint & val_idx_arr)
 		{
 			if ( !__dim( val_idx, val_idx_arr ) )
 				return "";
 			return _values[val_idx][val_idx_arr];
 		}
 
-		bool StyleElement::setValue(const uint & val_idx, const uint & val_idx_arr, const std::string & value)
+		bool StyleElement::setValue(const uint & val_idx, const uint & val_idx_arr, const Utils::String & value)
 		{
 			if ( !__dim( val_idx, val_idx_arr ) )
 				return false;
@@ -38,7 +38,7 @@ namespace Graphics {
 		}
 
 	
-		std::string Stylesheet::get_value_str(const std::string & element, const uint & val_idx, const uint & val_idx_arr)
+		Utils::String Stylesheet::get_value_str(const Utils::String & element, const uint & val_idx, const uint & val_idx_arr)
 		{
 			for ( auto&x : _types )
 			{
@@ -48,8 +48,9 @@ namespace Graphics {
 			return "";
 		}
 
-		bool Stylesheet::set_value(const std::string & element, const uint & val_idx, const uint & val_idx_arr, const std::string& value)
+		bool Stylesheet::set_value(const Utils::String & element, const uint & val_idx, const uint & val_idx_arr, const Utils::String& value)
 		{
+			changed_since = true;
 			for ( auto&x : _types )
 			{
 				if ( x.Name( ) == element )

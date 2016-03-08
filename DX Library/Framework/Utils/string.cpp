@@ -491,6 +491,14 @@ namespace Utils {
 		return ret;
 	}
 
+	uint Utils::String::hash() const
+	{
+		uint hash = 0x0;
+		for ( const auto&x : *this )
+			hash += x ^ ( rand( ) % 255 + 1 );
+		return hash;
+	}
+
 
 
 	String Utils::String::upper() const

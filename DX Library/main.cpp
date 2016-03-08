@@ -23,21 +23,21 @@
 #include "Framework\Graphics\FontMetrics\Font.h"
 #include "Framework\Graphics\FontMetrics\Metrics.h"
 #include "Framework\Window\WinDispatcher.h"
+#include "Framework\Utils\Memory\External.h"
+#include "Framework\Utils\Memory\Internal.h"
+#include "Framework\Utils\Memory\Module.h"
+#include "Framework\Utils\Memory\Pattern.h"
 #include <iostream>
 
 #pragma warning ( disable : 4996 )
 
-using namespace Graphics;
-using namespace UI;
-using namespace Style;
-using namespace FileIO;
-using namespace Utils;
 
 
-class MainForm : public Form
+
+class MainForm : public dx::Form
 {
 private:
-	RichLabel label;
+	dx::RichLabel label;
 	bool Completed = true;
 
 public:
@@ -46,42 +46,42 @@ public:
 	{
 		this->_win32window->getRenderer( )->PrepareFont( "Caviar", "Caviar Dreams", 25, 75 );
 		this->_win32window->getRenderer( )->PrepareFont( "CaviarS", "Caviar Dreams", 20, 75 );
-		auto style = CreateStyleSheet( "Style_gray.ini" );
+		auto style = dx::CreateStyleSheet( "Style_gray.ini" );
 
-		this->_window = new Window( );
+		this->_window = new dx::Window( );
 		_window->setText( "Find a File" );
 		_window->setFont( "Caviar" );
-		_window->setAllignment( Left );
+		_window->setAllignment( dx::Left );
 		_window->setPadding( { 300, 300 } );
 		_window->setSize( { 600, 400 } );
 		_window->setTopMost( true );
 
-		label += Text( "int ", D3DCOLOR_ARGB(255, 0, 157, 222) );
-		label += Text( "var ", D3DCOLOR_ARGB(255, 222, 157, 0) );
-		label += Text( "= " );
-		label += Text( "0x25", D3DCOLOR_ARGB(255, 25, 65, 10) );
-		label += Text( ";\n" );
-		label += Text("int ", D3DCOLOR_ARGB(255, 0, 157, 222));
-		label += Text("var ", D3DCOLOR_ARGB(255, 222, 157, 0));
-		label += Text("= ");
-		label += Text("0x25", D3DCOLOR_ARGB(255, 25, 65, 10));
-		label += Text( ";\n" );
+		label += dx::Text( "int ", D3DCOLOR_ARGB(255, 0, 157, 222) );
+		label += dx::Text( "var ", D3DCOLOR_ARGB(255, 222, 157, 0) );
+		label += dx::Text( "= " );
+		label += dx::Text( "0x25", D3DCOLOR_ARGB(255, 25, 65, 10) );
+		label += dx::Text( ";\n" );
+		label += dx::Text("int ", D3DCOLOR_ARGB(255, 0, 157, 222));
+		label += dx::Text("var ", D3DCOLOR_ARGB(255, 222, 157, 0));
+		label += dx::Text("= ");
+		label += dx::Text("0x25", D3DCOLOR_ARGB(255, 25, 65, 10));
+		label += dx::Text( ";\n" );
 
-		label += Text("int ", D3DCOLOR_ARGB(255, 0, 157, 222));
-		label += Text("var ", D3DCOLOR_ARGB(255, 222, 157, 0));
-		label += Text("= ");
-		label += Text("0x25", D3DCOLOR_ARGB(255, 25, 65, 10));
-		label += Text(";\n");
+		label += dx::Text("int ", D3DCOLOR_ARGB(255, 0, 157, 222));
+		label += dx::Text("var ", D3DCOLOR_ARGB(255, 222, 157, 0));
+		label += dx::Text("= ");
+		label += dx::Text("0x25", D3DCOLOR_ARGB(255, 25, 65, 10));
+		label += dx::Text(";\n");
 
-		label += Text("int ", D3DCOLOR_ARGB(255, 0, 157, 222));
-		label += Text("var ", D3DCOLOR_ARGB(255, 222, 157, 0));
-		label += Text("= ");
-		label += Text("0x25", D3DCOLOR_ARGB(255, 25, 65, 10));
-		label += Text(";\n");
+		label += dx::Text("int ", D3DCOLOR_ARGB(255, 0, 157, 222));
+		label += dx::Text("var ", D3DCOLOR_ARGB(255, 222, 157, 0));
+		label += dx::Text("= ");
+		label += dx::Text("0x25", D3DCOLOR_ARGB(255, 25, 65, 10));
+		label += dx::Text(";\n");
 
-		label += Text( "Just a showcase of " );
-		label += Text( "multi-colored\n", D3DCOLOR_ARGB(255, 150, 25, 25) );
-		label += Text( "text rendering." );
+		label += dx::Text( "Just a showcase of " );
+		label += dx::Text( "multi-colored\n", D3DCOLOR_ARGB(255, 150, 25, 25) );
+		label += dx::Text( "text rendering." );
 
 	
 		label.setFont( "CaviarS" );
@@ -101,20 +101,18 @@ public:
 
 };
 
-class LoginForm : public Form
+class LoginForm : public dx::Form
 {
 private:
-	pointer<Textbox> username, password;
-	pointer<LinkedLabel> forgot_pass;
-	pointer<Button> authenticate;
+	pointer<dx::Textbox> username, password;
+	pointer<dx::LinkedLabel> forgot_pass;
+	pointer<dx::Button> authenticate;
 public:
 
 	void Initalize( )
 	{
+		using namespace dx;
 		auto renderer = getWin32( )->getRenderer( );
-		renderer->PrepareFont( "CaviarT", "Caviar Dreams", 25, 75 );
-		renderer->PrepareFont( "CaviarS", "Caviar Dreams", 20, 100 );
-		renderer->PrepareFont( "CaviarSmall", "Caviar Dreams", 15, 150 );
 		auto style = CreateStyleSheet( "Style_gray.ini" );
 
 
@@ -130,7 +128,7 @@ public:
 		username = new Textbox( );
 		username->setName( "LoginForm::username" );
 		username->setHiddenText( "Username" );
-		username->setFont( "CaviarS" );
+		username->setFont( "Caviar" );
 		username->setAllignment( Left );
 		username->setPadding( { 137, 55 } );
 		username->setSize( { 150, 25 } );
@@ -140,14 +138,14 @@ public:
 		forgot_pass->setName( "LoginForm::forgot_pass" );
 		forgot_pass->setText( "Forgotten password?" );
 		forgot_pass->setLink( "www.google.com" );
-		forgot_pass->setFont( "CaviarSmall" );
-		forgot_pass->setPadding( { 25, 90 } );
+		forgot_pass->setFont( "Caviar" );
+		forgot_pass->setPadding( { 187, 150 } );
 		
 		// Password
 		password = new Textbox( );
 		password->setName( "LoginForm::password" );
 		password->setHiddenText( "Enter password" );
-		password->setFont( "CaviarS" );
+		password->setFont( "Caviar" );
 		password->setAllignment( Left );
 		password->setPadding( { 137, 110 } );
 		password->setSize( { 150, 25 } );
@@ -158,9 +156,9 @@ public:
 		authenticate = new Button( );
 		authenticate->setName( "LoginForm::authenticate" );
 		authenticate->setText( "Sign In" );
-		authenticate->setFont( "CaviarS" );
+		authenticate->setFont( "Caviar" );
 		authenticate->setAllignment( Middle );
-		authenticate->setPadding( { 125, 150 } );
+		authenticate->setPadding( { 125 / 2, 150 } );
 		authenticate->setSize( { 100, 30 } );
 		authenticate->OnComponentClicked( ) += [&]( pointer<Component> sender, Vector2 v )mutable->bool
 		{
@@ -169,15 +167,16 @@ public:
 
 
 		_window->addChild( username );
-		//_window->addChild( forgot_pass );
+		_window->addChild( forgot_pass );
 		_window->addChild( password );
 		_window->addChild( authenticate );
 		_window->setStylesheet( *style );
 		_canvas->add( _window );
 	}
 
-	bool Authenticate( pointer<Component> sender, Vector2 )
+	bool Authenticate( pointer<dx::Component> sender, Vector2 )
 	{
+		using namespace dx;
 		auto text = username->getText( );
 		if ( text.length( ) < 5 ) {
 			this->Dialog(
@@ -229,10 +228,7 @@ public:
 
 };
 
-#include "Framework\Utils\Memory\External.h"
-#include "Framework\Utils\Memory\Internal.h"
-#include "Framework\Utils\Memory\Module.h"
-#include "Framework\Utils\Memory\Pattern.h"
+
 
 void readBinaryFile( byte** _Buffer, uint &_Length, const dx::String &_File )
 {
@@ -295,17 +291,10 @@ private:
 public:
 	void Initalize( )
 	{
+		using namespace dx;
 		auto render = this->getWin32( )->getRenderer( );
 		auto canvas = this->getCanvas( );
-		
-		// Fonts
-		render->PrepareFont( "Caviar", "Caviar Dreams", 20, 75 );
-		render->PrepareFont( "CaviarT", "Caviar Dreams", 25, 200 );
-		render->PrepareFont( "CaviarS", "Caviar Dreams", 18, 50 );
 
-
-
-		
 		_file1 = new dx::Textbox( ), _file2 = new dx::Textbox( );
 		_scan = new dx::Button( ), _stop = new dx::Button( ), _pause = new dx::Button( );
 		_errors = new dx::ListBox( ), _logs = new dx::ListBox( );
@@ -370,7 +359,21 @@ public:
 		_stop->setSize( { 100, 30 } );
 		_stop->setPadding( { 220, 125 } );
 		_stop->OnComponentClicked( ) += BIND_METHOD_2( &PatternScanner::Stop, this );
-	
+
+		// Errors
+		_errors->setText( "Errors" );
+		_errors->setFont( "Caviar" );
+		_errors->setAllignment( Left );
+		_errors->setSize( { 300, 300 } );
+		_errors->setPadding( { 15, 165 } );
+
+		_errors->addItem( "Added 25 gold11!", "", Colors::White );
+		_errors->addItem( "died 8[", "", Colors::Red );
+		_errors->addItem( "w0wsers nullptr!!!", "", Colors::Orange );
+		_errors->addItem( "Some log message smh", "", Colors::White );
+		_errors->addItem( "rip logs very not creative!", "", Colors::Orange );
+
+
 		// -----------------------------------------
 		// TAB Two
 		// -----------------------------------------
@@ -389,9 +392,10 @@ public:
 		_tab1->addChild( _scan );
 		_tab1->addChild( _stop );
 		_tab1->addChild( _pause );
+		_tab1->addChild( _errors );
 
 		// Tab Two
-		_tab2->addChild( _errors );
+		//_tab2->addChild( _errors );
 		_tab2->addChild( _logs );
 
 		_window->setStylesheet( Style::DEFAULT_STYLE );
@@ -399,19 +403,19 @@ public:
 
 	bool Scan( dx::Component *sender, Vector2 area )
 	{
-		printf( "Scan.\n" );
+		std::cout << ( "Scan.\n" );
 		return true;
 	}
 
 	bool Pause( dx::Component *sender, Vector2 area )
 	{
-		printf("Pause.\n");
+		std::cout << ("Pause.\n");
 		return true;
 	}
 
 	bool Stop( dx::Component *sender, Vector2 area )
 	{
-		printf("Stop.\n");
+		std::cout << ("Stop.\n");
 		return true;
 	}
 
@@ -422,17 +426,17 @@ public:
 
 };
 
-void main( int argc, char** argv, char**envp )
-{
 
+void main( int argc, char** argv, char**envp ) 
+{
 	auto window = new Win32Window( );
 	auto params = WindowParams( );
 	params.pos = { 0, 0 };
-	params.size = { 1920, 1080 };
+	params.size = { 1280, 720 };
 	params.szClass = "Overlayed_";
 	params.szTitle = "Overlayed_";
 	params.transparency_key = 0x0;
-	params.type = WindowParams::type_overlay;
+	params.type = WindowParams::type_standard;
 
 	if ( !window->Create( &params ) )
 	{
@@ -440,23 +444,32 @@ void main( int argc, char** argv, char**envp )
 		std::cin.get( );
 		return;
 	}
-	auto disp = new WinDispatcher( );
+
+	window->OnWindowResize( ) += []( pointer<Win32Window> sender, Vector2 size, HWND native )->bool
+	{
+		auto render = sender->getRenderer( );
+		return render->Reset( size );
+	};
+
+	auto render = window->getRenderer( );
+	render->PrepareFont( "Caviar", "Caviar Dreams", 20, 75 );
+	render->PrepareFont( "CaviarT", "Caviar Dreams", 25, 200 );
+	render->PrepareFont( "CaviarS", "Caviar Dreams", 18, 50 );
 
 	window->LaunchForm( new PatternScanner( ) );
-	auto render = window->getRenderer( );
-	window->OverrideDispatcher( disp );
+	//window->LaunchForm( new LoginForm( ) );
 
-	render->Reset( { 1920, 1080 } );
 	while( window->PollEvents( ) )
 	{
 		render->Begin( params.transparency_key );
 		window->PaintForms( );
 		render->Present( );
 		window->TickForms( );
+		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 	}
-
-
 	
+	// TODO:
+	// Free resources... kekekke
 	/*srand( 123456u );
 	if ( argc < 3 ) {
 		std::cout << "To few arguments.\n";

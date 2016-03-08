@@ -48,7 +48,7 @@ namespace Graphics {
 		Stylesheet *CreateStyleSheet(const std::string& file)
 		{
 			Stylesheet::List list;
-			FileIO::Config config{ file };
+			FileIO::Config config{ file.c_str( ) };
 			config.Parse( );
 			for (auto x : config.getElements( ))
 			{

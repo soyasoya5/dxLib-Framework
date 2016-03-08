@@ -19,19 +19,68 @@ void Graphics::UI::RichLabel::Paint(Renderer::D9Renderer *r)
 
 	for ( auto& text : _texts )
 	{
-		auto size = metrics.SizeOfString( text.text );
-
-		
-
+		auto in_size = metrics.SizeOfString( text.text );
+		size.x += in_size.x;
 		r->String( current_pos.x, current_pos.y, getFont( ), text.color, text.text );
-		current_pos.x += size.x;
+		current_pos.x += in_size.x;
 		if ( text.newline ) {
-			current_pos.y += size.y;
+			size.y += in_size.y;
+			current_pos.y += in_size.y;
 			current_pos.x = o_pos.x;
 		}
+
+		if ( size.y == 0 )
+			size.y = in_size.y;
 	}
 
+	setSize( size );
 	OnPostPaint( ).Invoke( this, r );
+}
+
+bool Graphics::UI::RichLabel::OnMouseMove(Vector2 mouse)
+{
+	if ( !isVisible( ) || !isEnabled( ) )
+		return true;
+
+	if ( Collides( mouse ) )
+	{
+		if ( !_hovered )
+			OnMouseEnter( ).Invoke( this, mouse );
+		_hovered = true;
+	}
+	else
+	{
+		if ( _hovered )
+			OnMouseLeave( ).Invoke( this, mouse );
+		_hovered = false;
+	}
+	return __super::OnMouseMove( mouse );
+}
+
+bool Graphics::UI::RichLabel::OnLeftMouseDown(Vector2 mouse)
+{
+	if ( !isVisible( ) || !isEnabled( ) )
+		return true;
+
+	if ( Collides( mouse ) )
+		_focusing = true;
+	else
+		_focusing = false;
+	return __super::OnLeftMouseDown( mouse );
+}
+
+bool Graphics::UI::RichLabel::OnLeftMouseUp(Vector2 mouse)
+{
+	if ( !isVisible( ) || !isEnabled( ) )
+		return true;
+
+	if ( Collides( mouse ) )
+	{
+		OnComponentClicked( ).Invoke( this, mouse );
+	}
+
+	_focusing = false;
+	return __super::OnLeftMouseUp( mouse );
 }
 
 void Graphics::UI::RichLabel::appendText(const Utils::String & text, const Color & color)

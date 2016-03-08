@@ -191,6 +191,7 @@
     <ClInclude Include="Framework\dx.h" />
     <ClInclude Include="Framework\Event\EventHandler.h" />
     <ClInclude Include="Framework\FileIO\Config.h" />
+    <ClInclude Include="Framework\FileIO\Path.h" />
     <ClInclude Include="Framework\Graphics\FontMetrics\Font.h" />
     <ClInclude Include="Framework\Graphics\FontMetrics\Metrics.h" />
     <ClInclude Include="Framework\Graphics\Form.h" />
@@ -229,6 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework\FileIO\Config.cpp" />
+    <ClCompile Include="Framework\FileIO\Path.cpp" />
     <ClCompile Include="Framework\Graphics\FontMetrics\Font.cpp" />
     <ClCompile Include="Framework\Graphics\FontMetrics\Metrics.cpp" />
     <ClCompile Include="Framework\Graphics\Form.cpp" />

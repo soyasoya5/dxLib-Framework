@@ -63,7 +63,7 @@ namespace Graphics {
 					continue;
 				}
 
-				auto txtSize = r->StrSize( getFont( ), (*it)->getText( ) );
+				auto txtSize = (*it)->getSize( );
 
 				(*it)->setAbsolutePosition( (*(it - 1))->getAbsolutePosition( ) );
 
@@ -82,6 +82,8 @@ namespace Graphics {
 			_bar->setType( Vertical );
 			_bar->setVisible( true );
 			_reCalc = true;
+
+			_bar->OnStateChanged( ) += [&]( Component*, int ) { _reCalc = true; return true; };
 
 			OnAbsolutePositionChanged( ) += [&]( Component *sender, Vector2 pos )->bool
 			{ _reCalc = true; return true; };
@@ -111,11 +113,9 @@ namespace Graphics {
 			if ( _reCalc )
 			{
 				setMaxCount( r );
+				ReOrder( r );
 				_reCalc = false;
 			}
-
-			// Re-order the items dependant on the scrollbar
-			ReOrder( r );
 
 			auto pos = getAbsolutePosition( ) + getPadding( );
 			auto size = getSize( );
@@ -274,7 +274,7 @@ namespace Graphics {
 
 			item->OnPrePaint( ) += [&]( Component* sender, Renderer::D9Renderer* r )->bool
 			{
-				if ( sender->getState( ) ) // 0x051ef460   0x051ef460
+				if ( sender->getState( ) ) 
 				{
 					auto myAbs = getAbsolutePosition( ) + getPadding( );
 					auto sAbs = sender->getAbsolutePosition( );

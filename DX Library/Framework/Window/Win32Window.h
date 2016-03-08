@@ -28,11 +28,11 @@ class Win32Window : public EventDispatcher
 {
 private:
 	friend class Graphics::Renderer::D9Renderer;
-	Event<bool, Vector2>			_OnWindowMove;
-	Event<bool, Vector2, HWND>		_OnWindowResize;
-	Event<bool>						_OnWindowMinimize;
-	Event<bool>						_OnWindowMaximize;
-	Event<bool>						_OnWindowClose;
+	Event<bool, pointer<Win32Window>, Vector2>				_OnWindowMove;
+	Event<bool, pointer<Win32Window>, Vector2, HWND>		_OnWindowResize;
+	Event<bool, pointer<Win32Window>>						_OnWindowMinimize;
+	Event<bool, pointer<Win32Window>>						_OnWindowMaximize;
+	Event<bool, pointer<Win32Window>>						_OnWindowClose;
 
 	Graphics::Renderer::D9Renderer* _render;
 	Graphics::UI::Canvas* _canvas;
@@ -69,10 +69,10 @@ public: // Accessors
 	bool TickForms( );
 public: // Events
 
-	Event<bool, Vector2>& OnWindowMove( );
-	Event<bool, Vector2, HWND>& OnWindowResize( );
-	Event<bool>& OnWindowMinimize( );
-	Event<bool>& OnWindowMaximize( );
-	Event<bool>& OnWindowClose( );
+	Event<bool, pointer<Win32Window>, Vector2>& OnWindowMove( );
+	Event<bool, pointer<Win32Window>, Vector2, HWND>& OnWindowResize( );
+	Event<bool, pointer<Win32Window>>& OnWindowMinimize( );
+	Event<bool, pointer<Win32Window>>& OnWindowMaximize( );
+	Event<bool, pointer<Win32Window>>& OnWindowClose( );
 
 };

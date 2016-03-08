@@ -393,6 +393,7 @@ namespace Utils {
 		std::vector<Utils::String> split( const String& splitter ) const;
 		uint amount_of(  );
 		uint amount_of_wild( const String &begin, const String &end, const String &type = "?" );
+		uint hash( ) const;
 
 
 		String upper( ) const;
