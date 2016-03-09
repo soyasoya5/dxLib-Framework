@@ -2,12 +2,31 @@
 
 using namespace dx;
 
+FileIO::Path::Path()
+	: _path( )
+{
+}
+
+FileIO::Path::Path(const Utils::String & _Path)
+	: _path( _Path )
+{
+}
+
+FileIO::Path::Path(const char * _Path)
+	: _path( _Path )
+{
+}
+
+FileIO::Path::operator const char*() const
+{
+	return _path.c_str( );
+}
 
 Path FileIO::Path::Previous() const
 {
 	auto pos = _path.find_last_of( "\\" );
 	if ( pos == String::bad )
-		return "";
+		return *this;
 	return _path.substr( pos + 1 );
 }
 
@@ -21,14 +40,56 @@ Path FileIO::Path::Root() const
 
 Path FileIO::Path::Filename() const
 {
-	
+	auto pos = _path.find_last_of( "\\" );
+	if ( pos == String::bad )
+		return *this;
+	return _path.substr( pos + 1 );
 }
 
-std::vector<Path> FileIO::Path::Branches()
+Path FileIO::Path::Extension() const
+{
+	if ( !has_extension( ) )
+		return "";
+	auto pos = _path.find_last_of( "." );
+	return _path.substr( pos );
+}
+
+std::vector<Path> FileIO::Path::Branches() const
 {
 	std::vector<Path> ret;
-	auto vec = _path.split( "\\" );
-	for ( auto &x : vec )
+	for ( auto &x : _path.split( "\\" ) )
 		ret.push_back( Path( x ) );
 	return ret;
+}
+
+bool FileIO::Path::has_extension() const
+{
+	return _path.find( '.' ) != String::bad;
+}
+
+bool FileIO::Path::has_filename() const
+{
+	return has_extension( );
+}
+
+bool FileIO::Path::has_branches() const
+{
+	return _path.find( '\\' ) != String::bad;
+}
+
+bool FileIO::Path::is_directory() const
+{
+	return !has_extension( );
+}
+
+bool FileIO::DirectoryExists(const Path & _Path)
+{
+	auto attrib = GetFileAttributes( _Path );
+	return !(attrib & INVALID_FILE_ATTRIBUTES) && attrib & FILE_ATTRIBUTE_DIRECTORY;
+}
+
+bool FileIO::exists(const Path & _Path)
+{
+	auto attrib = GetFileAttributes( _Path );
+	return !(attrib & INVALID_FILE_ATTRIBUTES) && !(attrib & FILE_ATTRIBUTE_DIRECTORY);
 }

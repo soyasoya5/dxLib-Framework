@@ -448,6 +448,8 @@ namespace FileIO {
 	class Tokenizer;
 	class ConfigElement;
 	class Config;
+	class Path;
+	class File;
 }
 
 namespace Graphics {

@@ -315,7 +315,7 @@ namespace Utils {
 			if ( it.index( ) + slen > len )
 				return last;
 			if ( __cmp_s_o( str._buffer, it.get( ), slen ) )
-				return it.index( );
+				last = it.index( );
 		}
 		return last;
 	}
@@ -475,7 +475,7 @@ namespace Utils {
 		auto copy = *this;
 		while( true )
 		{
-			pos = copy.find( splitter, pos );
+			pos = copy.find( splitter );
 			if ( pos != bad )
 			{
 				ret.push_back( copy.substr( 0, pos ) );

@@ -12,16 +12,18 @@ namespace FileIO {
 		Path( const Utils::String &_Path );
 		Path( const char *_Path );
 
-
-
-
-
+		operator const char*( ) const;
 	public: // Sub-paths
 		Path Previous( ) const;
 		Path Root( ) const;
 		Path Filename( ) const;
 		Path Extension( ) const;
-		std::vector<Path> Branches( );
+		std::vector<Path> Branches( ) const;
+
+	public: // Editors
+		Path& remove_extension( );
+		Path& remove_filename( );
+		Path& remove_directories( );
 
 	public: // booleans
 		bool has_extension( ) const;
@@ -31,6 +33,6 @@ namespace FileIO {
 	};
 
 	bool DirectoryExists( const Path &_Path );
-	bool FileExists( const Path &_Path );
+	bool exists( const Path &_Path );
 
 }

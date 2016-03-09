@@ -27,6 +27,7 @@
 #include "Framework\Utils\Memory\Internal.h"
 #include "Framework\Utils\Memory\Module.h"
 #include "Framework\Utils\Memory\Pattern.h"
+#include "Framework\FileIO\Path.h"
 #include <iostream>
 
 #pragma warning ( disable : 4996 )
@@ -426,9 +427,34 @@ public:
 
 };
 
+std::string tab( uint tabs = 0 )
+{
+	std::string ret = "";
+	for ( uint i = 0; i < tabs; ++i )
+		ret += "    ";
+	return ret;
+}
 
 void main( int argc, char** argv, char**envp ) 
 {
+	dx::Path path{ "C:\\Program Files (x86)\\AviSynth 2.5\\Uninstall.exe" };
+	std::cout << "Is directory: " << (path.is_directory( ) ? "true" : "false") << std::endl;
+	std::cout << "Has extension: " << (path.has_extension( ) ? "true" : "false") << std::endl;
+	std::cout << "Has filename: " << (path.has_filename( ) ? "true" : "false") << std::endl;
+	std::cout << "Has branches: " << (path.has_branches( ) ? "true" : "false") << std::endl;
+	std::cout << "Filename: \"" << path.Filename( ) << "\"" << std::endl;
+	std::cout << "Extension: \"" << path.Extension( ) << "\"" << std::endl;
+	std::cout << "Exists: " << dx::exists( path ) << std::endl;
+	std::cout << "Branches ----------\n";
+	auto branches = path.Branches( );
+	for ( uint i = 0; i < branches.size( ); ++i )
+	{
+		auto branch = &branches[i];
+		std::cout << tab( i + 1 ) << *branch << std::endl;
+	}
+
+	std::cin.get( );
+	/*
 	auto window = new Win32Window( );
 	auto params = WindowParams( );
 	params.pos = { 0, 0 };
@@ -466,7 +492,7 @@ void main( int argc, char** argv, char**envp )
 		render->Present( );
 		window->TickForms( );
 		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-	}
+	}*/
 	
 	// TODO:
 	// Free resources... kekekke
