@@ -24,10 +24,17 @@ FileIO::Path::operator const char*() const
 
 Path FileIO::Path::Previous() const
 {
-	auto pos = _path.find_last_of( "\\" );
-	if ( pos == String::bad )
+	if ( !has_branches( ) )
 		return *this;
-	return _path.substr( pos + 1 );
+	auto brs = Branches( );
+	if ( brs.size( ) < 2 )
+		return *this;
+	return brs[ brs.size( ) - 2 ];
+}
+
+Path FileIO::Path::UptoPrevious() const
+{
+	return Path(*this).remove_filename( ).remove_extension( );
 }
 
 Path FileIO::Path::Root() const
@@ -60,6 +67,30 @@ std::vector<Path> FileIO::Path::Branches() const
 	for ( auto &x : _path.split( "\\" ) )
 		ret.push_back( Path( x ) );
 	return ret;
+}
+
+Path & FileIO::Path::remove_extension()
+{
+	auto pos = _path.find_last_of( '.' );
+	if ( pos == String::bad ) return *this; // return right away...
+	_path = _path.substr( 0, pos );
+	return *this;
+}
+
+Path & FileIO::Path::remove_filename()
+{
+	auto pos = _path.find_last_of( '\\' );
+	if ( pos == String::bad ) return *this; // return right away...
+	_path = _path.substr( 0, pos );
+	return *this;
+}
+
+Path & FileIO::Path::remove_directories()
+{
+	auto last = _path.find_last_of( '\\' );
+	if ( last == String::bad ) return *this;
+	_path.erase( 0, last + 1 );
+	return *this;
 }
 
 bool FileIO::Path::has_extension() const

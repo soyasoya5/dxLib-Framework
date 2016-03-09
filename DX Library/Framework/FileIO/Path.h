@@ -15,6 +15,7 @@ namespace FileIO {
 		operator const char*( ) const;
 	public: // Sub-paths
 		Path Previous( ) const;
+		Path UptoPrevious( ) const;
 		Path Root( ) const;
 		Path Filename( ) const;
 		Path Extension( ) const;

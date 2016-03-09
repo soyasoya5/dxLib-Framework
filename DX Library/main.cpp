@@ -443,6 +443,8 @@ void main( int argc, char** argv, char**envp )
 	std::cout << "Has filename: " << (path.has_filename( ) ? "true" : "false") << std::endl;
 	std::cout << "Has branches: " << (path.has_branches( ) ? "true" : "false") << std::endl;
 	std::cout << "Filename: \"" << path.Filename( ) << "\"" << std::endl;
+	std::cout << "Previous: \"" << path.Previous( ) << "\"" << std::endl;
+	std::cout << "Previous: \"" << path.UptoPrevious( ) << "\"" << std::endl;
 	std::cout << "Extension: \"" << path.Extension( ) << "\"" << std::endl;
 	std::cout << "Exists: " << dx::exists( path ) << std::endl;
 	std::cout << "Branches ----------\n";
