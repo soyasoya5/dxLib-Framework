@@ -40,7 +40,7 @@ namespace Graphics {
 		{
 		public:
 			typedef std::vector<StyleElement> List;
-			bool changed_since;
+			bool changed_since = true;
 			std::map<uint, Color> _map;
 		public:
 			Stylesheet( const List& types, const Utils::String& );

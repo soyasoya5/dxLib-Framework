@@ -28,6 +28,7 @@
 #include "Framework\Utils\Memory\Module.h"
 #include "Framework\Utils\Memory\Pattern.h"
 #include "Framework\FileIO\Path.h"
+#include "Framework\Graphics\UI\Scrollbar.h"
 #include <iostream>
 
 #pragma warning ( disable : 4996 )
@@ -231,19 +232,11 @@ public:
 
 
 
-void readBinaryFile( byte** _Buffer, uint &_Length, const dx::String &_File )
+bool readBinaryFile( byte** _Buffer, uint &_Length, const dx::String &_File )
 {
-	auto dwAttrib = GetFileAttributes( _File.c_str( ) );
-
-	if ( !(dwAttrib != INVALID_FILE_ATTRIBUTES &&
-		 !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) )
-	{
-		std::cout << "Files are invalid.\n";
-		std::cin.get( );
-		exit( 1 );
-	}
-	
 	std::ifstream file( _File.c_str( ) );
+	if ( !file.good( ) )
+		return false;
 	file.seekg( 0, std::ios::end );
 	auto size = file.tellg( );
 	file.seekg( 0, std::ios::beg );
@@ -253,6 +246,7 @@ void readBinaryFile( byte** _Buffer, uint &_Length, const dx::String &_File )
 	file.close( );
 
 	_Length = size;
+	return true;
 }
 
 dx::String to_hex( const int &_Byte )
@@ -288,8 +282,22 @@ private:
 	dx::ListBox *_errors, *_logs;
 	dx::TabControl *_control;
 	dx::Tab *_tab1, *_tab2;
+	dx::Label *_current;
+	dx::Trackbar *_progress;
+	dx::Label *_time;
+	dx::Label *_state;
+
+	dx::BackgroundTask *_task;
+	bool _searching, _paused, _halted;
+	uint _index;
+	std::vector<dx::Pattern> _patterns;
+	uint _avgLen;
+	dx::Module *_fileA, *_fileB;
+	dx::InternalImpl* _mem;
+	float dt;
 	
 public:
+
 	void Initalize( )
 	{
 		using namespace dx;
@@ -302,6 +310,10 @@ public:
 		_control = new dx::TabControl( );
 		_tab1 = new dx::Tab( ), _tab2 = new dx::Tab( );
 		_window = new Window( );
+
+		// Misc
+		_task = new dx::BackgroundTask( );
+		_task->OnComplete( ) += BIND_METHOD_1( &PatternScanner::OnCompletedTask, this );
 
 
 		_window->setName( "PatternScanner::_window" );
@@ -354,7 +366,7 @@ public:
 		_pause->OnComponentClicked( ) += BIND_METHOD_2( &PatternScanner::Pause, this );
 
 		// Stop
-		_stop->setText( "Pause" );
+		_stop->setText( "Stop" );
 		_stop->setFont( "Caviar" );
 		_stop->setAllignment( Middle );
 		_stop->setSize( { 100, 30 } );
@@ -373,6 +385,33 @@ public:
 		_errors->addItem( "w0wsers nullptr!!!", "", Colors::Orange );
 		_errors->addItem( "Some log message smh", "", Colors::White );
 		_errors->addItem( "rip logs very not creative!", "", Colors::Orange );
+
+		// 
+		
+		// Current
+		_current = new dx::Label( );
+		_current->setText( "Nothing" );
+		_current->setFont( "Caviar" );
+		_current->setPadding( { 0, 520 } );
+
+		// Progress
+		_progress = new dx::Trackbar( );
+		_progress->setSize( { 200, 30 } );
+		_progress->setBarSize( { 10, 0 } );
+		_progress->setPadding( { 550, 55 } );
+		_progress->setType( dx::Horizontal );
+		_progress->setMax( 100 );
+		_progress->setMin( 0 );
+		_progress->setScroll( 0 );
+		_progress->UpdateBar( );
+		_progress->UpdateScroll( );
+		_progress->setEnabled( false );
+		
+		// time
+		_time = new dx::Label( );
+		_time->setText( "Time: 0.0" );
+		_time->setFont( "Caviar" );
+		_time->setPadding( { 550, 90 } );
 
 
 		// -----------------------------------------
@@ -394,35 +433,218 @@ public:
 		_tab1->addChild( _stop );
 		_tab1->addChild( _pause );
 		_tab1->addChild( _errors );
+		_tab1->addChild( _current );
+		_tab1->addChild( _progress );
+		_tab1->addChild( _time );
 
 		// Tab Two
 		//_tab2->addChild( _errors );
 		_tab2->addChild( _logs );
 
 		_window->setStylesheet( Style::DEFAULT_STYLE );
+	
+	
+		_mem = new dx::InternalImpl( );
+		_mem->Setup( "" );
+
+	}
+
+	bool OnCompletedTask( dx::BackgroundTask *task )
+	{
+		auto cTask = _current->getName( );
+		if ( cTask == "Compiling" )
+		{
+			_current->setText( "Performing analysis. THIS MAY TAKE A WHILE." );
+			_current->setName( "Scanning" );
+			_task->Start( BIND_METHOD_1( &PatternScanner::perform_analysis, this ) );
+		}
+		if ( cTask == "Scanning" )
+		{
+			//_state->setText( "Nothing" );
+			_current->setText( "Nothing" );
+			_current->setName( "Nothing" );
+			_time->setText( "Time: 0.0" );
+			_halted = true;
+		}
+
+		return true;
 	}
 
 	bool Scan( dx::Component *sender, Vector2 area )
 	{
-		std::cout << ( "Scan.\n" );
+		dx::Path _A( _file1->getText( ) ), _B( _file2->getText( ) );
+		if ( !_A.has_extension( ) || !_B.has_extension( ) )
+			return	Dialog( 
+							dx::Dialog_continue, 
+							{ dx::Text( "Files must have extension (Be a folder)", Colors::Red ) }, 
+							"Error", "scan_error",
+							nullptr,
+						    this->_window
+							);
+		_halted = false;
+		start_scan_process( _A, _B );
 		return true;
 	}
 
 	bool Pause( dx::Component *sender, Vector2 area )
 	{
-		std::cout << ("Pause.\n");
+		static Utils::String str = "";
+		if ( _paused )
+		{
+			_current->setText( str );
+		} else
+		{
+			str = _current->getText( );
+			_current->setText( "Paused" );
+		}
+		
+		_paused = !_paused;
 		return true;
 	}
 
 	bool Stop( dx::Component *sender, Vector2 area )
 	{
-		std::cout << ("Stop.\n");
+		_halted = true;
+		_task->Halt( );
 		return true;
+	}
+
+	void start_scan_process( dx::Path &_A, dx::Path &_B )
+	{
+		if ( _fileA ) {
+			delete[_fileA->Size( )] ( (void*)_fileA->Image( ) );
+			delete _fileA; 
+		}
+		if ( _fileB ) {
+			delete[_fileB->Size( )] ( (void*)_fileB->Image( ) );
+			delete _fileB;
+		}
+
+		byte *aBuf, *bBuf;
+		uint lenA, lenB;
+		
+		_current->setText( "Reading file A into memory" );
+		if ( !readBinaryFile( &aBuf, lenA, _A.operator const char *( ) ) ) {
+			this->Dialog( 
+						 dx::Dialog_ok, 
+						 { dx::Text( _file1->getText( ), Colors::White ),
+						   dx::Text( " does not exist.", Colors::Red ) },
+						 "Error",
+						 "error",
+						 nullptr,
+						 this->_window );
+			this->addTask( this->_current, dx::Clock::now( ), []( void* data ) { auto curr = (dx::Label*)data; curr->setText( "Nothing" ); curr->setName( "Nothing" ); } );
+			return;
+		}
+
+		_current->setText( "Reading file B into memory" );
+		if ( !readBinaryFile( &bBuf, lenB, _B.operator const char *( ) ) ) {
+			this->Dialog( 
+						 dx::Dialog_ok, 
+						 { dx::Text( _file2->getText( ), Colors::White ),
+						   dx::Text( " does not exist.", Colors::Red ) },
+						 "Error",
+						 "error",
+						 nullptr,
+						 this->_window );
+			return;
+		}
+		
+		_current->setText( "Computing average length" );
+		_current->setName( "Computing" );
+		_avgLen = ( (lenA + lenB / (lenB & lenA)) / 3541 ) % 55 + 5;
+		_index = 0;
+
+		_current->setText( "Indexing modules" );
+		_current->setName( "Indexing" );
+		_fileA = new dx::Module( (ulong)aBuf, lenA, _A.operator const char *( ) );
+		_fileB = new dx::Module( (ulong)bBuf, lenB, _B.operator const char *( ) );
+
+		_current->setText( "Compiling patterns, please wait" );
+		_current->setName( "Compiling" );
+		_task->Start( BIND_METHOD_1( &PatternScanner::compile_patterns_task, this ) );
+	}
+
+	void compile_patterns_task( dx::AsyncKeeper &_Kpr )
+	{
+		dx::AsyncGuard guard{ _Kpr };
+		auto a_ptr = (byte*)_fileA->Image( );
+		auto length = min( _fileA->Size( ), _fileB->Size( ) );
+
+		for ( auto ptr = a_ptr; (ptr + _avgLen) < (a_ptr + length); ++ptr )
+		{
+			while( _paused ) std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+			this->_patterns.push_back( ComposePattern( &ptr, _mem, _fileB, _avgLen ) );
+		}
+	}
+
+	void perform_analysis( dx::AsyncKeeper &_Kpr )
+	{
+		dx::AsyncGuard guard{ _Kpr };
+
+		dx::Timer timer;
+		uint count = 0, accuracy = 0;
+		dt = 0.0f;
+		float progress = 0;
+		
+		float last_dt = 0.0f;
+		for ( auto &x : _patterns )
+		{
+			while( _paused ) std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+
+			progress = (float)((float)accuracy / (float)_patterns.size( )) * 100.0f;
+			
+			if ( dt - last_dt > 0.1 )
+				this->addTask(
+						&progress,
+						dx::Clock::now( ),
+						BIND_METHOD_1( &PatternScanner::special_task_lemo, this ) );
+			
+			++count;
+			dt += timer.GetDeltaTime( );
+			auto addr = x.Scan( );
+			if ( addr.IsNullOrZero( ) )
+				continue;
+			++accuracy;
+		}
+
+
+		float ac = (float)( (float)accuracy / (float)_patterns.size( ) ) * (float)100;
+		Dialog( 
+				dx::Dialog_ok, 
+				{ dx::Text("Completed analysis\n"), 
+				  dx::Text( "The files are ", Colors::Green ), 
+				  dx::Text( dx::to_string( ((int)ac) + 1 ), Colors::Gold ),
+				  dx::Text( "% accurate.\n", Colors::Green ),
+				  dx::Text( "Test took ", Colors::Green ),
+				  dx::Text( dx::to_string( dt ), Colors::Gold ),
+				  dx::Text( " seconds to complete. (or ", Colors::Green ),
+				  dx::Text( dx::to_string( std::chrono::duration_cast<std::chrono::minutes>( std::chrono::seconds( (int)dt ) ).count( ) ), Colors::Gold ),
+				  dx::Text( " minutes)\n", Colors::Green ) },
+				"Completed", 
+				"scan_complete", 
+				nullptr,
+				this->_window );
+	}
+
+	void special_task_lemo( void *data )
+	{
+		if (_paused)
+			return;
+		if (_halted)
+			return;
+		float prog = *(float*)data;
+		_progress->setScroll( ( prog ) );
+		_progress->UpdateBar( );
+		_progress->UpdateScroll( );
+		_time->setText( "Time: " + dx::to_string( dt ) );
 	}
 
 	void Tick( )
 	{
 		_window->Tick( );
+		
+
 	}
 
 };
@@ -437,26 +659,7 @@ std::string tab( uint tabs = 0 )
 
 void main( int argc, char** argv, char**envp ) 
 {
-	dx::Path path{ "C:\\Program Files (x86)\\AviSynth 2.5\\Uninstall.exe" };
-	std::cout << "Is directory: " << (path.is_directory( ) ? "true" : "false") << std::endl;
-	std::cout << "Has extension: " << (path.has_extension( ) ? "true" : "false") << std::endl;
-	std::cout << "Has filename: " << (path.has_filename( ) ? "true" : "false") << std::endl;
-	std::cout << "Has branches: " << (path.has_branches( ) ? "true" : "false") << std::endl;
-	std::cout << "Filename: \"" << path.Filename( ) << "\"" << std::endl;
-	std::cout << "Previous: \"" << path.Previous( ) << "\"" << std::endl;
-	std::cout << "Previous: \"" << path.UptoPrevious( ) << "\"" << std::endl;
-	std::cout << "Extension: \"" << path.Extension( ) << "\"" << std::endl;
-	std::cout << "Exists: " << dx::exists( path ) << std::endl;
-	std::cout << "Branches ----------\n";
-	auto branches = path.Branches( );
-	for ( uint i = 0; i < branches.size( ); ++i )
-	{
-		auto branch = &branches[i];
-		std::cout << tab( i + 1 ) << *branch << std::endl;
-	}
-
-	std::cin.get( );
-	/*
+	std::cout << "Thread concurrency: " << std::thread::hardware_concurrency( ) << std::endl;
 	auto window = new Win32Window( );
 	auto params = WindowParams( );
 	params.pos = { 0, 0 };
@@ -494,7 +697,7 @@ void main( int argc, char** argv, char**envp )
 		render->Present( );
 		window->TickForms( );
 		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-	}*/
+	}
 	
 	// TODO:
 	// Free resources... kekekke

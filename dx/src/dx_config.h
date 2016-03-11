@@ -1,0 +1,38 @@
+#pragma once
+
+#ifndef _WIN32
+#ifndef INVALID_HANLDE_VALUE
+#define INVALID_HANDLE_VALUE ((void*)(long)-1)
+#endif
+#endif
+
+#ifndef begin_LIB
+#define begin_LIB namespace dx { namespace lib {
+#endif
+#ifndef end_LIB
+#define end_LIB } }
+#endif
+
+
+#ifndef begin_MEMORY
+#define begin_MEMORY namespace dx { namespace lib { namespace Memory {
+#endif
+
+#ifndef end_MEMORY
+#define end_MEMORY } } }
+#endif
+
+
+
+
+#ifndef __DX
+#define __DX ::dx::
+#endif
+
+#ifndef __LIB
+#define __LIB ::dx::lib::
+#endif
+
+#ifndef __MEMORY
+#define __MEMORY ::dx::lib::Memory::
+#endif

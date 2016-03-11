@@ -112,8 +112,9 @@ Vector2 Graphics::UI::RichLabel::getTextSize_unsafe( Renderer::D9Renderer *r )
 	for (auto& text : _texts) {
 		auto tsize = metrics.SizeOfString(text.text);
 		if ( tsize.x > size.x )
-			size.x = tsize.x;
-		size.y += tsize.y;
+			size.x += tsize.x;
+		if ( text.newline )
+			size.y += tsize.y;
 	}
 	return size;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "../../dx.h"
-
+#include "../../Event/EventHandler.h"
 
 // Isn't actually a UI component, but is used for background tasks
 namespace Graphics {
@@ -8,14 +8,13 @@ namespace Graphics {
 
 		class AsyncKeeper
 		{
-			byte _s[5];
+			std::mutex _mu;
 		public:
 			AsyncKeeper( );
 
 			void Begin( );
 			void End( );
 
-			byte* get( const uint& );
 		};
 
 		class AsyncGuard
@@ -29,18 +28,35 @@ namespace Graphics {
 		class BackgroundTask
 		{
 		private:
-			std::thread _thread;
 			AsyncKeeper _kpr;
+			std::function<void()> _stored;
+			Event<bool, BackgroundTask*> _OnComplete;
+			HANDLE _t;
 
+			static DWORD _Thread( LPVOID lpData )
+			{
+				auto thisptr = (BackgroundTask*)(lpData);
+				if ( thisptr->_stored ) 
+					thisptr->_stored( );
+				thisptr->OnComplete( ).Invoke( thisptr );
+				return 0;
+			}
 		public:
 			BackgroundTask( );
 
-			template<typename _Func>
-			void Start( _Func&& function )
+			void Start( const std::function<void(AsyncKeeper&)> &function )
 			{
-				_thread = std::thread{ std::forward<_Func>( function ), _kpr };
+				_stored = [func = function, _kpr = &this->_kpr]( )mutable->void { if ( func ) func( *_kpr ); };
+				_t = CreateThread( 0, 0, (LPTHREAD_START_ROUTINE)_Thread, this, 0, 0 );
 			}
 
+			void Halt( )
+			{
+				TerminateThread( _t, 0 );
+			}
+
+
+			Event<bool, BackgroundTask*>& OnComplete( );
 		};
 
 	}

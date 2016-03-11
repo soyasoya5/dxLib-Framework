@@ -14,6 +14,7 @@ namespace Graphics {
 
 	void Form::DoTick()
 	{
+		dx::AsyncGuard guard{ _task_kpr };
 		auto now = dx::Clock::now( );
 		for ( auto it = _tasks.begin( ); it < _tasks.end( ); ++it )
 		{
@@ -51,6 +52,7 @@ namespace Graphics {
 
 	void Form::addTask(void * _Data, const std::chrono::time_point<std::chrono::high_resolution_clock>& _Time, const std::function<void(void*)>& _Task)
 	{
+		dx::AsyncGuard guard{ _task_kpr };
 		_tasks.push_back( Task{ _Data, _Task, _Time } );
 	}
 
@@ -86,7 +88,7 @@ namespace Graphics {
 		if ( !render->fontAt( "Caviar" ) )
 			render->PrepareFont( "Caviar", "Caviar Dreams", 20, 75 );
 		auto dummy = message->getTextSize_unsafe( render );
-		window->setSize( message->getTextSize_unsafe( render ) + Vector2{ 150, 150 } );
+		window->setSize( message->getTextSize_unsafe( render ) + Vector2{ 150, 125 } );
 		if ( window->getSize( ) < Vector2{ 300, 300 } )
 			window->setSize( { 400, 400 } );
 
@@ -106,11 +108,12 @@ namespace Graphics {
 			button->OnComponentClicked( ) += [window = window, canvas = getCanvas( ), thisptr = this]( UI::Component *sender, Vector2 )mutable->bool
 			{
 				auto event = *ccast<EventPf*>( sender->getParent( )->getUserdata( ) );
-				event(
-					  Result_Continue,
-					  ccast<UI::Window*>( sender->getParent( ) ),
-					  canvas
-					);
+				if ( event )
+					event(
+						  Result_Continue,
+						  ccast<UI::Window*>( sender->getParent( ) ),
+						  canvas
+						);
 				auto idx = canvas->Search(  [window = window](pointer<UI::Window> x)
 										    {
 												if ( x->getName( ) == window->getName( ) )
@@ -144,7 +147,8 @@ namespace Graphics {
 			button->OnComponentClicked( ) += [window = window, canvas = getCanvas( ), thisptr = this]( UI::Component *sender, Vector2 )mutable->bool
 			{
 				auto event = *ccast<EventPf*>( sender->getParent( )->getUserdata( ) );
-				event(
+				if (event)
+					event(
 					  Result_Continue,
 					  ccast<UI::Window*>( sender->getParent( ) ),
 					  canvas
@@ -183,7 +187,8 @@ namespace Graphics {
 			yes->OnComponentClicked( ) += [window = window, canvas = getCanvas( ), thisptr = this]( UI::Component *sender, Vector2 )mutable->bool
 			{
 				auto event = *ccast<EventPf*>( sender->getParent( )->getUserdata( ) );
-				event(
+				if ( event )
+					event(
 					  Result_Continue,
 					  ccast<UI::Window*>( sender->getParent( ) ),
 					  canvas
@@ -217,7 +222,8 @@ namespace Graphics {
 			no->OnComponentClicked( ) += [window = window, canvas = getCanvas( ), thisptr = this]( UI::Component *sender, Vector2 )mutable->bool
 			{
 				auto event = *ccast<EventPf*>( sender->getParent( )->getUserdata( ) );
-				event(
+				if ( event )
+					event(
 					  Result_Continue,
 					  ccast<UI::Window*>( sender->getParent( ) ),
 					  canvas
@@ -258,7 +264,8 @@ namespace Graphics {
 			cancel->OnComponentClicked( ) += [window = window, canvas = getCanvas( ), thisptr = this]( UI::Component *sender, Vector2 )mutable->bool
 			{
 				auto event = *ccast<EventPf*>( sender->getParent( )->getUserdata( ) );
-				event(
+				if ( event )
+					event(
 					  Result_Continue,
 					  ccast<UI::Window*>( sender->getParent( ) ),
 					  canvas
@@ -291,7 +298,8 @@ namespace Graphics {
 			yes->OnComponentClicked( ) += [window = window, canvas = getCanvas( ), thisptr = this]( UI::Component *sender, Vector2 )mutable->bool
 			{
 				auto event = *ccast<EventPf*>( sender->getParent( )->getUserdata( ) );
-				event(
+				if ( event )
+					event(
 					  Result_Continue,
 					  ccast<UI::Window*>( sender->getParent( ) ),
 					  canvas
@@ -325,7 +333,8 @@ namespace Graphics {
 			no->OnComponentClicked( ) += [window = window, canvas = getCanvas( ), thisptr = this]( UI::Component *sender, Vector2 )mutable->bool
 			{
 				auto event = *ccast<EventPf*>( sender->getParent( )->getUserdata( ) );
-				event(
+				if ( event )
+					event(
 					  Result_Continue,
 					  ccast<UI::Window*>( sender->getParent( ) ),
 					  canvas

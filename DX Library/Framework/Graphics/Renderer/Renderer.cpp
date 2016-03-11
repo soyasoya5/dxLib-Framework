@@ -150,13 +150,13 @@ namespace Graphics {
 		void D9Renderer::String(float x, float y, Utils::String szFont, D3DCOLOR color, Utils::String szString)
 		{
 //			std::lock_guard<std::mutex> lock( mutex );
-			auto font = getFontData(szFont);
+			auto font = fontAt(szFont);
 			if (!font)
 				return;
 
 			static RECT rect_angle;
 			rect_angle = { static_cast<LONG>(x), static_cast<LONG>(y), static_cast<LONG>(x + 500), static_cast<LONG>(y + 200) };
-			(font)->DrawTextA(nullptr, szString.c_str(), -1, &rect_angle, DT_TOP, color);
+			(font->get( ))->DrawTextA(nullptr, szString.c_str(), -1, &rect_angle, DT_TOP, color);
 		}
 
 

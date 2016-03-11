@@ -180,14 +180,14 @@ namespace Graphics {
 			return true;
 		}
 
-		bool ListBox::OnKeyDown(uint)
+		bool ListBox::OnKeyDown(uint key)
 		{
-			return true;
+			return __super::OnKeyDown( key );
 		}
 
-		bool ListBox::OnKeyUp(uint)
+		bool ListBox::OnKeyUp(uint key)
 		{
-			return true;
+			return __super::OnKeyUp( key );
 		}
 
 		void ListBox::setStylesheet(const Style::Stylesheet & sheet)
@@ -253,6 +253,7 @@ namespace Graphics {
 		void ListBox::addItem(const Utils::String & name, const Utils::String & value)
 		{
 			addItem( name, value, Colors::White );
+			_reCalc = true;
 		}
 
 		void ListBox::addItem(const Utils::String & _Text, const Utils::String &_Value, const Color & _Color)

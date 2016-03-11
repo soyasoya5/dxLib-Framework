@@ -490,7 +490,7 @@ namespace Graphics {
 		class LinkedLabel;
 		class RichLabel;
 		class ListBox;
-		class Srollbar;
+		class Scrollbar;
 		class Tab;
 		class TabControl;
 		class Textbox;

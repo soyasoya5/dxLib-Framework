@@ -2,7 +2,7 @@
 class Win32Window;
 struct WindowEventParams;
 #include "../Utils/string.h"
-
+#include "UI\BackgroundTask.h"
 
 
 namespace Graphics {
@@ -32,6 +32,7 @@ namespace Graphics {
 		typedef std::chrono::high_resolution_clock clock;
 		typedef std::chrono::time_point<clock> time_point;
 		typedef std::function<void(void*)> function;
+		
 
 	private:
 		void* _data;
@@ -50,6 +51,7 @@ namespace Graphics {
 		UI::Window* _window;
 		UI::Canvas* _canvas;
 		std::vector<Task> _tasks;
+		dx::AsyncKeeper _task_kpr;
 
 	public:
 		virtual void Initalize( ) = 0;
@@ -64,6 +66,7 @@ namespace Graphics {
 
 		virtual void Release( );
 
+		// For async
 		void addTask( void* _Data,
 					  const std::chrono::time_point<std::chrono::high_resolution_clock> &_Time, 
 					  const std::function<void(void*)> &_Task );
@@ -88,7 +91,8 @@ namespace Graphics {
 			_tasks.push_back( Task{ time, std::forward<_Func>( func ) } );
 		}
 
-		
+
+
 	public:
 		Win32Window* getWin32( );
 		UI::Window* getWindow( );
