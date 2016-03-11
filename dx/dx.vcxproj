@@ -121,6 +121,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\lib\async.cpp" />
     <ClCompile Include="src\lib\clock.cpp" />
+    <ClCompile Include="src\lib\FileIO\path.cpp" />
+    <ClCompile Include="src\lib\FileIO\token.cpp" />
+    <ClCompile Include="src\lib\FileIO\tokenizer.cpp" />
     <ClCompile Include="src\lib\Memory\External.cpp" />
     <ClCompile Include="src\lib\Memory\Internal.cpp" />
     <ClCompile Include="src\lib\Memory\MemoryBase.cpp" />
@@ -135,6 +138,10 @@
     <ClInclude Include="src\lib\async.h" />
     <ClInclude Include="src\lib\clock.h" />
     <ClInclude Include="src\lib\event.h" />
+    <ClInclude Include="src\lib\FileIO\lib.h" />
+    <ClInclude Include="src\lib\FileIO\path.h" />
+    <ClInclude Include="src\lib\FileIO\token.h" />
+    <ClInclude Include="src\lib\FileIO\tokenizer.h" />
     <ClInclude Include="src\lib\iter.h" />
     <ClInclude Include="src\lib\lib.h" />
     <ClInclude Include="src\lib\Memory\External.h" />

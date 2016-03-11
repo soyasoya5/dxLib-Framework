@@ -14,6 +14,7 @@ private:
 	Px* _arr;
 	size_t _len;
 	size_t _count;
+	using _MyT = Iterator<Px>;
 
 public:
 	Iterator() : _arr(nullptr), _count(0), _len(0) {}
@@ -60,20 +61,37 @@ public: // Operators
 	{
 		return get();
 	}
-	bool operator++()
+
+	_MyT& operator++()
 	{
 		if (_count >= _len)
-			return false;
+			return (*this);
 		++_count;
-		return true;
+		return (*this);
 	}
-	bool operator--()
+
+	_MyT& operator--()
 	{
 		if (_count <= 0)
-			return false;
+			return (*this);
 		--_count;
-		return true;
+		return (*this);
 	}
+
+	_MyT operator++(int)
+	{
+		_MyT tmp = *this;
+		operator++( );
+		return tmp;
+	}
+
+	_MyT operator--(int)
+	{
+		_MyT tmp = *this;
+		operator--( );
+		return tmp;
+	}
+
 	bool operator==(const Iterator<Px>& lhs) const
 	{
 		return (this->_arr + _count) == (lhs._arr + lhs._count);
@@ -112,6 +130,7 @@ class ReverseIterator
 	Px* _arr;
 	size_t _len;
 	size_t _count;
+	using _MyT = ReverseIterator<Px>;
 
 public:
 	ReverseIterator() : _arr(nullptr), _count(0), _len(0) {}
@@ -154,20 +173,37 @@ public: // Operators
 	{
 		return get();
 	}
-	bool operator++()
+
+	_MyT& operator++()
 	{
 		if (_count >= _len)
-			return false;
+			return (*this);
 		++_count;
-		return true;
+		return (*this);
 	}
-	bool operator--()
+
+	_MyT& operator--()
 	{
 		if (_count <= 0)
-			return false;
+			return (*this);
 		--_count;
-		return true;
+		return (*this);
 	}
+
+	_MyT operator++(int)
+	{
+		_MyT tmp = *this;
+		operator++( );
+		return tmp;
+	}
+
+	_MyT operator--(int)
+	{
+		_MyT tmp = *this;
+		operator--( );
+		return tmp;
+	}
+
 	bool operator==(const ReverseIterator<Px>& other) const
 	{
 		return (this->_arr + _len - _count) == (other._arr + other._len - other._count);

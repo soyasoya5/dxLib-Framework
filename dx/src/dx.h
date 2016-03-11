@@ -16,6 +16,9 @@
 #include <sstream>
 #include <Windows.h> // aka <cancer.h>
 
+#ifdef SendMessage
+#undef SendMessage
+#endif
 
 namespace dx {
 	typedef unsigned int uint;

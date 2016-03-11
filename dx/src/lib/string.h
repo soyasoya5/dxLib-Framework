@@ -38,6 +38,7 @@ class String
 		String( __LIB String&& );
 		String( const char* );
 		String( const char*, __DX uint len );
+		String( const std::initializer_list<char> &_List );
 		~String( );
 
 		void swap( __LIB String& );

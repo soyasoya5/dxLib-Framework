@@ -23,6 +23,15 @@
 #endif
 
 
+#ifndef begin_FILEIO
+#define begin_FILEIO namespace dx { namespace lib { namespace fileio {
+#endif
+
+#ifndef end_FILEIO
+#define end_FILEIO } } }
+#endif
+
+
 
 
 #ifndef __DX
@@ -35,4 +44,8 @@
 
 #ifndef __MEMORY
 #define __MEMORY ::dx::lib::Memory::
+#endif
+
+#ifndef __FILEIO
+#define __FILEIO ::dx::lib::FileIO::
 #endif

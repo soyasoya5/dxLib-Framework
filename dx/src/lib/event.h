@@ -8,8 +8,6 @@ begin_LIB
 template<typename Rx, typename...Ax>
 class Event 
 {
-	static_assert(!std::is_void<Rx>::value, "Event<void> is illegal.");
-
 	typedef std::function<Rx(Ax...)> Signature;
 	std::vector<Signature> _fs;
 public:
@@ -18,7 +16,9 @@ public:
 	template<typename..._Args>
 	void Invoke( _Args&&..._args )
 	{
-		
+		for ( auto &f : _fs ) 
+			if ( f )
+				f( std::forward<_Args>( _args )... );
 	}
 
 	template<typename _Func>

@@ -149,6 +149,12 @@ String::String(const char *str, uint len)
 	__copy_ct( str, len );
 }
 
+String::String(const std::initializer_list<char>& _List)
+{
+	for ( auto it = _List.begin( ); it < _List.end( ); ++it )
+		push_back( *it );
+}
+
 String::~String()
 {
 	__clean( );

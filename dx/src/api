@@ -10,7 +10,7 @@
 #include "lib/iter.h"
 #include "lib/string.h"
 #include "lib/event.h"
-#include "lib/clock"
+#include "lib/clock.h"
 
 // MEMORY
 #include "lib/memory/external.h"
@@ -20,4 +20,7 @@
 #include "lib/memory/module.h"
 #include "lib/memory/pattern.h"
 
-// other
+// FILEIO
+#include "lib/fileio/path.h"
+#include "lib/fileio/token.h"
+#include "lib/fileio/tokenizer.h"
