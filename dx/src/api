@@ -24,7 +24,3 @@
 #include "lib/fileio/path.h"
 #include "lib/fileio/token.h"
 #include "lib/fileio/tokenizer.h"
-
-// IO
-#include "lib/io/buf.h"
-#include "lib/io/streams.h"

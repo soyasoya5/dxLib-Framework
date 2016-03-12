@@ -190,6 +190,7 @@ namespace dx {
 
 		namespace IO
 		{
+			template<typename _Tx>
 			class _Streambuf;
 			class stream;
 		}
