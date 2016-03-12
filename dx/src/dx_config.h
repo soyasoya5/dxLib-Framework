@@ -24,13 +24,20 @@
 
 
 #ifndef begin_FILEIO
-#define begin_FILEIO namespace dx { namespace lib { namespace fileio {
+#define begin_FILEIO namespace dx { namespace lib { namespace FileIO {
 #endif
 
 #ifndef end_FILEIO
 #define end_FILEIO } } }
 #endif
 
+#ifndef begin_IO
+#define begin_IO namespace dx { namespace lib { namespace IO { 
+#endif
+
+#ifndef end_IO
+#define end_IO } } }
+#endif
 
 
 
@@ -48,4 +55,8 @@
 
 #ifndef __FILEIO
 #define __FILEIO ::dx::lib::FileIO::
+#endif
+
+#ifndef __IO
+#define __IO ::dx::lib::IO::
 #endif
