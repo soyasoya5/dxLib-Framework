@@ -1,10 +1,21 @@
+#include "..\..\..\..\dx\src\lib\Graphics\Window\Window.h"
+#include "..\..\..\..\dx\src\lib\Graphics\Window\Window.h"
+#include "..\..\..\..\dx\src\lib\Graphics\Window\Window.h"
+#include "..\..\..\..\dx\src\lib\Graphics\Window\Window.h"
 #include "Window.h"
 #include "../Renderer/Renderer.h"
+
+Window * Window::Create(const __LIB String & _Class, const __LIB String & _Title, const __MATH Region & _Region, DWORD dwStyle, DWORD dwExStyle)
+{
+	
+}
 
 Graphics::UI::Window::Window()
 	: _top(false)
 {
 }
+
+
 
 void Graphics::UI::Window::Paint(Renderer::D9Renderer *r)
 {

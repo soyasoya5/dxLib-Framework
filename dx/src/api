@@ -24,3 +24,10 @@
 #include "lib/fileio/path.h"
 #include "lib/fileio/token.h"
 #include "lib/fileio/tokenizer.h"
+#include "lib/fileio/buf.h"
+
+
+// MATH
+#include "lib/math/region.h"
+#include "lib/math/vector2.h"
+#include "lib/math/math.h"

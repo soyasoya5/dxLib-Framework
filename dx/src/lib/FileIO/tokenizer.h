@@ -35,7 +35,7 @@ private:
 	vector _tokens;
 	__LIB String _filename;
 	__LIB String _filecontent;
-	__LIB Event<void, __FILEIO TokenizerMessage> _OnMessage;
+	__LIB Event<void( __FILEIO TokenizerMessage )> _OnMessage;
 
 	Tokenizer( );
 public:
@@ -48,7 +48,7 @@ public:
 
 	void Clear( );
 
-	__LIB Event<void, __FILEIO TokenizerMessage>& OnMessage( );
+	__LIB Event<void( __FILEIO TokenizerMessage )>& OnMessage( );
 	
 	static __FILEIO Tokenizer* CreateFromHeader( const __LIB String &contents );
 	static __FILEIO Tokenizer* CreateFromFile( const __LIB String &file );

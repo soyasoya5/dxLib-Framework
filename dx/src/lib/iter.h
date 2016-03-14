@@ -4,6 +4,10 @@
 
 
 begin_LIB
+// INDEXED ITERATORS
+// These iterators are indexed, meaning that they are slower than 
+// the normal iterators, but provide more functionality.
+
 
 template<typename Px>
 class Iterator

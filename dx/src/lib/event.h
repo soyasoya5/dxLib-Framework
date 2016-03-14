@@ -5,10 +5,10 @@
 
 begin_LIB
 
-template<typename Rx, typename...Ax>
+template<typename _Sig>
 class Event 
 {
-	typedef std::function<Rx(Ax...)> Signature;
+	typedef std::function<_Sig> Signature;
 	std::vector<Signature> _fs;
 public:
 	std::vector<Signature>& getF() { return _fs; }
@@ -28,6 +28,14 @@ public:
 		return *this;
 	}
 
+};
+
+
+	// Base class
+class EventArgs
+{
+public:
+	bool handled;
 };
 
 // Binding :)

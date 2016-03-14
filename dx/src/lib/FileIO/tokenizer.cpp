@@ -336,7 +336,7 @@ void Tokenizer::Clear()
 	_filecontent = "";
 }
 
-Event<void, TokenizerMessage>& Tokenizer::OnMessage()
+Event<void( TokenizerMessage )>& Tokenizer::OnMessage()
 {
 	return _OnMessage;
 }

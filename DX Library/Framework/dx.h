@@ -173,10 +173,6 @@ enum Key : uint
 class Colors
 {
 public:
-	//static const uint Red = D3DCOLOR_ARGB( 255, 255, 0, 0 );
-	//static const uint LightRed = D3DCOLOR_ARGB( 255, 200, 25, 25 );
-
-public:
 	typedef const uint type;
 	static type AliciaBlue				= 0xFFF0F8FFu;
 	static type AntiqueWhite			= 0xFFFAEBD7u;
