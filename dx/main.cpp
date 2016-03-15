@@ -1,48 +1,50 @@
 #include "src\api"
-#include "src\lib\Graphics\Window\Window.h"
 
 int main( )
 {
-	auto window = __GRAPHICS Window::Create( "TestWindow::D3D9",
-											 "Test Window | dx", 
-											 { { 300, 300 }, { 1280, 800 } } );
-	
+	auto application = dx::Application::Create( );
+
+	auto window = dx::Window::Create( "TestWindow::D3D9",
+									  "Test Window | dx", 
+								      { { 300, 300 }, { 1280, 800 } } );
 	window->ShowWindow( );
 	window->UpdateWindow( );
 	window->BringToTop( );
 
-	window->OnWindowClosing( ) += []( __GRAPHICS Window *sender,
-									  __GRAPHICS WindowClosingArgs &args )
+	window->OnWindowClosing( ) += []( dx::Window *sender, dx::WindowClosingArgs &args )
 	{
-		if ( args.handled )
+		if ( args.handled ) // if already handled just return
 			return;
 
-		auto ids = ::MessageBox( sender->native_handle( ), "Are you sure you want to exit?", "Sure?", MB_YESNO );
-		if ( ids == IDYES )
+		auto ids = dx::MsgBox( sender, "Are you sure you want to exit?", "Sure?", dx::YesNo | dx::IconQuestion ).Show( );
+
+		if ( ids == dx::MsgBox::Yes )
 			args.ShouldClose = true;
 		else
 			args.ShouldClose = false;
 		args.handled = true;
 	};
 
-	window->OnWindowMinimize() += []( __GRAPHICS Window *sender )
+
+	window->OnWindowMinimize( ) += []( dx::Window *sender )
 	{
-		std::cout << "Window Minimized!\n";
+		std::cout << "Window is not allowed to be minimized, restoring in 50 milliseconds.\n";
+		sender->addTask( dx::Clock::now( ) + std::chrono::milliseconds( 50 ),
+						 []( dx::Window *sender )
+						 { sender->Restore( ); } 
+					    ).Completed( ) += []( dx::TimedTask<void(dx::Window*)> * sender) { std::cout << "Restored\n"; };
 	};
 
-	window->OnWindowRestored() += []( __GRAPHICS Window *sender )
+	window->OnWindowClosed( ) += []( dx::Window *sender )
 	{
-		std::cout << "Window Restored!\n";
+		auto appl = dx::Application::get( );
+		// We want to exit the applicaiton when the main window is closed.
+		appl->exit( );
 	};
 
-	window->OnWindowClosed( ) += []( __GRAPHICS Window *sender )
-	{
-		std::cout << "Window closed!\n";
-	};
-
-	while( window->PollEvents( ) )
-	{
-		std::this_thread::sleep_for( std::chrono::milliseconds( 25 ) );
-	}
-	std::cin.get( );
+	return application->run( );
 }
+
+
+
+

@@ -7,13 +7,13 @@ begin_LIB
 class Clock
 {
 private:
-	std::chrono::time_point<std::chrono::high_resolution_clock> _start, _end;
+	std::chrono::time_point<std::chrono::system_clock> _start, _end;
 	uint _t;
 public:
 	void Start( );
 	void End( );
 	
-	static std::chrono::time_point<std::chrono::high_resolution_clock> now( );
+	static std::chrono::time_point<std::chrono::system_clock> now( );
 	double Milli( );
 	double Nano( );
 };

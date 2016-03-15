@@ -1,5 +1,6 @@
 #pragma once
 
+
 // MAIN
 #include "dx_config.h"
 #include "dx.h"
@@ -11,6 +12,7 @@
 #include "lib/string.h"
 #include "lib/event.h"
 #include "lib/clock.h"
+#include "lib/application.h"
 
 // MEMORY
 #include "lib/memory/external.h"
@@ -31,3 +33,15 @@
 #include "lib/math/region.h"
 #include "lib/math/vector2.h"
 #include "lib/math/math.h"
+
+// Graphics
+#include "lib/graphics/window/window.h"
+#include "lib/graphics/window/msgbox.h"
+
+namespace dx 
+{
+	using namespace lib;
+	using namespace Memory;
+	using namespace Math;
+	using namespace Graphics;
+}

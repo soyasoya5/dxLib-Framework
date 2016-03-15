@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "../../string.h"
+#include "../../Application.h"
 
 begin_GRAPHICS
 
@@ -52,10 +53,11 @@ Window * Window::Create(const __LIB String & _Class, const __LIB String & _Title
 								  _Region.size.x,
 								  _Region.size.y,
 								  NULL, NULL, NULL, ptr );
+
+	auto appl = Application::get( );
+	appl->RegisterWindow( ptr );
 	return ptr;
 }
-
-
 
 __LIB Event<void(Window*, KeyDownCharArgs&)>& Window::OnKeyDownChar()
 {
@@ -68,6 +70,17 @@ Window::Window( )
 	
 }
 
+void Window::push_task(Task * _Task)
+{
+	AsyncGuard guard{ _ak_tasks };
+	_tasks.push_back( _Task );
+}
+
+void Window::remove_task(std::vector<Task*>::iterator _Where)
+{
+	AsyncGuard guard{ _ak_tasks };
+	_tasks.erase( _Where );
+}
 
 Window::~Window( )
 {	// Force the closing of window, no matter what -
@@ -124,6 +137,21 @@ bool Window::UpdateWindow()
 	return ::UpdateWindow( _hwnd );
 }
 
+bool Window::Minimize()
+{
+	return ::ShowWindow( _hwnd, SW_MINIMIZE );
+}
+
+bool Window::Maximize( ) 
+{
+	return ::ShowWindow( _hwnd, SW_MAXIMIZE );
+}
+
+bool Window::Restore( )
+{
+	return ::ShowWindow( _hwnd, SW_RESTORE );
+}
+
 HWND Window::native_handle()
 {
 	return _hwnd;
@@ -132,12 +160,21 @@ HWND Window::native_handle()
 void Window::Close()
 {
 	::DestroyWindow( _hwnd );
-	OnWindowClosed( ).Invoke( this );
 	_hwnd = nullptr;
+}
+
+__LIB TimedTask<void(Window*)>& Window::addTask( const time_point &_When, const std::function<void(Window*)> &_Function )
+{
+	auto task = new __LIB TimedTask<void(Window*)>( _Function, _When );
+	std::async( BIND_METHOD_1( &Window::push_task, this ), task );
+	return *task;
 }
 
 LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam)
 {
+	// Handle taskss
+	//HandleTasks( );
+
 	POINTS p = MAKEPOINTS(lParam);
 	
 	switch (Msg)
@@ -278,12 +315,28 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		return 0;
 	}
 	case WM_DESTROY:
-		Close( );
+		OnWindowClosed( ).Invoke( this );
 		return 0;
 		break;
 	}
 
 	return DefWindowProc(hWnd, Msg, wParam, lParam);
+}
+
+void Window::HandleTasks()
+{
+	auto now = clock::now( );
+	for ( auto it = _tasks.begin( ); it < _tasks.end( ); ++it )
+	{
+		auto&x = *it;
+		if ( x->call_task_if_time( now, this ) )
+		{
+			remove_task( it );
+			delete x;
+			break;
+		}
+		std::this_thread::sleep_for( std::chrono::nanoseconds( 500 ) );
+	}
 }
 
 bool Window::PollEvents()

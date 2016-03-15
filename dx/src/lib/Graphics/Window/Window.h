@@ -2,7 +2,8 @@
 #include "../lib.h"
 #include "../../../dx.h"
 #include "../../Math/Region.h"
-#include "../../event.h"
+#include "../../Task.h"
+#include "../../async.h"
 
 begin_GRAPHICS
 
@@ -30,7 +31,6 @@ class KeyDownArgs : public EventArgs
 public:
 	__DX uint key_code;
 };
-
 
 class KeyUpArgs : public EventArgs
 {
@@ -64,11 +64,12 @@ public:
 	__MATH Vector2 position;
 };
 
-
-
 class Window
 {
 public:
+	typedef std::chrono::system_clock clock;
+	typedef std::chrono::time_point<clock> time_point;
+
 
 	static Window* Create( const __LIB String &_Class, 
 						   const __LIB String &_Title,
@@ -82,19 +83,29 @@ public:
 
 public:
 		// Wrappers
-	bool ClientToScreen( __MATH Vector2 &_PointOut );
-	bool ScreenToClient( __MATH Vector2 &_PointOut );
 	__LIB String getTitle( );
 	void setTitle( const __LIB String &_Title );
 	__LIB String getClass( );
+
+	bool ClientToScreen( __MATH Vector2 &_PointOut );
+	bool ScreenToClient( __MATH Vector2 &_PointOut );
 	bool HideWindow( );
 	bool ShowWindow( );
 	bool BringToTop( );
 	bool UpdateWindow( );
+	bool Minimize( );
+	bool Maximize( );
+	bool Restore( );
+
+	void Close( );
 
 	HWND native_handle( );
-	void Close( );
+
+public: // Others
+	__LIB TimedTask<void(Window*)> &addTask( const time_point &_When, const std::function<void(Window*)> &_Function );
+
 	LRESULT HandleInput( HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam );
+	void HandleTasks( );
 	bool PollEvents( );
 public:
 		// Events
@@ -172,9 +183,14 @@ public:
 
 
 private:
+	using Task = __LIB TimedTask<void(Window*)>;
+
 	Window( );
+	std::vector<__LIB TimedTask<void(Window*)>*> _tasks;
 	HWND _hwnd;
 	__MATH Region _region;
+	
+private:
 	__LIB Event<void(Window*, WindowMovedArgs&)> _OnWindowMoved;
 	__LIB Event<void(Window*, WindowResizeArgs&)> _OnWindowResize;
 	__LIB Event<void(Window*)> _OnWindowMaximize, _OnWindowRestored, _OnWindowMinimize, _OnWindowClosed;
@@ -186,6 +202,11 @@ private:
 	__LIB Event<void(Window*, KeyDownArgs&)> _OnKeyDown;
 	__LIB Event<void(Window*, KeyUpArgs&)> _OnKeyUp;
 	__LIB Event<void(Window*, KeyDownCharArgs&)> _OnKeyDownChar;
+
+private:
+	__LIB AsyncKeeper _ak_tasks;
+	void push_task( Task *_Task );
+	void remove_task( std::vector<Task*>::iterator _Where );
 };
 
 

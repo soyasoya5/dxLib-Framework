@@ -20,9 +20,9 @@ void Clock::End()
 	_end = now();
 }
 
-std::chrono::time_point<std::chrono::high_resolution_clock> Clock::now()
+std::chrono::time_point<std::chrono::system_clock> Clock::now()
 {
-	return std::chrono::high_resolution_clock::now( );
+	return std::chrono::system_clock::now( );
 }
 
 double Clock::Milli()

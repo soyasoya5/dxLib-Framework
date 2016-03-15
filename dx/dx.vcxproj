@@ -119,12 +119,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\lib\Application.cpp" />
     <ClCompile Include="src\lib\async.cpp" />
     <ClCompile Include="src\lib\clock.cpp" />
     <ClCompile Include="src\lib\FileIO\key.cpp" />
     <ClCompile Include="src\lib\FileIO\path.cpp" />
     <ClCompile Include="src\lib\FileIO\token.cpp" />
     <ClCompile Include="src\lib\FileIO\tokenizer.cpp" />
+    <ClCompile Include="src\lib\Graphics\Window\MsgBox.cpp" />
     <ClCompile Include="src\lib\Math\Region.cpp" />
     <ClCompile Include="src\lib\Math\Vector2.cpp" />
     <ClCompile Include="src\lib\Memory\External.cpp" />
@@ -139,6 +141,7 @@
     <ClInclude Include="src\api" />
     <ClInclude Include="src\dx.h" />
     <ClInclude Include="src\dx_config.h" />
+    <ClInclude Include="src\lib\Application.h" />
     <ClInclude Include="src\lib\async.h" />
     <ClInclude Include="src\lib\clock.h" />
     <ClInclude Include="src\lib\event.h" />
@@ -149,6 +152,7 @@
     <ClInclude Include="src\lib\FileIO\token.h" />
     <ClInclude Include="src\lib\FileIO\tokenizer.h" />
     <ClInclude Include="src\lib\Graphics\lib.h" />
+    <ClInclude Include="src\lib\Graphics\Window\MsgBox.h" />
     <ClInclude Include="src\lib\iter.h" />
     <ClInclude Include="src\lib\lib.h" />
     <ClInclude Include="src\lib\Math\Region.h" />
@@ -165,6 +169,7 @@
     <ClInclude Include="src\lib\Memory\Types.h" />
     <ClInclude Include="src\lib\string.h" />
     <ClInclude Include="src\lib\Graphics\Window\Window.h" />
+    <ClInclude Include="src\lib\Task.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
