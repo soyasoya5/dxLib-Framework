@@ -6,6 +6,7 @@
 #include "../../async.h"
 
 begin_GRAPHICS
+#undef LoadIcon
 
 
 
@@ -83,20 +84,78 @@ public:
 
 public:
 		// Wrappers
-	__LIB String getTitle( );
-	void setTitle( const __LIB String &_Title );
-	__LIB String getClass( );
 
+	///<summary>
+	///	Retrieves the tile of this window.
+	///</summary>
+	__LIB String getTitle( );
+
+	///<summary>
+	///	Sets the title of this window.
+	///</summary>
+	void setTitle( const __LIB String &_Title );
+
+	///<summary>
+	///	Retrieves the class name of a window.
+	///</summary>
+	__LIB String getClass( );
+	
+	///<summary>
+	///	Converts the client-area coordinates of a specified point to screen coordinates
+	///</summary>
 	bool ClientToScreen( __MATH Vector2 &_PointOut );
+	
+	///<summary>
+	/// Converts the screen coordinates of a specified point on the screen to client-area coordinates
+	///</summary>
 	bool ScreenToClient( __MATH Vector2 &_PointOut );
+
+	///<summary>
+	///	Hides the widnow.
+	///</summary>
 	bool HideWindow( );
+
+	///<summary>
+	///	Shows the window.
+	///</summary>
 	bool ShowWindow( );
+
+	///<summary>
+	///	Brings the window to the top.
+	///</summary>
 	bool BringToTop( );
-	bool UpdateWindow( );
+
+	///<summary>
+	///	Minimizes the window to the taskbar.
+	///</summary>
 	bool Minimize( );
+
+	///<summary>
+	///	Maximizes the window.
+	///</summary>
 	bool Maximize( );
+
+	///<summary>
+	///	Restores the windows state.
+	///</summary>
 	bool Restore( );
 
+	///<summary>
+	/// Load the icon showed in taskbar (32x32). 
+	/// Supports bitmaps and ico's.
+	///</summary>
+	bool LoadIcon( const __LIB String &_Path );
+
+	///<summary>
+	/// Load the icon showed in the top left corner of the window.
+	/// Supports bitmaps and ico's.
+	///</summary>
+	bool LoadIconSm( const __LIB String &_Path );
+
+	///<summary>
+	/// Forces a closing of a window, this does NOT trigger OnWindowClosing event,
+	/// this will DESTROY the window and call respective events.
+	///</summary>
 	void Close( );
 
 	HWND native_handle( );
@@ -104,8 +163,20 @@ public:
 public: // Others
 	__LIB TimedTask<void(Window*)> &addTask( const time_point &_When, const std::function<void(Window*)> &_Function );
 
+	///<summary>
+	///	This windows internal event loop, called from the respective WindowProc
+	/// you can call this function yourself to inject messages into the loop
+	///</summary>
 	LRESULT HandleInput( HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam );
+
+	///<summary>
+	///	Handle all tasks that has been put on the window.
+	///</summary>
 	void HandleTasks( );
+
+	///<summary>
+	/// Polls all windows events and fires WindowProc.
+	///</summary>
 	bool PollEvents( );
 public:
 		// Events

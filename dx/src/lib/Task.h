@@ -33,6 +33,7 @@ public:
 		return false;
 	}
 
+	// An event that is called whenever a task is called
 	__LIB Event<void(TimedTask*)>& Completed( )
 	{
 		return _Completed;

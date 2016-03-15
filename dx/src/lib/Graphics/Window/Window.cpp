@@ -31,7 +31,7 @@ Window * Window::Create(const __LIB String & _Class, const __LIB String & _Title
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wc.hIcon = LoadIconA(NULL, IDI_APPLICATION);
 	wc.hIconSm = wc.hIcon;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
@@ -150,6 +150,30 @@ bool Window::Maximize( )
 bool Window::Restore( )
 {
 	return ::ShowWindow( _hwnd, SW_RESTORE );
+}
+
+bool Window::LoadIcon(const __LIB String & _Path)
+{
+	DWORD type = _Path.contains(".ico") ? IMAGE_ICON : IMAGE_BITMAP;
+	auto icon = LoadImageA( NULL,             
+				 		    _Path.c_str( ),
+				 		    type,       
+				 		    32,                
+				 			32,                
+			  	 		    LR_LOADFROMFILE );
+	return SUCCEEDED( ::SendMessageA( _hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon ) );
+}
+
+bool Window::LoadIconSm(const __LIB String & _Path)
+{
+	DWORD type = _Path.contains(".ico") ? IMAGE_ICON : IMAGE_BITMAP;
+	auto icon = LoadImageA( NULL,             
+				 		    _Path.c_str( ),
+				 		    type,       
+				 		    16,                
+				 			16,                
+			  	 		    LR_LOADFROMFILE );
+	return SUCCEEDED( ::SendMessageA( _hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon ) );
 }
 
 HWND Window::native_handle()

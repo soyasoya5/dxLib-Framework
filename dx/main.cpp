@@ -3,13 +3,14 @@
 int main( )
 {
 	auto application = dx::Application::Create( );
-
 	auto window = dx::Window::Create( "TestWindow::D3D9",
 									  "Test Window | dx", 
 								      { { 300, 300 }, { 1280, 800 } } );
 	window->ShowWindow( );
-	window->UpdateWindow( );
 	window->BringToTop( );
+
+	window->LoadIcon( "icon.ico" );
+	window->LoadIconSm( "icon.ico" );
 
 	window->OnWindowClosing( ) += []( dx::Window *sender, dx::WindowClosingArgs &args )
 	{
@@ -28,12 +29,17 @@ int main( )
 
 	window->OnWindowMinimize( ) += []( dx::Window *sender )
 	{
-		std::cout << "Window is not allowed to be minimized, restoring in 50 milliseconds.\n";
-		sender->addTask( dx::Clock::now( ) + std::chrono::milliseconds( 50 ),
+		std::cout << "Window is not allowed to be minimized\n";
+		sender->addTask( dx::Clock::now( ) + std::chrono::milliseconds( 1 ),
 						 []( dx::Window *sender )
 						 { sender->Restore( ); } 
 					    ).Completed( ) += []( dx::TimedTask<void(dx::Window*)> * sender) { std::cout << "Restored\n"; };
 	};
+
+	(window->OnMouseMoved( ) += []( dx::Window *sender, dx::MouseMovedArgs &args )
+	{
+		std::cout << args.position.x << ", " << args.position.y << std::endl;
+	}).Every( std::chrono::milliseconds( 500 ) );
 
 	window->OnWindowClosed( ) += []( dx::Window *sender )
 	{
