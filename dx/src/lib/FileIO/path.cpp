@@ -23,6 +23,11 @@ FileIO::Path::operator const char*() const
 	return _path.c_str( );
 }
 
+const __LIB String & Path::string()
+{
+	return _path;
+}
+
 Path FileIO::Path::Previous() const
 {
 	if ( !has_branches( ) )
@@ -92,6 +97,12 @@ Path & FileIO::Path::remove_directories()
 	if ( last == String::bad ) return *this;
 	_path.erase( 0, last + 1 );
 	return *this;
+}
+
+bool Path::extension_is(const __LIB String & _Extension) const
+{
+	auto ext = Extension( );
+	return ext.string( ).contains( _Extension );
 }
 
 bool FileIO::Path::has_extension() const

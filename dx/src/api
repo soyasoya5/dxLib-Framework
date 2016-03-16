@@ -37,6 +37,10 @@
 // Graphics
 #include "lib/graphics/window/window.h"
 #include "lib/graphics/window/msgbox.h"
+#include "lib/graphics/BasePainter.h"
+#include "lib/graphics/Painter.h"
+#include "lib/graphics/line.h"
+#include "lib/graphics/pen.h"
 
 namespace dx 
 {

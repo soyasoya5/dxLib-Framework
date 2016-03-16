@@ -68,7 +68,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -122,10 +129,12 @@
     <ClCompile Include="src\lib\Application.cpp" />
     <ClCompile Include="src\lib\async.cpp" />
     <ClCompile Include="src\lib\clock.cpp" />
-    <ClCompile Include="src\lib\FileIO\key.cpp" />
     <ClCompile Include="src\lib\FileIO\path.cpp" />
     <ClCompile Include="src\lib\FileIO\token.cpp" />
     <ClCompile Include="src\lib\FileIO\tokenizer.cpp" />
+    <ClCompile Include="src\lib\Graphics\Line.cpp" />
+    <ClCompile Include="src\lib\Graphics\Painter.cpp" />
+    <ClCompile Include="src\lib\Graphics\Pen.cpp" />
     <ClCompile Include="src\lib\Graphics\Window\MsgBox.cpp" />
     <ClCompile Include="src\lib\Math\Region.cpp" />
     <ClCompile Include="src\lib\Math\Vector2.cpp" />
@@ -146,12 +155,15 @@
     <ClInclude Include="src\lib\clock.h" />
     <ClInclude Include="src\lib\event.h" />
     <ClInclude Include="src\lib\FileIO\buf.h" />
-    <ClInclude Include="src\lib\FileIO\key.h" />
     <ClInclude Include="src\lib\FileIO\lib.h" />
     <ClInclude Include="src\lib\FileIO\path.h" />
     <ClInclude Include="src\lib\FileIO\token.h" />
     <ClInclude Include="src\lib\FileIO\tokenizer.h" />
+    <ClInclude Include="src\lib\Graphics\BasePainter.h" />
     <ClInclude Include="src\lib\Graphics\lib.h" />
+    <ClInclude Include="src\lib\Graphics\Line.h" />
+    <ClInclude Include="src\lib\Graphics\Painter.h" />
+    <ClInclude Include="src\lib\Graphics\Pen.h" />
     <ClInclude Include="src\lib\Graphics\Window\MsgBox.h" />
     <ClInclude Include="src\lib\iter.h" />
     <ClInclude Include="src\lib\lib.h" />

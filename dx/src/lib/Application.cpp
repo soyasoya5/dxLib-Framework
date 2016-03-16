@@ -40,6 +40,12 @@ int Application::run()
 		{
 			x->PollEvents( );
 			x->HandleTasks( );
+			if ( x->PaintStyle( ) == __GRAPHICS Window::OnTick && x->has_painter( ) ) {
+				auto painter = x->getPainter( );
+				painter->BeginPaint( );
+				x->OnPaint( ).Invoke( x, painter );
+				painter->PresentPaint( );
+			}
 			std::this_thread::sleep_for( std::chrono::nanoseconds( 500 ) );
 		}
 		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );

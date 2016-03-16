@@ -15,6 +15,7 @@ public:
 	Path( const char *_Path );
 
 	operator const char*( ) const;
+	const __LIB String & string( );
 public: // Sub-paths
 	__FILEIO Path Previous( ) const;
 	__FILEIO Path UptoPrevious( ) const;
@@ -22,13 +23,15 @@ public: // Sub-paths
 	__FILEIO Path Filename( ) const;
 	__FILEIO Path Extension( ) const;
 	std::vector<__FILEIO Path> Branches( ) const;
-
+	
+	
 public: // Editors
 	__FILEIO Path& remove_extension( );
 	__FILEIO Path& remove_filename( );
 	__FILEIO Path& remove_directories( );
 
 public: // booleans
+	bool extension_is( const __LIB String &_Extension ) const;
 	bool has_extension( ) const;
 	bool has_filename( ) const;
 	bool has_branches( ) const;
