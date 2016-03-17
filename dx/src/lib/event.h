@@ -61,7 +61,6 @@ public:
 		auto now = __LIB Clock::now( );
 		for ( auto&x : _fs )
 			x->invoke_if_time( now, std::forward<_Args>( _args )... );
-		
 	}
 
 	template<typename _Func>

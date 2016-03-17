@@ -17,11 +17,11 @@ public:
 	bool ResetPainter( const __MATH Vector2 &_Size, __GRAPHICS Window *_Target );
 		// Summaries can be found in "BasePainter.h"
 	void BeginPaint( ) override;
-	virtual void Paint( __GRAPHICS Text &_Text, const __GRAPHICS Pen &_Pen ) override;
-	virtual void Paint( __GRAPHICS Shape &_Shape ) override;
-	virtual void PaintRect( __MATH Region &_Region, const __GRAPHICS Pen &_Pen ) override;
-	virtual void PaintRectOutlined( __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter ) override;
-	virtual void PaintLine( __GRAPHICS Line &_Line ) override;
+	virtual void Paint( const __GRAPHICS Text &_Text, const __GRAPHICS Pen &_Pen ) override;
+	virtual void Paint( const __GRAPHICS Shape &_Shape ) override;
+	virtual void PaintRect( const __MATH Region &_Region, const __GRAPHICS Pen &_Pen ) override;
+	virtual void PaintRectOutlined( const __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter ) override;
+	virtual void PaintLine( const __GRAPHICS Line &_Line ) override;
 	virtual void PresentPaint( ) override;
 
 

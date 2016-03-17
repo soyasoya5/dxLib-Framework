@@ -7,20 +7,9 @@ int main( )
 									  "Test Window | dx", 
 								      { { 300, 300 }, { 1280, 800 } } );
 
-	// Creates a child window who's parent is 'window'.
-	auto sub_window = dx::Window::Create( window,
-										  "TestWindow::SubD3D9",
-										  "Sub/Popup Window | dx",
-										  { { 0, 0 }, { 400, 400 } } );
 	dx::Painter::Create( window );
 
-	sub_window->BringToTop( );
-	sub_window->Show( );
-	sub_window->LoadIcon( "icon.ico" );
-	sub_window->LoadIconSm( "icon.ico" );
-
 	// Disable main window whilst 'sub_window' is open
-	window->Disable( );
 	window->Show( );
 	window->BringToTop( );
 	window->SpecializePaint( dx::Window::OnEvent ); // Can also be dx::Window::OnTick
@@ -28,13 +17,6 @@ int main( )
 	window->LoadIcon( "icon.ico" );
 	window->LoadIconSm( "icon.ico" );
 
-	// Enable 'window' in this event.
-	sub_window->OnWindowClosed( ) += []( dx::Window *sender )
-	{
-		auto parent = sender->getParent( );
-		parent->Enable( );
-		parent->BringToTop( );
-	};
 
 	window->OnWindowClosing( ) += []( dx::Window *sender, dx::WindowClosingArgs &args )
 	{
@@ -66,19 +48,21 @@ int main( )
 		appl->exit( );
 	};
 	
-	window->OnPaint( ) += []( dx::Window *sender, dx::BasePainter *painter )
+
+	std::once_flag flag;
+	window->OnPaint( ) += [&flag]( dx::Window *sender, dx::BasePainter *painter )
 	{
-		dx::Pen pen;
+		dx::Pen pen, pen2;
 		pen.Color( dx::Colors::Red );
 		pen.Thickness( 1 );
+		pen2.Color( dx::Colors::Black );
+		pen2.Thickness( 5 );
 		dx::Region region{ { 0, 0 },{ sender->Width( ), sender->Height( ) } };
 
+		dx::Line line{ { 300, 300 }, { 600, 600 }, pen2 };
 		painter->PaintRect( region, pen );
+		painter->PaintLine( line );
 	};
 
 	return application->run( );
 }
-
-
-
-

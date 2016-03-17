@@ -28,28 +28,28 @@ public:
 	///<summary>
 	///	Paint text onto the target buffer.
 	///</summary>
-	virtual void Paint( __GRAPHICS Text &_Text, const __GRAPHICS Pen &_Pen ) = 0;
+	virtual void Paint( const __GRAPHICS Text &_Text, const __GRAPHICS Pen &_Pen ) = 0;
 
 	///<summary>
 	///	Paint a shape onto the target buffer.
 	///</summary>
-	virtual void Paint( __GRAPHICS Shape &_Shape ) = 0;
+	virtual void Paint( const __GRAPHICS Shape &_Shape ) = 0;
 
 	///<summary>
 	///	Paint a rect onto the target buffer.
 	///</sumamry>
-	virtual void PaintRect( __MATH Region &_Region, const __GRAPHICS Pen &_Pen ) = 0;
+	virtual void PaintRect( const __MATH Region &_Region, const __GRAPHICS Pen &_Pen ) = 0;
 
 	///<summary>
 	///	Paint a outlined rect onto the target buffer.
 	/// The outlines thickness is taken from the outer pen. (_PenOuter)
 	///</sumamry>
-	virtual void PaintRectOutlined( __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter ) = 0;
+	virtual void PaintRectOutlined( const __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter ) = 0;
 
 	///<summary>
 	///	Paints a line onto the target buffer.
 	///</summary>
-	virtual void PaintLine( __GRAPHICS Line &_Line ) = 0;
+	virtual void PaintLine( const __GRAPHICS Line &_Line ) = 0;
 
 	///<summary>
 	/// 'Paint' the target buffer onto target screen.

@@ -67,5 +67,4 @@ void Application::RegisterWindow(__GRAPHICS Window * _Window)
 	_windows.push_back( _Window );
 }
 
-
 end_LIB

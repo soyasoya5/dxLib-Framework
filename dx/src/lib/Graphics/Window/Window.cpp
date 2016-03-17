@@ -193,6 +193,11 @@ bool Window::Restore( )
 	return ::ShowWindow( _hwnd, SW_RESTORE );
 }
 
+bool Window::ForcePaint()
+{
+	return ::SendMessageA( _hwnd, WM_PAINT, 0, 0 );
+}
+
 bool Window::Enable()
 {
 	return ::EnableWindow( _hwnd, true );
@@ -347,19 +352,20 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		break;
 	case WM_SIZE:
 	{
-		if ( wParam == SIZE_MINIMIZED )
+		if ( wParam == SIZE_MINIMIZED ) {
 			OnWindowMinimize( ).Invoke( this );
-		else if ( wParam == SIZE_RESTORED )
-			OnWindowRestored( ).Invoke( this );
-		else
-		{
-			_region.size = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-			WindowResizeArgs args;
-			args.handled = false;
-			args.region = _region;
-			OnWindowResize( ).Invoke( this, args );
 			return 0;
 		}
+		else if ( wParam == SIZE_MAXIMIZED )
+			OnWindowMaximize( ).Invoke( this );
+
+		_region.size = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		WindowResizeArgs args;
+		args.handled = false;
+		args.region = _region;
+		OnWindowRestored( ).Invoke( this );
+		OnWindowResize( ).Invoke( this, args );
+		return 0;
 	}
 		break;
 	case WM_LBUTTONDOWN:

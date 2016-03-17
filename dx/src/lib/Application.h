@@ -1,6 +1,7 @@
 #pragma once
 #include "lib.h"
 #include "../dx.h"
+#include "string.h"
 
 begin_GRAPHICS class Window; end_GRAPHICS
 
@@ -20,7 +21,6 @@ public:
 public:
 	int run( );
 	void exit( );
-
 	void RegisterWindow( __GRAPHICS Window *_Window ); // Called by Window::Create
 private:
 	bool _running;

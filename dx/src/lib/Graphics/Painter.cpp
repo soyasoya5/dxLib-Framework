@@ -138,6 +138,7 @@ bool Painter::ResetPainter(const __MATH Vector2 & _Size, __GRAPHICS Window *_Tar
 		if ( _target )
 			this->_target->setPainter( nullptr, false );
 		this->_target = _Target;
+		this->_target->setPainter( this, false );
 	}
 
 	D3DPRESENT_PARAMETERS params;
@@ -162,15 +163,15 @@ void Painter::BeginPaint()
 	((IDirect3DDevice9*)_device)->BeginScene( );
 }
 
-void Painter::Paint(__GRAPHICS Text & _Text, const __GRAPHICS Pen & _Pen)
+void Painter::Paint( const __GRAPHICS Text & _Text, const __GRAPHICS Pen & _Pen)
 {
 }
 
-void Painter::Paint(__GRAPHICS Shape & _Shape)
+void Painter::Paint(const __GRAPHICS Shape & _Shape)
 {
 }
 
-void Painter::PaintRect(__MATH Region & _Region, const __GRAPHICS Pen & _Pen)
+void Painter::PaintRect( const __MATH Region & _Region, const __GRAPHICS Pen & _Pen)
 {
 	static D3DRECT rect_angle;
 	rect_angle = { static_cast<LONG>( _Region.position.x ), 
@@ -180,7 +181,7 @@ void Painter::PaintRect(__MATH Region & _Region, const __GRAPHICS Pen & _Pen)
 	((IDirect3DDevice9*)_device)->Clear( 1, &rect_angle, D3DCLEAR_TARGET, _Pen.Color( ), 1.f, 0 );
 }
 
-void Painter::PaintRectOutlined( __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter )
+void Painter::PaintRectOutlined( const __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter )
 {
 	__MATH Region outer_region = _Region;
 	outer_region.position.x -= _PenOuter.Thickness( );
@@ -192,7 +193,7 @@ void Painter::PaintRectOutlined( __MATH Region &_Region, const __GRAPHICS Pen &_
 	PaintRect( _Region, _PenInner );
 }
 
-void Painter::PaintLine(__GRAPHICS Line & _Line)
+void Painter::PaintLine(const __GRAPHICS Line & _Line)
 {
 	auto pen = _Line.Pen( );
 	auto target = _Line.Target( );
@@ -207,8 +208,8 @@ void Painter::PaintLine(__GRAPHICS Line & _Line)
 	}
 
 	D3DXVECTOR2 points[2];
-	points[1] = { pos.x, pos.y };
-	points[2] = { target.x, target.y };
+	points[0] = { pos.x, pos.y };
+	points[1] = { target.x, target.y };
 	((ID3DXLine*)_line)->SetWidth( pen.Thickness( ) );
 	((ID3DXLine*)_line)->Draw( points, 2, pen.Color( ) );
 }

@@ -157,6 +157,7 @@ public:
 	/// Sends a new WM_PAINT message to this window, use this if you wish to repaint everything.
 	/// Note that this will only work if this window PaintStyle is OnEvent!
 	///</summary>
+	bool ForcePaint( );
 
 	///<summary>
 	///	Enables the window.
