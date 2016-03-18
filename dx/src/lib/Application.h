@@ -17,6 +17,8 @@ public:
 	static Application *Create( );
 	static bool isCreated( );
 	static Application *get( );
+	static void setLastError( const int &_Errc );
+	static int getLastError( );
 
 public:
 	int run( );
@@ -25,6 +27,7 @@ public:
 private:
 	bool _running;
 	std::vector<Graphics::Window*> _windows;
+	static int _ilasterr;
 };
 
 

@@ -129,7 +129,7 @@ void Window::remove_task(std::vector<Task*>::iterator _Where)
 
 Window::~Window( )
 {	// Force the closing of window, no matter what -
-	this->OnWindowClosing( ).getF( ).clear( );
+	this->OnWindowClosing( ).clear( );
 	Close( );
 }
 
@@ -428,6 +428,16 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		return 0;
 	}
 		break;
+	case WM_MOUSEWHEEL:
+	{
+		ScrollArgs args;
+		args.handled = false;
+		args.delta = GET_WHEEL_DELTA_WPARAM( wParam );
+		args.direction = args.delta > 0 ? ScrollArgs::Up : ScrollArgs::Down;
+		OnScroll( ).Invoke( this, args );
+		return 0;
+	}
+		break;
 	case WM_CHAR:
 	{
 		KeyDownCharArgs args;
@@ -540,6 +550,11 @@ __LIB Event<void(Window*, MouseReleasedArgs&)>& Window::OnMouseReleased()
 __LIB Event<void(Window*, MouseClickedArgs&)>& Window::OnMouseDoubleClicked()
 {
 	return _OnMouseDoubleClicked;
+}
+
+__LIB Event<void(Window*, ScrollArgs&)>& Window::OnScroll()
+{
+	return _OnScroll;
 }
 
 __LIB Event<void(Window*, KeyDownArgs&)>& Window::OnKeyDown()

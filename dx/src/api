@@ -41,6 +41,8 @@
 #include "lib/graphics/Painter.h"
 #include "lib/graphics/line.h"
 #include "lib/graphics/pen.h"
+#include "lib/graphics/font.h"
+#include "lib/graphics/text.h"
 
 namespace dx 
 {

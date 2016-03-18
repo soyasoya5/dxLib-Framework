@@ -55,6 +55,18 @@ public:
 	/// 'Paint' the target buffer onto target screen.
 	///</summary>
 	virtual void PresentPaint( ) = 0;
+
+	///<summary>
+	///	A native-ish device, e.g a directx device.
+	///</summary>
+	virtual void* native( ) = 0;
+
+	static BasePainter* getSingleton( );
+	static void setSingleton( BasePainter *_Putr );
+
+private:
+	static BasePainter* _Singleton;
+
 };
 
 end_GRAPHICS

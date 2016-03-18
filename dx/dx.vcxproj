@@ -132,9 +132,12 @@
     <ClCompile Include="src\lib\FileIO\path.cpp" />
     <ClCompile Include="src\lib\FileIO\token.cpp" />
     <ClCompile Include="src\lib\FileIO\tokenizer.cpp" />
+    <ClCompile Include="src\lib\Graphics\BasePainter.cpp" />
+    <ClCompile Include="src\lib\Graphics\Font.cpp" />
     <ClCompile Include="src\lib\Graphics\Line.cpp" />
     <ClCompile Include="src\lib\Graphics\Painter.cpp" />
     <ClCompile Include="src\lib\Graphics\Pen.cpp" />
+    <ClCompile Include="src\lib\Graphics\Text.cpp" />
     <ClCompile Include="src\lib\Graphics\Window\MsgBox.cpp" />
     <ClCompile Include="src\lib\Math\Region.cpp" />
     <ClCompile Include="src\lib\Math\Vector2.cpp" />
@@ -160,10 +163,12 @@
     <ClInclude Include="src\lib\FileIO\token.h" />
     <ClInclude Include="src\lib\FileIO\tokenizer.h" />
     <ClInclude Include="src\lib\Graphics\BasePainter.h" />
+    <ClInclude Include="src\lib\Graphics\Font.h" />
     <ClInclude Include="src\lib\Graphics\lib.h" />
     <ClInclude Include="src\lib\Graphics\Line.h" />
     <ClInclude Include="src\lib\Graphics\Painter.h" />
     <ClInclude Include="src\lib\Graphics\Pen.h" />
+    <ClInclude Include="src\lib\Graphics\Text.h" />
     <ClInclude Include="src\lib\Graphics\Window\MsgBox.h" />
     <ClInclude Include="src\lib\iter.h" />
     <ClInclude Include="src\lib\lib.h" />

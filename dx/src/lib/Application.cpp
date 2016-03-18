@@ -3,6 +3,7 @@
 
 begin_LIB
 static Application* _Application = nullptr;
+int Application::_ilasterr = 0;
 
 Application::Application()
 	: _windows( )
@@ -29,6 +30,16 @@ bool Application::isCreated()
 Application * Application::get()
 {
 	return _Application;
+}
+
+void Application::setLastError(const int & _Errc)
+{
+	_ilasterr = _Errc;
+}
+
+int Application::getLastError()
+{
+	return _ilasterr;
 }
 
 int Application::run()

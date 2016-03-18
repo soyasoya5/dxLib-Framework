@@ -55,6 +55,13 @@ public:
 
 	std::vector<Signature>& getF() { return _fs; }
 
+	void clear( )
+	{
+		for ( auto&x : _fs )
+			delete x;
+		_fs.clear( );
+	}
+
 	template<typename..._Args>
 	void Invoke( _Args&&..._args )
 	{

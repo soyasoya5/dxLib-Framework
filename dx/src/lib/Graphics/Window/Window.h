@@ -31,12 +31,14 @@ class KeyDownArgs : public EventArgs
 {
 public:
 	__DX uint key_code;
+	bool shift, ctrl;
 };
 
 class KeyUpArgs : public EventArgs
 {
 public:
 	__DX uint key_code;
+	bool shift, ctrl;
 };
 
 class KeyDownCharArgs : public EventArgs
@@ -64,6 +66,17 @@ public:
 	__DX uint key;
 	__MATH Vector2 position;
 };
+
+class ScrollArgs : public EventArgs
+{
+public:
+	enum ScrollDirection { Up, Down };
+	ScrollDirection direction;
+	int delta;
+	inline bool up( ) { return direction == Up; }
+	inline bool down( ) { return direction == Down; }
+};
+
 
 class Window
 {
@@ -308,6 +321,11 @@ public:
 	__LIB Event<void(Window*, MouseClickedArgs&)>& OnMouseDoubleClicked( );
 
 	///<summary>
+	/// Called when the mouse wheel is scrolled.
+	///</summary>
+	__LIB Event<void(Window*, ScrollArgs&)>& OnScroll( );
+
+	///<summary>
 	///	Called once for the first key stroke, then continuously called with a delay whilst held.
 	///</summary>
 	__LIB Event<void(Window*, KeyDownArgs&)>& OnKeyDown( );
@@ -326,6 +344,7 @@ public:
 	/// Called when the window should paint.
 	///</summary>
 	__LIB Event<void(Window*, BasePainter*)>& OnPaint( );
+
 
 
 private:
@@ -349,6 +368,7 @@ private:
 	__LIB Event<void(Window*, MouseClickedArgs&)> _OnMouseClicked;
 	__LIB Event<void(Window*, MouseReleasedArgs&)> _OnMouseReleased;
 	__LIB Event<void(Window*, MouseClickedArgs&)> _OnMouseDoubleClicked;
+	__LIB Event<void(Window*, ScrollArgs&)> _OnScroll;
 	__LIB Event<void(Window*, KeyDownArgs&)> _OnKeyDown;
 	__LIB Event<void(Window*, KeyUpArgs&)> _OnKeyUp;
 	__LIB Event<void(Window*, KeyDownCharArgs&)> _OnKeyDownChar;

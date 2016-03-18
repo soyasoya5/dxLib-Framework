@@ -1,5 +1,6 @@
 #include "src\api"
 
+
 int main( )
 {
 	auto application = dx::Application::Create( );
@@ -8,6 +9,7 @@ int main( )
 								      { { 300, 300 }, { 1280, 800 } } );
 
 	dx::Painter::Create( window );
+	std::cout << "State: " << dx::Application::getLastError( ) << std::endl;
 
 	// Disable main window whilst 'sub_window' is open
 	window->Show( );
@@ -22,14 +24,12 @@ int main( )
 	{
 		if ( args.handled ) // if already handled just return
 			return;
-
 		auto ids = dx::MsgBox( sender, "Are you sure you want to exit?", "Sure?", dx::YesNo | dx::IconQuestion ).Show( );
 
 		if ( ids == dx::MsgBox::Yes )
 			args.ShouldClose = true;
 		else
 			args.ShouldClose = false;
-		args.handled = true;
 	};
 
 	window->OnWindowMinimize( ) += []( dx::Window *sender )
@@ -47,22 +47,47 @@ int main( )
 		// We want to exit the applicaiton when the main window is closed.
 		appl->exit( );
 	};
-	
 
-	std::once_flag flag;
-	window->OnPaint( ) += [&flag]( dx::Window *sender, dx::BasePainter *painter )
+	(window->OnScroll( ) += []( dx::Window *sender, dx::ScrollArgs &args )
 	{
-		dx::Pen pen, pen2;
-		pen.Color( dx::Colors::Red );
-		pen.Thickness( 1 );
-		pen2.Color( dx::Colors::Black );
-		pen2.Thickness( 5 );
-		dx::Region region{ { 0, 0 },{ sender->Width( ), sender->Height( ) } };
+		if ( args.handled )
+			return;
+		std::cout << "Wheel Delta: " << args.delta << std::endl;
+		auto painter = (dx::Painter*)sender->getPainter( );
 
-		dx::Line line{ { 300, 300 }, { 600, 600 }, pen2 };
-		painter->PaintRect( region, pen );
-		painter->PaintLine( line );
+		if ( args.up( ) )
+		{
+			auto context = painter->defaultFont( )->context( );
+			context.Height += 5;
+			auto putr = dx::Font::Create( "Arial", context, (dx::BasePainter*)painter );
+			painter->setDefaultFont( putr );
+		}
+		else
+		{
+			auto context = painter->defaultFont( )->context( );
+			context.Height -= 5;
+			auto putr = dx::Font::Create( "Arial", context, (dx::BasePainter*)painter );
+			painter->setDefaultFont( putr );
+		}
+
+		// Repaint : )
+		sender->ForcePaint( );
+	}).Every( std::chrono::milliseconds( 0 ) );
+
+
+	window->OnPaint( ) += []( dx::Window *sender, dx::BasePainter *painter )
+	{
+		dx::Pen gray{ 0xFF252828, 1 }, blue{ 0xFF009DDE, 1 };
+		painter->PaintRect( { { 0, 0 }, { sender->Width( ), sender->Height( ) } }, gray );
+		
+		dx::Text text;
+		text.setFont( ((dx::Painter*)painter)->defaultFont( ) );
+		text.setText( "Hello there" );
+		text.setPosition( { 15, 15 } );
+		text.setMaxClip( { sender->Width( ), sender->Height( ) } );
+		painter->Paint( text, blue );
 	};
+
 
 	return application->run( );
 }

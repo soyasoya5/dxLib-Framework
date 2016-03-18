@@ -4,6 +4,8 @@
 #include "../Application.h"
 #include "Pen.h"
 #include "Line.h"
+#include "Font.h"
+#include "Text.h"
 
 // INCLUDE DIRECTX LIBRARIES
 #include <d3d9.h>
@@ -14,7 +16,7 @@
 
 begin_GRAPHICS
 
-Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed)
+Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, const bool &_Singleton)
 {
 	auto application = __LIB Application::get( );
 
@@ -122,6 +124,14 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed)
 		painter->ResetPainter( { sender->Width( ), sender->Height( ) }, sender );
 	};
 
+	if ( _Singleton )
+		BasePainter::setSingleton( painter );
+
+	FontContext context;
+	context.Height = 18;
+	context.Weight = 20;
+	painter->_default = Font::Create( "Arial", context, painter );
+
 	return painter;
 }
 
@@ -154,7 +164,9 @@ bool Painter::ResetPainter(const __MATH Vector2 & _Size, __GRAPHICS Window *_Tar
 	params.hDeviceWindow = _target->native_handle( );
 	params.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
-	return SUCCEEDED( ((IDirect3DDevice9*)_device)->Reset( &params ) );
+	auto res = SUCCEEDED( ((IDirect3DDevice9*)_device)->Reset( &params ) );
+	((ID3DXFont*)this->_default->raw( ))->OnResetDevice( );
+	return res;
 }
 
 void Painter::BeginPaint()
@@ -165,6 +177,16 @@ void Painter::BeginPaint()
 
 void Painter::Paint( const __GRAPHICS Text & _Text, const __GRAPHICS Pen & _Pen)
 {
+	auto font_type = _Text.getFont( );
+	if ( !font_type )
+		font_type = this->defaultFont( );
+	auto font = (ID3DXFont*)font_type->raw( );
+	auto text = _Text.getText( );
+	auto pos = _Text.getPosition( );
+	auto clip = _Text.getMaxClip( );
+	auto format = _Text.getAllignment( );
+	RECT rect{ static_cast<LONG>( pos.x ), static_cast<LONG>( pos.y ), static_cast<LONG>( pos.x + clip.x ), static_cast<LONG>( pos.y + clip.y ) };
+	font->DrawTextA( nullptr, text.c_str( ), -1, &rect, format, _Pen.Color( ) );
 }
 
 void Painter::Paint(const __GRAPHICS Shape & _Shape)
@@ -218,6 +240,23 @@ void Painter::PresentPaint()
 {
 	((IDirect3DDevice9*)_device)->EndScene( );
 	((IDirect3DDevice9*)_device)->Present( 0, 0, 0, 0 );
+}
+
+void * Painter::native()
+{
+	return _device;
+}
+
+Font * Painter::defaultFont()
+{
+	return _default;
+}
+
+void Painter::setDefaultFont(__GRAPHICS Font * _Font)
+{
+	if ( _default ) 
+		delete _default;
+	_default = _Font;
 }
 
 Painter::Painter()

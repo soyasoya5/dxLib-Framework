@@ -5,12 +5,13 @@ begin_MATH class Vector2; end_MATH
 
 begin_GRAPHICS
 class Window;
+class Font;
 
 	// DirectX9 Painter
 class Painter : BasePainter
 {
 public:
-	static Painter *Create( __GRAPHICS Window *_Target, const bool &_Windowed = true );
+	static Painter *Create( __GRAPHICS Window *_Target, const bool &_Windowed = true, const bool &_Singleton = true );
 	~Painter( );
 
 
@@ -23,11 +24,14 @@ public:
 	virtual void PaintRectOutlined( const __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter ) override;
 	virtual void PaintLine( const __GRAPHICS Line &_Line ) override;
 	virtual void PresentPaint( ) override;
+	virtual void* native( ) override;
 
-
+	__GRAPHICS Font *defaultFont( );
+	void setDefaultFont( __GRAPHICS Font *_Font );
 private:
 	void *_device, *_d3dobj, *_line;
 	__GRAPHICS Window *_target;
+	__GRAPHICS Font *_default;
 	Painter( );
 };
 
