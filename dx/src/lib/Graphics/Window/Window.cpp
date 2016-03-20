@@ -109,6 +109,11 @@ __LIB Event<void(Window*, BasePainter*)>& Window::OnPaint()
 	return _OnPaint;
 }
 
+__LIB Event<void(Window*, MessageData&)>& Window::OnHandleMessage()
+{
+	return _OnHandleMessage;
+}
+
 Window::Window( )
 	: _hwnd( nullptr )
 {
@@ -295,8 +300,15 @@ __LIB TimedTask<void(Window*)>& Window::addTask( const time_point &_When, const 
 
 LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam)
 {
-	// Handle taskss
-	//HandleTasks( );
+	MessageData data;
+	data.handled = false;
+	data.Msg = Msg;
+	data.wParam = wParam;
+	data.lParam = lParam;
+	OnHandleMessage( ).Invoke( this, data );
+
+	if ( data.handled )
+		return 0;
 
 	POINTS p = MAKEPOINTS(lParam);
 	

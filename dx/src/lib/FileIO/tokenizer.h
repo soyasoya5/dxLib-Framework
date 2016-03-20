@@ -28,9 +28,11 @@ struct TokenizerMessage
 
 class Tokenizer
 {
-private:
+public:
 	typedef std::vector<__FILEIO Token> vector;
 	typedef vector::iterator iterator;
+
+private:
 	std::vector<__FILEIO TokenizerMessage> _msgs;
 	vector _tokens;
 	__LIB String _filename;

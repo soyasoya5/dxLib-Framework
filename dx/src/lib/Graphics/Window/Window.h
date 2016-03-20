@@ -77,6 +77,13 @@ public:
 	inline bool down( ) { return direction == Down; }
 };
 
+class MessageData : public EventArgs
+{
+public:
+	__DX uint Msg;
+	WPARAM wParam;
+	LPARAM lParam;
+};
 
 class Window
 {
@@ -345,6 +352,10 @@ public:
 	///</summary>
 	__LIB Event<void(Window*, BasePainter*)>& OnPaint( );
 
+	///<summary>
+	/// You can use this handle custom messages.
+	///</summary>
+	__LIB Event<void(Window*, MessageData&)>& OnHandleMessage( );
 
 
 private:
@@ -373,6 +384,7 @@ private:
 	__LIB Event<void(Window*, KeyUpArgs&)> _OnKeyUp;
 	__LIB Event<void(Window*, KeyDownCharArgs&)> _OnKeyDownChar;
 	__LIB Event<void(Window*, BasePainter*)> _OnPaint;
+	__LIB Event<void(Window*, MessageData&)> _OnHandleMessage;
 
 private:
 	__LIB AsyncKeeper _ak_tasks;

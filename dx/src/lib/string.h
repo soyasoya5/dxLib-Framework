@@ -388,6 +388,30 @@ class String
 		void insert( const __DX uint &_Position, const __LIB String &_Sequence );
 		void append( const __LIB String &_Sequence );
 
+		void reserve( const __DX uint &_Size );
+		
+		template<typename Iter>
+		void assign( Iter it1, Iter it2 )
+		{	// Assign
+			auto myIt = CreateIterator<char>( _buffer, _bufsz ), myEnd = CreateIterator<char>( _buffer, _bufsz, _bufsz );
+			while( myIt < myEnd && it1 != it2 )
+			{
+				*myIt = *it1;
+				++it1;
+				++myIt;
+				continue;
+			}
+			*myIt = '\0';
+		}
+
+		template<>
+		void assign<String::fwdIterator>( fwdIterator it1, fwdIterator it2 )
+		{
+			auto myIt = begin( ), myEnd = end( );
+			for ( ; it1 < it2 && myIt < myEnd; ++it1, ++myIt )
+				*myIt = *it1;
+		}
+
 		std::vector<__LIB String> split( const char& _Of ) const;
 		std::vector<__LIB String> split( const __LIB String &_Of_seq ) const;
 		//__DX uint amount_of(  );

@@ -426,6 +426,14 @@ void String::erase(const std::pair<uint, uint>& pos)
 	__copy_ct( str._buffer, str.length( ) + 1 );
 }
 
+void String::reserve(const __DX uint & _Size)
+{
+	__clean( );
+	this->_buffer = new char[_Size];
+	this->_bufsz = _Size;
+	*_buffer = '\0';
+}
+
 void String::insert(const std::pair<uint, uint>& pos, const String & str)
 {
 	auto len = str.length( );

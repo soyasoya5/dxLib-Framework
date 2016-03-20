@@ -27,6 +27,7 @@
 #include "lib/fileio/token.h"
 #include "lib/fileio/tokenizer.h"
 #include "lib/fileio/buf.h"
+#include "lib/fileio/sml.h"
 
 
 // MATH
@@ -50,4 +51,5 @@ namespace dx
 	using namespace Memory;
 	using namespace Math;
 	using namespace Graphics;
+	using namespace FileIO;
 }

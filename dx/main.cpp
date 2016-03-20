@@ -1,8 +1,10 @@
 #include "src\api"
+#include <Shobjidl.h>
 
 
 int main( )
 {
+	
 	auto application = dx::Application::Create( );
 	auto window = dx::Window::Create( "TestWindow::D3D9",
 									  "Test Window | dx", 

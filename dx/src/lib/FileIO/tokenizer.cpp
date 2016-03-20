@@ -266,6 +266,7 @@ bool Tokenizer::Tokenize()
 						break;
 					id.push_back(*(it++));
 				}
+				--it;
 				_tokens.push_back({ token_hexadecimal, id, line, char_c });
 				continue;
 			}
@@ -280,6 +281,7 @@ bool Tokenizer::Tokenize()
 						break;
 					id.push_back(*(it++));
 				}
+				--it;
 				_tokens.push_back({ token_decimal, id, line, char_c });
 				continue;
 			}
