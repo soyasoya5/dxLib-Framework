@@ -136,9 +136,9 @@ SmlGrammarCheck * SmlGrammarCheck::Create(SmlParser * _Parser)
 	return ptr;
 }
 
-bool SmlGrammarCheck::DoGrammarCheck(Event<void(SmlError)>& _ErrorEvent)
+bool SmlGrammarCheck::DoGrammarCheck(Event<void(SmlResult)>& _ErrorEvent)
 {
-	auto error = [&_ErrorEvent]( const SmlError &error )mutable->bool { _ErrorEvent.Invoke( error ); return false; };
+	auto error = [&_ErrorEvent]( const SmlResult &error )mutable->bool { _ErrorEvent.Invoke( error ); return false; };
 	auto state = std::shared_ptr<SmlParserState>( _parser->CreateState( ) );
 
 	for ( auto it = state->begin( ), end = state->end( ); it < end; )
@@ -147,13 +147,13 @@ bool SmlGrammarCheck::DoGrammarCheck(Event<void(SmlError)>& _ErrorEvent)
 		if ( *(it++) == "var" )
 		{
 			if ( *(it) != token_identifier )
-				return error( SmlError( "Expected identifier after 'var' keyword.", *it, it->getLine( ) ) );
+				return error( SmlResult( "Expected identifier after 'var' keyword.", *it, it->getLine( ) ) );
 
 			if ( *(++it) == token_semicolon ) 
 				{ ++it; continue; }
 
 			if ( *it != token_assign )
-				return error( SmlError( "Expected eos or assignment operator after identifier.", *it, it->getLine( ) ) );
+				return error( SmlResult( "Expected eos or assignment operator after identifier.", *it, it->getLine( ) ) );
 
 			while ( true )
 			{
@@ -172,13 +172,13 @@ bool SmlGrammarCheck::DoGrammarCheck(Event<void(SmlError)>& _ErrorEvent)
 						  && *it != token_minus 
 						  && *it != token_indirect 
 						  && *it != token_divides )
-						return error( SmlError( "Invalid expression.", *it, it->getLine( ) ) );
+						return error( SmlResult( "Invalid expression.", *it, it->getLine( ) ) );
 			}
 			++it;
 			continue;
 		} 
 		else if ( *it != ";" && *it != "endl" && *it != "eof" )
-			return error( SmlError( "Unknown error, the grammar checker is not very advanced and can only handle a var statement.", *it, it->getLine( ) ) );
+			return error( SmlResult( "Unknown error, the grammar checker is not very advanced and can only handle a var statement.", *it, it->getLine( ) ) );
 	}
 	return true;
 }
@@ -220,9 +220,9 @@ SmlParserState * SmlParser::CreateState()
 	return SmlParserState::Create( _tokenizer->begin( ), _tokenizer->end( ) );
 }
 
-SmlError SmlParser::ParseSml(SmlSymbolTable * _OutTable)
+SmlResult SmlParser::ParseSml(SmlSymbolTable * _OutTable)
 {
-	return SmlError( "", {}, 0 );
+	
 }
 
 SmlDocument * SmlParser::Document()
@@ -234,22 +234,27 @@ SmlParser::SmlParser()
 {
 }
 
-SmlError::SmlError(const __LIB String & _Msg, const __FILEIO Token & _Token, const int & _Line)
+SmlResult::SmlResult(const __LIB String & _Msg, const __FILEIO Token & _Token, const int & _Line)
 	: _msg( _Msg ), _token( _Token ), _line( _Line )
  {
 }
 
-__LIB String SmlError::Message()
+SmlResult::operator bool()
+{
+	return _msg.empty( );
+}
+
+__LIB String SmlResult::Message()
 {
 	return _msg;
 }
 
-__FILEIO Token SmlError::Token()
+__FILEIO Token SmlResult::Token()
 {
 	return _token;
 }
 
-int SmlError::Line()
+int SmlResult::Line()
 {
 	return _line;
 }

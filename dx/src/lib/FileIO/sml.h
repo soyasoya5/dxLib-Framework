@@ -21,7 +21,7 @@ class SmlGrammarCheck;
 class SmlParser;
 class SmlParserState;
 class SmlSymbolTable;
-class SmlError;
+class SmlResult;
 using SmlIterator = Tokenizer::iterator;
 enum SmlTypes;
 
@@ -92,7 +92,7 @@ class SmlGrammarCheck
 public:
 	static SmlGrammarCheck *Create( SmlParser *_Parser );
 
-	bool DoGrammarCheck( Event<void(SmlError)>& _ErrorEvent );
+	bool DoGrammarCheck( Event<void(SmlResult)>& _ErrorEvent );
 private:
 	SmlGrammarCheck( );
 	SmlParser* _parser;
@@ -117,7 +117,7 @@ public:
 	static SmlParser *Create( SmlDocument *_Document );
 
 	SmlParserState* CreateState( );
-	SmlError ParseSml( SmlSymbolTable *_OutTable );
+	SmlResult ParseSml( SmlSymbolTable *_OutTable );
 	SmlDocument *Document( );
 private:
 	SmlParser( );
@@ -125,10 +125,11 @@ private:
 	Tokenizer* _tokenizer;
 };
 
-class SmlError
+class SmlResult
 {
 public:
-	SmlError( const __LIB String &_Msg, const __FILEIO Token &_Token, const int &_Line );
+	SmlResult( const __LIB String &_Msg, const __FILEIO Token &_Token, const int &_Line );
+	operator bool ( );
 
 	__LIB String Message( );
 	__FILEIO Token Token( );
