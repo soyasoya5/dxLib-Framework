@@ -357,6 +357,10 @@ public:
 	///</summary>
 	__LIB Event<void(Window*, MessageData&)>& OnHandleMessage( );
 
+	///<summary>
+	__LIB Event<void(Window*)>& OnTick( );
+	///</summary>
+
 
 private:
 	using Task = __LIB TimedTask<void(Window*)>;
@@ -385,6 +389,7 @@ private:
 	__LIB Event<void(Window*, KeyDownCharArgs&)> _OnKeyDownChar;
 	__LIB Event<void(Window*, BasePainter*)> _OnPaint;
 	__LIB Event<void(Window*, MessageData&)> _OnHandleMessage;
+	__LIB Event<void(Window*)> _OnTick;
 
 private:
 	__LIB AsyncKeeper _ak_tasks;

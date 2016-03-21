@@ -114,6 +114,11 @@ __LIB Event<void(Window*, MessageData&)>& Window::OnHandleMessage()
 	return _OnHandleMessage;
 }
 
+__LIB Event<void(Window*)>& Window::OnTick()
+{
+	return _OnTick;
+}
+
 Window::Window( )
 	: _hwnd( nullptr )
 {
@@ -480,6 +485,7 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 
 void Window::HandleTasks()
 {
+	OnTick( ).Invoke( this );
 	auto now = clock::now( );
 	for ( auto it = _tasks.begin( ); it < _tasks.end( ); ++it )
 	{
