@@ -1,0 +1,11 @@
+dx/Debug/*
+dx/Release/*
+dx/x64/*
+dx/Client.vcxproj.user
+Debug/*
+Release/*
+x64/*
+*.opensdf
+*.sdf
+*.opendb
+.vs/*
