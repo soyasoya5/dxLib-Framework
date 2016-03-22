@@ -130,6 +130,7 @@
     <ClCompile Include="src\lib\async.cpp" />
     <ClCompile Include="src\lib\clock.cpp" />
     <ClCompile Include="src\lib\FileIO\path.cpp" />
+    <ClCompile Include="src\lib\FileIO\sml.cpp" />
     <ClCompile Include="src\lib\FileIO\token.cpp" />
     <ClCompile Include="src\lib\FileIO\tokenizer.cpp" />
     <ClCompile Include="src\lib\Graphics\BasePainter.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="src\lib\FileIO\buf.h" />
     <ClInclude Include="src\lib\FileIO\lib.h" />
     <ClInclude Include="src\lib\FileIO\path.h" />
+    <ClInclude Include="src\lib\FileIO\sml.h" />
     <ClInclude Include="src\lib\FileIO\token.h" />
     <ClInclude Include="src\lib\FileIO\tokenizer.h" />
     <ClInclude Include="src\lib\Graphics\BasePainter.h" />
@@ -169,6 +171,7 @@
     <ClInclude Include="src\lib\Graphics\Painter.h" />
     <ClInclude Include="src\lib\Graphics\Pen.h" />
     <ClInclude Include="src\lib\Graphics\Text.h" />
+    <ClInclude Include="src\lib\Graphics\UI\lib.h" />
     <ClInclude Include="src\lib\Graphics\Window\MsgBox.h" />
     <ClInclude Include="src\lib\iter.h" />
     <ClInclude Include="src\lib\lib.h" />
@@ -184,8 +187,8 @@
     <ClInclude Include="src\lib\Memory\Module.h" />
     <ClInclude Include="src\lib\Memory\Pattern.h" />
     <ClInclude Include="src\lib\Memory\Types.h" />
-    <ClInclude Include="src\lib\string.h" />
     <ClInclude Include="src\lib\Graphics\Window\Window.h" />
+    <ClInclude Include="src\lib\string.h" />
     <ClInclude Include="src\lib\Task.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

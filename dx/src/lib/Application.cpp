@@ -51,7 +51,7 @@ int Application::run()
 		{
 			x->PollEvents( );
 			x->HandleTasks( );
-			if ( x->PaintStyle( ) == __GRAPHICS Window::OnTick && x->has_painter( ) ) {
+			if ( x->PaintStyle( ) == __GRAPHICS Window::OnTick_t && x->has_painter( ) ) {
 				auto painter = x->getPainter( );
 				painter->BeginPaint( );
 				x->OnPaint( ).Invoke( x, painter );

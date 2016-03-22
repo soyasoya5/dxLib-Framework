@@ -90,8 +90,8 @@ class Window
 public:
 	enum PaintStyle_t
 	{
-		OnEvent,
-		OnTick
+		OnEvent_t,
+		OnTick_t
 	};
 
 	typedef std::chrono::system_clock clock;
@@ -175,7 +175,7 @@ public:
 
 	///<summary>
 	/// Sends a new WM_PAINT message to this window, use this if you wish to repaint everything.
-	/// Note that this will only work if this window PaintStyle is OnEvent!
+	/// Note that this will only work if this window PaintStyle is OnEvent_t!
 	///</summary>
 	bool ForcePaint( );
 

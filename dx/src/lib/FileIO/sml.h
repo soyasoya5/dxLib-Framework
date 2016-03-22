@@ -5,6 +5,7 @@
 #include "../Math/Region.h"
 #include "token.h"
 #include "tokenizer.h"
+#include "../async.h"
 
 begin_FILEIO
 
@@ -14,6 +15,7 @@ class InvalidSmlVector;
 class InvalidSmlString;
 class InvalidSmlInt;
 class InvalidSmlRegion;
+class InvalidExpression;
 class SmlValue;
 class SmlObject;
 class SmlDocument;
@@ -32,7 +34,7 @@ enum SmlTypes
 	SmlString,
 	SmlInt,
 	SmlRegion,
-	Unknown
+	SmlUnknown
 };
 
 class SmlValue
@@ -119,10 +121,31 @@ public:
 	SmlParserState* CreateState( );
 	SmlResult ParseSml( SmlSymbolTable *_OutTable );
 	SmlDocument *Document( );
+	__LIB Event<void(SmlResult)>& OnError( );
+	bool is_valid_expression( SmlIterator it, const SmlIterator &end ) const;
+	bool is_valid_expression_rec( SmlIterator it, const SmlIterator &end, const bool &is_str, int count  ) const;
+	bool is_expression( SmlIterator it, const SmlIterator &end ) const;
+	bool is_one_operator( const SmlIterator &it ) const;
+	bool find_expr_type( SmlIterator it, const SmlIterator &end ) const;
+
+	// E.g
+	///<code>
+	/// var a;
+	/// var a = 200 + 300 + 900 - 3 * 2; // a is a int
+	///</code>
+	SmlResult do_assignment_expr( SmlSymbolTable *_Table, SmlObject *_Object, SmlIterator &it, const SmlIterator &end );
+
+	// E.g
+	///<code>
+	/// var a;
+	/// var a = { 25, 25 }; // a is a vector2
+	///</code>
+	SmlResult do_assignment( SmlSymbolTable *_Table, SmlObject *_Object, SmlIterator &it, const SmlIterator &end );
 private:
 	SmlParser( );
 	SmlDocument *_document;
 	Tokenizer* _tokenizer;
+	__LIB Event<void(SmlResult)> _OnError;
 };
 
 class SmlResult
@@ -140,9 +163,41 @@ private:
 	int _line;
 };
 
+class SmlSymbolTable
+{
+public:
+	static SmlSymbolTable *Create( );
+	
+	SmlObject *getObj( const __LIB String &_Name );
+	void add( const SmlObject &_Object );
+	void clear( );
+	std::vector<SmlObject>& range( ) { return _objects; }
+
+private:
+	SmlSymbolTable( ) = default;
+	std::vector<SmlObject> _objects;
+	__LIB AsyncKeeper _kpr;
+};
 
 
 #pragma region EXCEPTIONS
+
+class InvalidExpression : std::exception
+{
+public:
+	InvalidExpression( const __LIB String &_Message )
+		: _msg( _Message )
+	{
+	}
+
+	const char* what( ) const override
+	{
+		return _msg.c_str( );
+	}
+
+private:
+	const __LIB String _msg;
+};
 
 class InvalidSmlVector : std::exception
 {

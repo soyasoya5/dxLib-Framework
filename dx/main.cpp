@@ -4,7 +4,30 @@
 
 int main( )
 {
-	
+	auto table = dx::SmlSymbolTable::Create( );
+	auto document = dx::SmlDocument::Create( "document.sml" );
+	auto parser = dx::SmlParser::Create( document );
+
+	parser->OnError( ) += []( dx::SmlResult error )
+	{
+		std::cout << "Sml Parsing Error!";
+		std::cout << "line: " << error.Line( ) << std::endl;
+		std::cout << "Error: " << error.Message( ) << std::endl;
+	};
+
+	auto result = parser->ParseSml( table );
+	if ( !result )
+		std::cerr << ":(\n";
+	else
+		std::cout << ":)\n";
+
+	std::cout << "Symbols: \n";
+	for ( auto sym : table->range( ) )
+	{
+		std::cout << sym.getIdentifier( ) << std::endl;
+	}
+
+	std::cin.get( );
 	auto application = dx::Application::Create( );
 	auto window = dx::Window::Create( "TestWindow::D3D9",
 									  "Test Window | dx", 
@@ -16,7 +39,7 @@ int main( )
 	// Disable main window whilst 'sub_window' is open
 	window->Show( );
 	window->BringToTop( );
-	window->SpecializePaint( dx::Window::OnTick ); // Can also be dx::Window::OnTick
+	window->SpecializePaint( dx::Window::OnTick_t ); // Can also be dx::Window::OnTick
 
 	window->LoadIcon( "icon.ico" );
 	window->LoadIconSm( "icon.ico" );
@@ -89,8 +112,6 @@ int main( )
 		text.setMaxClip( { sender->Width( ), sender->Height( ) } );
 		painter->Paint( text, blue );
 	};
-
-
 
 	return application->run( );
 }

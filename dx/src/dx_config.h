@@ -39,6 +39,14 @@
 #define end_GRAPHICS } } }
 #endif
 
+#ifndef begin_UI
+#define begin_UI namespace dx { namespace lib { namespace Graphics { namespace UI {
+#endif
+
+#ifndef end_UI
+#define end_UI } } } }
+#endif
+
 #ifndef begin_MATH
 #define begin_MATH namespace dx { namespace lib { namespace Math {
 #endif
@@ -65,6 +73,10 @@
 
 #ifndef __GRAPHICS
 #define __GRAPHICS ::dx::lib::Graphics::
+#endif
+
+#ifndef __UI
+#define __UI ::dx::lib::Graphics::UI::
 #endif
 
 #ifndef __MATH
