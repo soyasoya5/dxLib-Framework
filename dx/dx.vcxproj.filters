@@ -84,7 +84,10 @@
     <ClCompile Include="src\lib\Graphics\Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\FileIO\sml.cpp">
+    <ClCompile Include="src\lib\Graphics\UI\Style.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\Graphics\UI\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -197,13 +200,16 @@
     <ClInclude Include="src\lib\Graphics\Font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\lib\FileIO\sml.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\lib\string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\lib\Graphics\UI\lib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\Graphics\UI\Style.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\Graphics\UI\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -298,6 +298,7 @@ bool Tokenizer::Tokenize()
 					break;
 				id.push_back(*(it++));
 			}
+			--it;
 			_tokens.push_back({ token_identifier, id, line, char_c });
 			continue;
 		}

@@ -321,7 +321,7 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 	{
 	case WM_PAINT:
 	{
-		if ( PaintStyle( ) == OnEvent && _painter ) {
+		if ( PaintStyle( ) == OnEvent_t && _painter ) {
 			_painter->BeginPaint( );
 			this->OnPaint( ).Invoke( this, _painter );
 			_painter->PresentPaint( );

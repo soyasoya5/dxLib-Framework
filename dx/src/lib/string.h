@@ -423,7 +423,7 @@ class String
 		__LIB String lower( ) const;
 
 		template<typename T >
-		T to( )
+		T to( ) const
 		{
 			T t;
 			std::stringstream ss( this->_buffer );

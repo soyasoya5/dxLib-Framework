@@ -59,5 +59,21 @@ Vector2 Vector2::operator-(const Vector2 & _Other) const
 	return _Tmp;
 }
 
+Vector2 Vector2::operator*(const Vector2 & _Other) const
+{
+	Vector2 _Tmp;
+	_Tmp.x = (this->x * _Other.x);
+	_Tmp.y = (this->y * _Other.y);
+	return _Tmp;
+}
+
+Vector2 Vector2::operator/(const Vector2 & _Other) const
+{
+	Vector2 _Tmp;
+	_Tmp.x = (this->x / _Other.x);
+	_Tmp.y = (this->y / _Other.y);
+	return _Tmp;
+}
+
 
 end_MATH
