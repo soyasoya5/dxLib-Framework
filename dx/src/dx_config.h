@@ -55,6 +55,14 @@
 #define end_MATH } } }
 #endif
 
+#ifndef begin_NET
+#define begin_NET namespace dx { namespace lib { namespace Net {
+#endif
+
+#ifndef end_NET
+#define end_NET } } }
+#endif
+
 #ifndef __DX
 #define __DX ::dx::
 #endif
@@ -81,4 +89,8 @@
 
 #ifndef __MATH
 #define __MATH ::dx::lib::Math::
+#endif
+
+#ifndef __NET
+#define __NET ::dx::lib::Net::
 #endif

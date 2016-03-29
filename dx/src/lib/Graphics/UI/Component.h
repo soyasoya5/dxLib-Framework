@@ -4,9 +4,11 @@
 #include "../../Math/Vector2.h"
 #include "../../Math/Region.h"
 #include "../Window/Window.h"
+#include "../../string.h"
 #include "Style.h"
 #include "lib.h"
 
+begin_GRAPHICS class Font; end_GRAPHICS
 
 begin_UI
 
@@ -16,8 +18,6 @@ enum Allignment
 	Center,
 	Left,
 	Right,
-	Top = Left,
-	Bottom = Right
 };
 
 enum Layout
@@ -38,11 +38,13 @@ class Component
 
 public:
 	Component( );
+	virtual ~Component( );
 
 public: // Accessors
 	virtual __MATH Region getLocalRegion( ) const;
 	virtual __MATH Vector2 getLocalPosition( ) const;
 	virtual __MATH Region getGlobalRegion( ) const;
+	virtual __MATH Region determinePosition( ) const;
 	virtual __MATH Vector2 getGlobalPosition( ) const;
 	virtual __MATH Vector2 getSize( ) const;
 	virtual __UI StyleManager getStyle( ) const;
@@ -60,6 +62,9 @@ public: // Accessors
 	virtual bool isEnabled( ) const;
 	virtual bool isVisible( ) const;
 	virtual void* getUserdata( ) const;
+	virtual __GRAPHICS Font* getFont( ) const;
+	virtual int getUIID( ) const; 
+	virtual __LIB String getText( ) const;
 
 public: // Modifiers
 	virtual void setLocalRegion( const __MATH Region &_Region );
@@ -82,9 +87,12 @@ public: // Modifiers
 	virtual void setEnabled( const bool &_Enabled );
 	virtual void setVisible( const bool &_Visible );
 	virtual void setUserdata( void *_Data );
+	virtual void setFont( __GRAPHICS Font *_Font );
+	virtual void setUIID( const int &_GUID );
+	virtual void setText( const __LIB String &_Text );
 
 public: // Virtuals/Logic
-	virtual void Paint( __GRAPHICS BasePainter *_Painter ) = 0;
+	virtual void Paint( __GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter ) = 0;
 	virtual void KeyDown( __GRAPHICS Window *_Sender, __GRAPHICS KeyDownArgs &_Args );
 	virtual void KeyUp( __GRAPHICS Window *_Sender, __GRAPHICS KeyUpArgs &_Args );
 	virtual void KeyDownChar( __GRAPHICS Window *_Sender, __GRAPHICS KeyDownCharArgs &_Args );
@@ -138,6 +146,8 @@ public:
 	__LIB Event<void(Component*)>& OnRelease( );
 
 private:
+	__LIB String _text;
+	__GRAPHICS Font* _font;
 	__MATH Region _local, _global;
 	__UI StyleManager _style;
 	__UI Component *_leftOf, *_rightOf, *_bottomOf, *_topOf;
@@ -145,7 +155,7 @@ private:
 	std::vector<__UI Component*> _children;
 	__UI Allignment _allignment;
 	__UI Layout _layout;
-	int _state;
+	int _state, _guid;
 	bool _hovering, _focusing, _clicking, _enabled, _visible;
 	void *_userdata;
 

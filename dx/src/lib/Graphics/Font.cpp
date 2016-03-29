@@ -27,6 +27,16 @@ __GRAPHICS FontContext Font::context()
 	return _context;
 }
 
+__MATH Vector2 Font::calculateMetrixOf(const __LIB String & _Text)
+{
+	auto font = (ID3DXFont*)this->_data;
+	if ( !font )
+		return { 0, 0 };
+	RECT rect_textSize;
+	font->DrawTextA( NULL, _Text.c_str( ), -1, &rect_textSize, DT_CALCRECT, 0xFFFFFFFF );
+	return { float(rect_textSize.right - rect_textSize.left), float(rect_textSize.bottom - rect_textSize.top) };
+}
+
 Font* Font::Create( const __LIB String &_FontName, const __GRAPHICS FontContext &_Context, BasePainter *_Painter )
 {
 	auto font = new Font( );

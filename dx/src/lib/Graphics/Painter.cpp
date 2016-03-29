@@ -208,8 +208,8 @@ void Painter::PaintRectOutlined( const __MATH Region &_Region, const __GRAPHICS 
 	__MATH Region outer_region = _Region;
 	outer_region.position.x -= _PenOuter.Thickness( );
 	outer_region.position.y -= _PenOuter.Thickness( );
-	outer_region.size.x += _PenOuter.Thickness( );
-	outer_region.size.y += _PenOuter.Thickness( );
+	outer_region.size.x += _PenOuter.Thickness( ) * 2;
+	outer_region.size.y += _PenOuter.Thickness( ) * 2;
 
 	PaintRect( outer_region, _PenOuter );
 	PaintRect( _Region, _PenInner );

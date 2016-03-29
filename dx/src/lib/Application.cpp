@@ -47,6 +47,7 @@ int Application::run()
 	_running = true;
 	while( _running )
 	{
+		OnTick( ).Invoke( this );
 		for ( auto&x : _windows )
 		{
 			x->PollEvents( );
@@ -59,13 +60,13 @@ int Application::run()
 			}
 			std::this_thread::sleep_for( std::chrono::nanoseconds( 500 ) );
 		}
-		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+		std::this_thread::sleep_for( std::chrono::milliseconds( _tick ) );
 	}
 
 	for ( auto&x : _windows )
 		delete x;
 
-	return 0;
+	return getLastError( );
 }
 
 void Application::exit()
@@ -76,6 +77,16 @@ void Application::exit()
 void Application::RegisterWindow(__GRAPHICS Window * _Window)
 {
 	_windows.push_back( _Window );
+}
+
+void Application::setTickRate(const int & _Rate)
+{
+	_tick = _Rate;
+}
+
+__LIB Event<void(Application*)>& Application::OnTick()
+{
+	return _OnTick;
 }
 
 end_LIB

@@ -39,6 +39,7 @@ class String
 		String( const char* );
 		String( const char*, __DX uint len );
 		String( const std::initializer_list<char> &_List );
+		String( std::nullptr_t null );
 		~String( );
 
 		void swap( __LIB String& );

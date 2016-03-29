@@ -14,7 +14,10 @@
 #include <vector>
 #include <list>
 #include <sstream>
+
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h> // aka <cancer.h>
+
 
 #ifdef SendMessage
 #undef SendMessage

@@ -1,7 +1,22 @@
 #include "Component.h"
-
+#include "../Font.h"
 
 begin_UI
+
+Component::Component()
+	: _local( ), _global( ), _style( Dark, Blue ), _leftOf( nullptr ),
+	  _rightOf( nullptr ), _bottomOf( nullptr ), _topOf( nullptr ),
+	  _parent( nullptr ), _allignment( Center ), _layout( Horizontal ),
+	  _state( 0 ), _hovering( false ), _focusing( false ), _clicking( false ),
+	  _enabled( true ), _visible( true ), _userdata( nullptr )	  
+{
+
+}
+
+Component::~Component()
+{
+	Release( );
+}
 
 __MATH Region Component::getLocalRegion() const
 {
@@ -16,6 +31,38 @@ __MATH Vector2 Component::getLocalPosition() const
 __MATH Region Component::getGlobalRegion() const
 {
 	return _global;
+}
+
+__MATH Region Component::determinePosition() const
+{
+	__MATH Region region;
+	region.position = _local.position + _global.position;
+	region.size = _local.size;
+	
+	// Determine X axis
+	if ( _leftOf )
+	{
+		auto detLeft = _leftOf->determinePosition( );
+		region.position.x = detLeft.position.x - _local.size.x - 15;
+	}
+	else if ( _rightOf )
+	{
+		auto detRight = _rightOf->determinePosition( );
+		region.position.x = detRight.position.x + _rightOf->_local.size.x + 15;
+	}
+	
+	if ( _bottomOf )
+	{
+		auto detBottom = _bottomOf->determinePosition( );
+		region.position.y = detBottom.position.y + _bottomOf->_local.size.y + 15;
+	}
+	else if ( _topOf )
+	{
+		auto detTop = _topOf->determinePosition( );
+		region.position.y = detTop.position.y - 15;
+	}
+	
+	return region;
 }
 
 __MATH Vector2 Component::getGlobalPosition() const
@@ -101,6 +148,21 @@ bool Component::isVisible() const
 void * Component::getUserdata() const
 {
 	return _userdata;
+}
+
+__GRAPHICS Font * Component::getFont() const
+{
+	return _font;
+}
+
+int Component::getUIID() const
+{
+	return _guid;
+}
+
+__LIB String Component::getText() const
+{
+	return _text;
 }
 
 void Component::setLocalRegion(const __MATH Region & _Region)
@@ -226,6 +288,21 @@ void Component::setUserdata(void * _Data)
 	_userdata = _Data;
 }
 
+void Component::setFont(__GRAPHICS Font * _Font)
+{
+	this->_font = _Font;
+}
+
+void Component::setUIID(const int & _GUID)
+{
+	_guid = _GUID;
+}
+
+void Component::setText(const __LIB String & _Text)
+{
+	_text = _Text;
+}
+
 void Component::KeyDown(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownArgs & _Args)
 {
 }
@@ -240,13 +317,14 @@ void Component::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharA
 
 void Component::MouseMoved(__GRAPHICS Window * _Sender, __GRAPHICS MouseMovedArgs & _Args)
 {
-	if ( Collides( _Args.position ) )
+	if ( Collides( _Args.position ) && !_Args.handled )
 	{
 		if ( !this->_hovering )
 		{
 			this->_hovering = true;
 			OnMouseEnter( ).Invoke( this );
 		}
+		_Args.handled = true;
 	}
 	else if (this->_hovering)
 	{
@@ -257,10 +335,14 @@ void Component::MouseMoved(__GRAPHICS Window * _Sender, __GRAPHICS MouseMovedArg
 
 void Component::MouseClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClickedArgs & _Args)
 {
+	if ( _Args.handled )
+		return;
+
 	if ( this->_hovering && !this->_clicking )
 	{
 		OnMousePressed( ).Invoke( this );
 		this->_clicking = true;
+		_Args.handled = true;
 	}
 }
 

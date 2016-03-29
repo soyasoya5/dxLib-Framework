@@ -1,96 +1,88 @@
+//#define DONT_LINK_GRAPHICS
 #include "src\api"
-#include <Shobjidl.h>
+
+class Test
+{
+public:
+
+
+	void modify( double & val )
+	{
+		val = 5;
+	}
+};
 
 
 int main( )
 {
-
-
-	std::cin.get( );
-	auto application = dx::Application::Create( );
-	auto window = dx::Window::Create( "TestWindow::D3D9",
-									  "Test Window | dx", 
-								      { { 300, 300 }, { 1280, 800 } } );
-
-	dx::Painter::Create( window );
-	std::cout << "State: " << dx::Application::getLastError( ) << std::endl;
-
-	// Disable main window whilst 'sub_window' is open
+	auto appl = dx::Application::Create( );
+	appl->setTickRate( 5 );
+	auto window = dx::Window::Create( "ClassName", "UI Test", { { 300, 300 }, { 600, 400 } } );
+	auto painter = dx::Painter::Create( window );
+	
+	window->SpecializePaint( dx::Window::OnTick_t );
 	window->Show( );
 	window->BringToTop( );
-	window->SpecializePaint( dx::Window::OnTick_t ); // Can also be dx::Window::OnTick
-
-	window->LoadIcon( "icon.ico" );
-	window->LoadIconSm( "icon.ico" );
-
-
-	window->OnWindowClosing( ) += []( dx::Window *sender, dx::WindowClosingArgs &args )
-	{
-		if ( args.handled ) // if already handled just return
-			return;
-		auto ids = dx::MsgBox( sender, "Are you sure you want to exit?", "Sure?", dx::YesNo | dx::IconQuestion ).Show( );
-
-		if ( ids == dx::MsgBox::Yes )
-			args.ShouldClose = true;
-		else
-			args.ShouldClose = false;
-	};
-
-	window->OnWindowMinimize( ) += []( dx::Window *sender )
-	{
-		std::cout << "Window is not allowed to be minimized\n";
-		sender->addTask( dx::Clock::now( ) + std::chrono::milliseconds( 1 ),
-						 []( dx::Window *sender )
-						 { sender->Restore( ); } 
-					    ).Completed( ) += []( dx::TimedTask<void(dx::Window*)> * sender) { std::cout << "Restored\n"; };
-	};
-
 	window->OnWindowClosed( ) += []( dx::Window *sender )
 	{
-		auto appl = dx::Application::get( );
-		// We want to exit the applicaiton when the main window is closed.
-		appl->exit( );
+		dx::Application::get( )->exit( );
 	};
+	
+	auto context = painter->defaultFont( )->context( );
+	context.Height = 20;
+	context.Weight = 75;
+	painter->setDefaultFont( dx::Font::Create( "Caviar Dreams", context ) );
 
-	(window->OnScroll( ) += []( dx::Window *sender, dx::ScrollArgs &args )
-	{
-		if ( args.handled )
-			return;
-		std::cout << "Wheel Delta: " << args.delta << std::endl;
-		auto painter = (dx::Painter*)sender->getPainter( );
+	int guid = 0;
+	auto button = new dx::Button( );
+	button->setUIID( ++guid );
+	button->setText( "Light & Blue" );
+	button->setFont( painter->defaultFont( ) );
+	button->setLocalRegion( { { 15, 200 }, { 125, 30 } } );
+	button->setAllignment( dx::Allignment::Center );
+	button->setStyle( dx::StyleManager( dx::Theme::Light, dx::Style::Blue ) );
+	button->setLayout( dx::Layout::Horizontal );
+	button->setVisible( true );
+	button->setEnabled( true );
 
-		if ( args.up( ) )
-		{
-			auto context = painter->defaultFont( )->context( );
-			context.Height += 5;
-			auto putr = dx::Font::Create( "Arial", context, (dx::BasePainter*)painter );
-			painter->setDefaultFont( putr );
-		}
-		else
-		{
-			auto context = painter->defaultFont( )->context( );
-			context.Height -= 5;
-			auto putr = dx::Font::Create( "Arial", context, (dx::BasePainter*)painter );
-			painter->setDefaultFont( putr );
-		}
+	auto button2 = new dx::Button( );
+	button2->setUIID( ++guid );
+	button2->setText( "Dark & Blue" );
+	button2->setFont( painter->defaultFont( ) );
+	button2->setLocalRegion( { { 15, 235 }, { 125, 30 } } );
+	button2->setAllignment( dx::Allignment::Center );
+	button2->setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
+	button2->setLayout( dx::Layout::Horizontal );
+	button2->setVisible( true );
+	button2->setEnabled( true );
 
-		// Repaint : )
-		sender->ForcePaint( );
-	}).Every( std::chrono::milliseconds( 0 ) );
+	auto button3 = new dx::Button( );
+	button3->setUIID( ++guid );
+	button3->setText( "Light & Lime" );
+	button3->setFont( painter->defaultFont( ) );
+	button3->setLocalRegion( { { 145, 200 }, { 125, 30 } } );
+	button3->setAllignment( dx::Allignment::Center );
+	button3->setStyle( dx::StyleManager( dx::Theme::Light, dx::Style::Lime ) );
+	button3->setLayout( dx::Layout::Horizontal );
+	button3->setVisible( true );
+	button3->setEnabled( true );
 
+	auto button4 = new dx::Button( );
+	button4->setUIID( ++guid );
+	button4->setText( "Dark & Lime" );
+	button4->setFont( painter->defaultFont( ) );
+	button4->setLocalRegion( { { 145, 235 }, { 125, 30 } } );
+	button4->setAllignment( dx::Allignment::Center );
+	button4->setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Lime ) );
+	button4->setLayout( dx::Layout::Horizontal );
+	button4->setVisible( true );
+	button4->setEnabled( true );
 
-	window->OnPaint( ) += []( dx::Window *sender, dx::BasePainter *painter )
-	{
-		dx::Pen gray{ 0xFF252828, 1 }, blue{ 0xFF009DDE, 1 };
-		painter->PaintRect( { { 0, 0 }, { sender->Width( ), sender->Height( ) } }, gray );
-		
-		dx::Text text;
-		text.setFont( ((dx::Painter*)painter)->defaultFont( ) );
-		text.setText( "Hello there" );
-		text.setPosition( { 15, 15 } );
-		text.setMaxClip( { sender->Width( ), sender->Height( ) } );
-		painter->Paint( text, blue );
-	};
-
-	return application->run( );
+	
+	window->HandleComponent( button );
+	window->HandleComponent( button2 );
+	window->HandleComponent( button3 );
+	window->HandleComponent( button4 );
+	
+	return appl->run( );
 }

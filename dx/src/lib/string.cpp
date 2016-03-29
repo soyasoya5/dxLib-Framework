@@ -155,6 +155,11 @@ String::String(const std::initializer_list<char>& _List)
 		push_back( *it );
 }
 
+String::String(std::nullptr_t null)
+	: _buffer( nullptr ), _bufsz( 0 )
+{
+}
+
 String::~String()
 {
 	__clean( );

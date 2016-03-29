@@ -2,6 +2,7 @@
 #include "lib.h"
 #include "../string.h"
 #include "BasePainter.h"
+#include "../Math/Vector2.h"
 
 begin_GRAPHICS
 
@@ -34,6 +35,7 @@ public:
 	void Release( );
 	void* raw( );
 	__GRAPHICS FontContext context( );
+	__MATH Vector2 calculateMetrixOf( const __LIB String &_Text );
 private:
 	void* _data;
 	__LIB String _name;

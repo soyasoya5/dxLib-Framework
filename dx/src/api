@@ -27,7 +27,6 @@
 #include "lib/fileio/token.h"
 #include "lib/fileio/tokenizer.h"
 #include "lib/fileio/buf.h"
-#include "lib/fileio/sml.h"
 
 
 // MATH
@@ -36,6 +35,7 @@
 #include "lib/math/math.h"
 
 // Graphics
+#ifndef DONT_LINK_GRAPHICS
 #include "lib/graphics/window/window.h"
 #include "lib/graphics/window/msgbox.h"
 #include "lib/graphics/BasePainter.h"
@@ -44,6 +44,12 @@
 #include "lib/graphics/pen.h"
 #include "lib/graphics/font.h"
 #include "lib/graphics/text.h"
+#include "lib/graphics/ui/component.h"
+#include "lib/graphics/ui/button.h"
+#include "lib/graphics/ui/style.h"
+#endif
+
+#include "lib/net/tcp.h"
 
 namespace dx 
 {
@@ -52,4 +58,6 @@ namespace dx
 	using namespace Math;
 	using namespace Graphics;
 	using namespace FileIO;
+	using namespace UI;
+	using namespace Net;
 }

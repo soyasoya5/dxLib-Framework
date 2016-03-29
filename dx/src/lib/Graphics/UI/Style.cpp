@@ -1,6 +1,13 @@
 #include "Style.h"
 
+
+
 begin_UI
+
+StyleManager::StyleManager(const __UI Theme & _Theme, const __UI Style & _Style)
+	: _theme(_Theme), _style(_Style)
+{
+}
 
 __UI Theme StyleManager::theme() const
 {

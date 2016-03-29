@@ -1,5 +1,6 @@
 #pragma once
 #include "lib.h"
+#include "../../../dx.h"
 
 begin_UI
 
@@ -11,11 +12,11 @@ enum Theme
 
 enum Style
 {
-	Blue,
-	Green,
-	Lime,
-	Orange,
-	Red,
+	Blue = 0xFF009DDE,
+	Green = Colors::Green,
+	Lime = Colors::Lime,
+	Orange = Colors::Orange,
+	Red = Colors::MediumVioletRed,
 };
 
 
@@ -23,6 +24,7 @@ class StyleManager
 {
 public:
 	StyleManager( ) = default;
+	StyleManager( const __UI Theme &_Theme, const __UI Style &_Style );
 
 	__UI Theme theme( ) const;
 	void theme( const __UI Theme &_Theme );

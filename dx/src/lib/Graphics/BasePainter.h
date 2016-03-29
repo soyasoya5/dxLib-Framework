@@ -12,6 +12,7 @@ class Shape;
 class Text;
 class Line;
 class Pen;
+class Font;
 
 
 class BasePainter
@@ -55,6 +56,16 @@ public:
 	/// 'Paint' the target buffer onto target screen.
 	///</summary>
 	virtual void PresentPaint( ) = 0;
+
+	///<summary>
+	/// get the default font
+	///</summary>
+	virtual __GRAPHICS Font* defaultFont( ) = 0;
+
+	///<summary>
+	/// set the default font.
+	///</summary>
+	virtual void setDefaultFont( __GRAPHICS Font* _Font ) = 0;
 
 	///<summary>
 	///	A native-ish device, e.g a directx device.
