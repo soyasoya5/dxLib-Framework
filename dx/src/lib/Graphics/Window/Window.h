@@ -6,6 +6,8 @@
 #include "../../async.h"
 #include "../BasePainter.h"
 
+begin_UI class Component; end_UI
+
 begin_GRAPHICS
 #undef LoadIcon
 
@@ -268,6 +270,12 @@ public: // Others
 	/// Polls all windows events and fires WindowProc.
 	///</summary>
 	bool PollEvents( );
+
+	///<summary>
+	/// Will automatically forward events to this component
+	///</summary>
+	void HandleComponent( __UI Component *_Comp );
+
 public:
 		// Events
 
@@ -358,8 +366,9 @@ public:
 	__LIB Event<void(Window*, MessageData&)>& OnHandleMessage( );
 
 	///<summary>
-	__LIB Event<void(Window*)>& OnTick( );
+	/// Called every tick.
 	///</summary>
+	__LIB Event<void(Window*)>& OnTick( );
 
 
 private:
@@ -369,7 +378,6 @@ private:
 	__GRAPHICS Window *_parent;
 	__GRAPHICS BasePainter *_painter;
 	PaintStyle_t _style;
-	
 	std::vector<__LIB TimedTask<void(Window*)>*> _tasks;
 	HWND _hwnd;
 	__MATH Region _region;

@@ -3,6 +3,7 @@
 #include "../../FileIO/path.h"
 #include "../../Application.h"
 #include "../Painter.h"
+#include "../UI/Component.h"
 
 
 begin_GRAPHICS
@@ -337,6 +338,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key_code = static_cast<uint>( wParam );
 		OnKeyDown( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
+
 		return 0;
 	}
 		break;
@@ -346,6 +350,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key_code = static_cast<uint>( wParam );
 		OnKeyUp( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -355,6 +361,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		OnMouseMoved( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 	case WM_MOVE:
@@ -364,6 +372,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.region = _region;
 		OnWindowMoved( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -382,6 +392,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.region = _region;
 		OnWindowRestored( ).Invoke( this );
 		OnWindowResize( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -392,6 +404,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.key = 1;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		OnMouseClicked( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -402,6 +416,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.key = 1;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		OnMouseReleased( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -412,6 +428,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		OnMouseClicked( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -422,6 +440,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		OnMouseReleased( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -432,6 +452,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.key = 1; 
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		OnMouseDoubleClicked( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -442,6 +464,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		OnMouseDoubleClicked( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -452,6 +476,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.delta = GET_WHEEL_DELTA_WPARAM( wParam );
 		args.direction = args.delta > 0 ? ScrollArgs::Up : ScrollArgs::Down;
 		OnScroll( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -461,6 +487,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key_char = static_cast<char>( wParam );
 		OnKeyDownChar( ).Invoke( this, args );
+		if ( args.handled )
+			ForcePaint( );
 		return 0;
 	}
 		break;
@@ -513,6 +541,19 @@ bool Window::PollEvents()
 	}
 
 	return true;
+}
+
+void Window::HandleComponent(__UI Component * _Comp)
+{
+	this->OnMouseMoved( ) += BIND_METHOD_2( &UI::Component::MouseMoved, _Comp );
+	this->OnMouseClicked( ) += BIND_METHOD_2( &UI::Component::MouseClicked, _Comp );
+	this->OnMouseReleased( ) += BIND_METHOD_2( &UI::Component::MouseReleased, _Comp );
+	this->OnScroll( ) += BIND_METHOD_2( &UI::Component::MouseScrolled, _Comp );
+	this->OnKeyDown( ) += BIND_METHOD_2( &UI::Component::KeyDown, _Comp );
+	this->OnKeyUp( ) += BIND_METHOD_2( &UI::Component::KeyUp, _Comp );
+	this->OnKeyDownChar( ) += BIND_METHOD_2( &UI::Component::KeyDownChar, _Comp );
+	this->OnPaint( ) += BIND_METHOD_2( &UI::Component::Paint, _Comp );
+
 }
 
 __LIB Event<void(Window*, WindowMovedArgs&)>& Window::OnWindowMoved()

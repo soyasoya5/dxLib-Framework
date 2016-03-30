@@ -33,7 +33,7 @@ __MATH Region Component::getGlobalRegion() const
 	return _global;
 }
 
-__MATH Region Component::determinePosition() const
+__MATH Region Component::determineRegion() const
 {
 	__MATH Region region;
 	region.position = _local.position + _global.position;
@@ -42,26 +42,35 @@ __MATH Region Component::determinePosition() const
 	// Determine X axis
 	if ( _leftOf )
 	{
-		auto detLeft = _leftOf->determinePosition( );
+		auto detLeft = _leftOf->determineRegion( );
 		region.position.x = detLeft.position.x - _local.size.x - 15;
 	}
 	else if ( _rightOf )
 	{
-		auto detRight = _rightOf->determinePosition( );
-		region.position.x = detRight.position.x + _rightOf->_local.size.x + 15;
+		auto detRight = _rightOf->determineRegion( );
+		region.position.x = detRight.position.x + detRight.size.x + 15;
 	}
 	
 	if ( _bottomOf )
 	{
-		auto detBottom = _bottomOf->determinePosition( );
+		auto detBottom = _bottomOf->determineRegion( );
 		region.position.y = detBottom.position.y + _bottomOf->_local.size.y + 15;
 	}
 	else if ( _topOf )
 	{
-		auto detTop = _topOf->determinePosition( );
+		auto detTop = _topOf->determineRegion( );
 		region.position.y = detTop.position.y - 15;
 	}
 	
+	if ( _allignedOf && ( region.position.x == 0 || region.position.y == 0 ) )
+	{
+		auto detAllign = _allignedOf->determineRegion( );
+		if ( region.position.y == 0 )
+			region.position.y = detAllign.position.y;
+		if ( region.position.x == 0 )
+			region.position.x = detAllign.position.x;
+	}
+
 	return region;
 }
 
@@ -98,6 +107,11 @@ __UI Component * Component::getBottomOf() const
 __UI Component * Component::getTopOf() const
 {
 	return _topOf;
+}
+
+__UI Component * Component::getAllignedOf() const
+{
+	return _allignedOf;
 }
 
 __UI Component * Component::getParent() const
@@ -228,6 +242,11 @@ void Component::setTopOf(__UI Component * _Component)
 	_topOf = _Component;
 }
 
+void Component::setAllignedOf(__UI Component * _Component)
+{
+	_allignedOf = _Component;
+}
+
 void Component::setParent(__UI Component * _Parent)
 {
 	OnModified( ).Invoke( this );
@@ -330,6 +349,7 @@ void Component::MouseMoved(__GRAPHICS Window * _Sender, __GRAPHICS MouseMovedArg
 	{
 		this->_hovering = false;
 		OnMouseLeave( ).Invoke( this );
+		_Args.handled = true;
 	}
 }
 
@@ -348,8 +368,10 @@ void Component::MouseClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClicke
 
 void Component::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseReleasedArgs & _Args)
 {
-	if ( this->_hovering && this->_clicking )
+	if ( this->_hovering && this->_clicking ) {
 		OnMouseReleased( ).Invoke( this );
+		_Args.handled = true;
+	}
 	this->_clicking = false;
 }
 
@@ -369,9 +391,7 @@ void Component::Release(const bool & _ReleaseChildren)
 
 bool Component::Collides(const __MATH Vector2 & _With) const
 {
-	auto abs_pos = this->_local.position + this->_global.position;
-	auto size = this->getSize( );
-	__MATH Region region{ abs_pos, size };
+	__MATH Region region = determineRegion( );
 
 	return _With.Intersects( region );
 }

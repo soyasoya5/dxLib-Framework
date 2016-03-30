@@ -151,7 +151,7 @@ TCPResult TCPSocketImpl::socket(const ::dx::String &_Ip, const ::dx::uint &_Port
 	_hints.ai_socktype = SOCK_STREAM;
 	_hints.ai_protocol = IPPROTO_TCP;
 
-	auto res = ::getaddrinfo( _Ip.c_str( ), "6881", &_hints, &_result );
+	auto res = ::getaddrinfo( _Ip.c_str( ), __LIB to_string( _Port ).c_str( ), &_hints, &_result );
 	if ( res != 0 ) // Failed
 		return TCPResult( res );
 
@@ -192,6 +192,10 @@ TCPMessage TCPSocketImpl::front()
 
 void TCPSocketImpl::send(char * _Data, const::dx::uint & _Length)
 {
+	// Send length
+	::send( _socket, reinterpret_cast<const char*>( &_Length ), sizeof( ::dx::uint ), 0 );
+
+	// Send data
 	::send( _socket, _Data, _Length, 0 );
 }
 
@@ -203,8 +207,6 @@ void TCPSocketImpl::push(const TCPMessage & _Message)
 
 void TCPSocketImpl::recvThread()
 {
-	char* buffer = new char[500];
-	uint length = 500;
 	while( true )
 	{
 		if ( !isConnected( ) ) {
@@ -212,14 +214,19 @@ void TCPSocketImpl::recvThread()
 			continue;
 		}
 
-		auto read = ::recv( _socket, buffer, length, 0 );
-		
+		uint len;
+		auto read = ::recv( _socket, reinterpret_cast<char*>( &len ), sizeof(uint), 0 );
 
-		if ( read > 0 )
+		if ( read <= 0 )
 		{
-			TCPMessage message( buffer, read );
-			this->push( message );
+			this->destroy( );
+			break;
 		}
+
+		auto buf = std::make_unique<char*>( new char[len] );
+		
+		TCPMessage msg{ *buf, len };
+		this->push( msg );
 	}
 }
 

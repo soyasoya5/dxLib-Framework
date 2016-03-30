@@ -73,7 +73,7 @@ bool ExternalImpl::SetupModules()
 		Module module{ (ulong)( lpme->modBaseAddr ), lpme->modBaseSize, lpme->szModule };
 		this->_modules.push_back( module );
 		if ( !Module32Next( snap.get( ), lpme) )
-			return false;
+			break;
 	}
 	return true;
 }

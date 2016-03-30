@@ -23,18 +23,11 @@ __MATH Vector2 Button::determineText(__MATH Vector2 &pos, __MATH Vector2 &text_s
 	ret.y = (size.y / 2 - text_size.y / 2) + pos.y;
 
 	if ( allign == Allignment::Center )
-	{
 		ret.x = ( size.x / 2 - text_size.x / 2 ) + pos.x;
-	}
 	else if ( allign == Allignment::Left )
-	{
 		ret.x = pos.x + 5;
-	}
 	else
-	{
 		ret.x = pos.x + size.x - (text_size.x + 5);
-	}
-
 	return ret;
 }
 
@@ -47,25 +40,35 @@ void Button::Paint(__GRAPHICS Window *_Sender, __GRAPHICS BasePainter * _Painter
 	// Raise pre paint event
 	OnPrePaint( ).Invoke( this, _Painter );
 
-	auto pos = determinePosition( );
+	// Determine region
+	auto pos = determineRegion( );
+
+	// Get font
 	auto font = getFont( );
-	if ( !font )
+	if ( !font ) // Use dafault font..
 		font = _Painter->defaultFont( );
 
+
+	// Setup text component
 	Text text{ font, getText(), { } };
 	auto textSize = font->calculateMetrixOf( text.getText( ) );
 	text.setPosition( determineText( pos.position, textSize ) );
+	
+	// Setup style/colors
 	auto style = getStyle( );
 	auto color_inner = style.theme( ) == Dark ? 0xFF2C2C2C : 0xFFC8C8C8;
 	auto color_outer = 0xFF4B4B4B;
 	pen_text.Color( style.theme( ) == Dark ? Colors::White : Colors::Black );
 
+	// Assign colors to pen
 	if ( isClicked( ) || isHovered( ) )
 		outer.Color( style.style( ) );
 	else
 		outer.Color( color_outer );
 
 	inner.Color( color_inner );
+
+	// Paint
 	_Painter->PaintRectOutlined( pos, inner, outer );
 	_Painter->Paint( text, pen_text );
 

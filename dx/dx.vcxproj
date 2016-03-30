@@ -138,6 +138,7 @@
     <ClCompile Include="src\lib\Graphics\Painter.cpp" />
     <ClCompile Include="src\lib\Graphics\Pen.cpp" />
     <ClCompile Include="src\lib\Graphics\Text.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Button.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Component.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Style.cpp" />
     <ClCompile Include="src\lib\Graphics\Window\MsgBox.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="src\lib\Memory\MemoryBase.cpp" />
     <ClCompile Include="src\lib\Memory\Module.cpp" />
     <ClCompile Include="src\lib\Memory\Pattern.cpp" />
+    <ClCompile Include="src\lib\Net\TCP.cpp" />
     <ClCompile Include="src\lib\string.cpp" />
     <ClCompile Include="src\lib\Graphics\Window\Window.cpp" />
   </ItemGroup>
@@ -171,6 +173,8 @@
     <ClInclude Include="src\lib\Graphics\Painter.h" />
     <ClInclude Include="src\lib\Graphics\Pen.h" />
     <ClInclude Include="src\lib\Graphics\Text.h" />
+    <ClInclude Include="src\lib\Graphics\UI\Button.h" />
+    <ClInclude Include="src\lib\Graphics\UI\Checkbox.h" />
     <ClInclude Include="src\lib\Graphics\UI\Component.h" />
     <ClInclude Include="src\lib\Graphics\UI\lib.h" />
     <ClInclude Include="src\lib\Graphics\UI\Style.h" />
@@ -190,6 +194,8 @@
     <ClInclude Include="src\lib\Memory\Pattern.h" />
     <ClInclude Include="src\lib\Memory\Types.h" />
     <ClInclude Include="src\lib\Graphics\Window\Window.h" />
+    <ClInclude Include="src\lib\Net\lib.h" />
+    <ClInclude Include="src\lib\Net\TCP.h" />
     <ClInclude Include="src\lib\string.h" />
     <ClInclude Include="src\lib\Task.h" />
   </ItemGroup>

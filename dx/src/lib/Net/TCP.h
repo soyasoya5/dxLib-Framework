@@ -67,7 +67,6 @@ public:
 	void send( const __LIB String &_Message );
 	void send( const TCPMessage &_Message );
 	
-
 };
 
 end_NET

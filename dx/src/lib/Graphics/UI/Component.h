@@ -44,7 +44,7 @@ public: // Accessors
 	virtual __MATH Region getLocalRegion( ) const;
 	virtual __MATH Vector2 getLocalPosition( ) const;
 	virtual __MATH Region getGlobalRegion( ) const;
-	virtual __MATH Region determinePosition( ) const;
+	virtual __MATH Region determineRegion( ) const;
 	virtual __MATH Vector2 getGlobalPosition( ) const;
 	virtual __MATH Vector2 getSize( ) const;
 	virtual __UI StyleManager getStyle( ) const;
@@ -52,6 +52,7 @@ public: // Accessors
 	virtual __UI Component* getRightOf( ) const;
 	virtual __UI Component* getBottomOf( ) const;
 	virtual __UI Component* getTopOf( ) const;
+	virtual __UI Component* getAllignedOf( ) const;
 	virtual __UI Component* getParent( ) const;
 	virtual __UI Allignment getAllignment( ) const;
 	virtual __UI Layout getLayout( ) const;
@@ -77,6 +78,7 @@ public: // Modifiers
 	virtual void setRightOf( __UI Component *_Component );
 	virtual void setBottomOf( __UI  Component *_Component );
 	virtual void setTopOf( __UI Component *_Component );
+	virtual void setAllignedOf( __UI Component *_Component );
 	virtual void setParent( __UI Component *_Parent );
 	virtual void setAllignment( const __UI Allignment &_Allignment );
 	virtual void setLayout( const __UI Layout &_Layout );
@@ -150,7 +152,7 @@ private:
 	__GRAPHICS Font* _font;
 	__MATH Region _local, _global;
 	__UI StyleManager _style;
-	__UI Component *_leftOf, *_rightOf, *_bottomOf, *_topOf;
+	__UI Component *_leftOf, *_rightOf, *_bottomOf, *_topOf, *_allignedOf;
 	__UI Component* _parent;
 	std::vector<__UI Component*> _children;
 	__UI Allignment _allignment;
