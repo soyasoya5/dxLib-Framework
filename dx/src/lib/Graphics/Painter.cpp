@@ -193,6 +193,11 @@ void Painter::Paint(const __GRAPHICS Shape & _Shape)
 {
 }
 
+void Painter::Paint(const __GRAPHICS Circle & _Circle)
+{
+
+}
+
 void Painter::PaintRect( const __MATH Region & _Region, const __GRAPHICS Pen & _Pen)
 {
 	static D3DRECT rect_angle;
@@ -242,12 +247,12 @@ void Painter::PresentPaint()
 	((IDirect3DDevice9*)_device)->Present( 0, 0, 0, 0 );
 }
 
-void * Painter::native()
+void * Painter::native() const
 {
 	return _device;
 }
 
-Font * Painter::defaultFont()
+Font * Painter::defaultFont() const
 {
 	return _default;
 }

@@ -441,6 +441,8 @@ class String
 			return __LIB to_string( _Tx );
 		}
 
+		String fill( const char &_Filler );
+
 	public: // Operators
 		const __LIB String& operator=( const __LIB String& );
 		const __LIB String& operator=( __LIB String&& );

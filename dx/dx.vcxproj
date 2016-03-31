@@ -138,9 +138,12 @@
     <ClCompile Include="src\lib\Graphics\Painter.cpp" />
     <ClCompile Include="src\lib\Graphics\Pen.cpp" />
     <ClCompile Include="src\lib\Graphics\Text.cpp" />
+    <ClCompile Include="src\lib\Graphics\Texture.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Button.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Checkbox.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Component.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Style.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Textbox.cpp" />
     <ClCompile Include="src\lib\Graphics\Window\MsgBox.cpp" />
     <ClCompile Include="src\lib\Math\Region.cpp" />
     <ClCompile Include="src\lib\Math\Vector2.cpp" />
@@ -173,11 +176,13 @@
     <ClInclude Include="src\lib\Graphics\Painter.h" />
     <ClInclude Include="src\lib\Graphics\Pen.h" />
     <ClInclude Include="src\lib\Graphics\Text.h" />
+    <ClInclude Include="src\lib\Graphics\Texture.h" />
     <ClInclude Include="src\lib\Graphics\UI\Button.h" />
     <ClInclude Include="src\lib\Graphics\UI\Checkbox.h" />
     <ClInclude Include="src\lib\Graphics\UI\Component.h" />
     <ClInclude Include="src\lib\Graphics\UI\lib.h" />
     <ClInclude Include="src\lib\Graphics\UI\Style.h" />
+    <ClInclude Include="src\lib\Graphics\UI\Textbox.h" />
     <ClInclude Include="src\lib\Graphics\Window\MsgBox.h" />
     <ClInclude Include="src\lib\iter.h" />
     <ClInclude Include="src\lib\lib.h" />

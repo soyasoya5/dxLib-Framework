@@ -555,6 +555,14 @@ const String & String::operator+=(const String &str)
 }
 
 
+String String::fill(const char & _Filler)
+{
+	auto tmp = *this;
+	for ( auto&x : tmp )
+		x = _Filler;
+	return tmp;
+}
+
 const String & String::operator+=(const char &c)
 {
 	push_back( c );

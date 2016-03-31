@@ -66,8 +66,10 @@ public:
 	void Invoke( _Args&&..._args )
 	{
 		auto now = __LIB Clock::now( );
-		for ( auto&x : _fs )
+		for ( auto&x : _fs ) {
 			x->invoke_if_time( now, std::forward<_Args>( _args )... );
+			std::this_thread::sleep_for( std::chrono::nanoseconds( 5000 ) );
+		}
 	}
 
 	template<typename _Func>

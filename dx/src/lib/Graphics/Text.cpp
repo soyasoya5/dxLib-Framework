@@ -3,7 +3,7 @@
 begin_GRAPHICS
 
 Text::Text()
-	: _font( nullptr ), _text( ), _position( ), _allign( Top )
+	: _font(nullptr), _text(), _position(), _max( { 500, 200 } ), _allign(Top)
 {
 }
 

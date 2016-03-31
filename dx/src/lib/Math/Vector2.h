@@ -25,6 +25,13 @@ public:
 	Vector2 operator-( const Vector2 &_Other ) const;
 	Vector2 operator*( const Vector2 &_Other ) const;
 	Vector2 operator/( const Vector2 &_Other ) const;
+	bool operator>( const Vector2 &_Other ) const;
+	bool operator>=( const Vector2 &_Other ) const;
+	bool operator<( const Vector2 &_Other ) const;
+	bool operator<=( const Vector2 &_Other ) const;
+	bool operator==( const Vector2 &_Other ) const;
+	bool operator!=( const Vector2 &_Other ) const;
+	
 };
 
 end_MATH

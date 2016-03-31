@@ -75,5 +75,35 @@ Vector2 Vector2::operator/(const Vector2 & _Other) const
 	return _Tmp;
 }
 
+bool Vector2::operator>(const Vector2 & _Other) const
+{
+	return (this->x > _Other.x && this->y > _Other.y);
+}
+
+bool Vector2::operator>=(const Vector2 & _Other) const
+{
+	return (this->x >= _Other.x && this->y >= _Other.y);
+}
+
+bool Vector2::operator<(const Vector2 & _Other) const
+{
+	return (this->x < _Other.x && this->y < _Other.y);
+}
+
+bool Vector2::operator<=(const Vector2 & _Other) const
+{
+	return (this->x <= _Other.x && this->y <= _Other.y);
+}
+
+bool Vector2::operator==(const Vector2 & _Other) const
+{
+	return (this->x == _Other.x && this->y == _Other.y);
+}
+
+bool Vector2::operator!=(const Vector2 & _Other) const
+{
+	return !(*this == _Other);
+}
+
 
 end_MATH

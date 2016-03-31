@@ -29,12 +29,12 @@ public:
 
 	///<summary>
 	///	Sets the pen of this line.
-	///</sumamry>
+	///</summary>
 	void Pen( const __GRAPHICS Pen &_Pen );
 
 	///<summary>
 	///	Sets the start position of this line.
-	///</sumamry>
+	///</summary>
 	void Position( const __MATH Vector2 &_Position );
 
 	///<summary>

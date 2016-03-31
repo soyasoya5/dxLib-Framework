@@ -33,45 +33,48 @@ __MATH Region Component::getGlobalRegion() const
 	return _global;
 }
 
-__MATH Region Component::determineRegion() const
+__MATH Region Component::determineRegion()
 {
-	__MATH Region region;
-	region.position = _local.position + _global.position;
-	region.size = _local.size;
-	
-	// Determine X axis
-	if ( _leftOf )
-	{
-		auto detLeft = _leftOf->determineRegion( );
-		region.position.x = detLeft.position.x - _local.size.x - 15;
-	}
-	else if ( _rightOf )
-	{
-		auto detRight = _rightOf->determineRegion( );
-		region.position.x = detRight.position.x + detRight.size.x + 15;
-	}
-	
-	if ( _bottomOf )
-	{
-		auto detBottom = _bottomOf->determineRegion( );
-		region.position.y = detBottom.position.y + _bottomOf->_local.size.y + 15;
-	}
-	else if ( _topOf )
-	{
-		auto detTop = _topOf->determineRegion( );
-		region.position.y = detTop.position.y - 15;
-	}
-	
-	if ( _allignedOf && ( region.position.x == 0 || region.position.y == 0 ) )
-	{
-		auto detAllign = _allignedOf->determineRegion( );
-		if ( region.position.y == 0 )
-			region.position.y = detAllign.position.y;
-		if ( region.position.x == 0 )
-			region.position.x = detAllign.position.x;
+
+	if ( _changed ) {
+		_determined.position = _local.position + _global.position;
+		_determined.size = _local.size;
+		
+		// Determine X axis
+		if ( _leftOf )
+		{
+			auto detLeft = _leftOf->determineRegion( );
+			_determined.position.x = detLeft.position.x - _local.size.x - 15;
+		}
+		else if ( _rightOf )
+		{
+			auto detRight = _rightOf->determineRegion( );
+			_determined.position.x = detRight.position.x + detRight.size.x + 15;
+		}
+		
+		if ( _bottomOf )
+		{
+			auto detBottom = _bottomOf->determineRegion( );
+			_determined.position.y = detBottom.position.y + _bottomOf->_local.size.y + 15;
+		}
+		else if ( _topOf )
+		{
+			auto detTop = _topOf->determineRegion( );
+			_determined.position.y = detTop.position.y - 15;
+		}
+		
+		if ( _allignedOf && ( _determined.position.x == 0 || _determined.position.y == 0 ) )
+		{
+			auto detAllign = _allignedOf->determineRegion( );
+			if ( _determined.position.y == 0 )
+				_determined.position.y = detAllign.position.y;
+			if ( _determined.position.x == 0 )
+				_determined.position.x = detAllign.position.x;
+		}
+		_changed = false;
 	}
 
-	return region;
+	return _determined;
 }
 
 __MATH Vector2 Component::getGlobalPosition() const
@@ -184,12 +187,14 @@ void Component::setLocalRegion(const __MATH Region & _Region)
 	OnModified( ).Invoke( this );
 	_local = _Region;
 	_global.size = _local.size;
+	_changed = true;
 }
 
 void Component::setLocalPosition(const __MATH Vector2 & _Position)
 {
 	OnModified( ).Invoke( this );
 	_local.position = _Position;
+	_changed = true;
 }
 
 void Component::setGlobalRegion(const __MATH Region & _Region)
@@ -197,12 +202,14 @@ void Component::setGlobalRegion(const __MATH Region & _Region)
 	OnModified( ).Invoke( this );
 	_global = _Region;
 	_local.size = _global.size;
+	_changed = true;
 }
 
 void Component::setGlobalPosition(const __MATH Vector2 & _Position)
 {
 	OnModified( ).Invoke( this );
 	_global.position = _Position;
+	_changed = true;
 }
 
 void Component::setSize(const __MATH Vector2 & _Size)
@@ -210,6 +217,7 @@ void Component::setSize(const __MATH Vector2 & _Size)
 	OnModified( ).Invoke( this );
 	_local.size = _Size;
 	_global.size = _Size;
+	_changed = true;
 }
 
 void Component::setStyle(const __UI StyleManager & _Style)
@@ -364,6 +372,9 @@ void Component::MouseClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClicke
 		this->_clicking = true;
 		_Args.handled = true;
 	}
+	else
+		this->_clicking = false;
+
 }
 
 void Component::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseReleasedArgs & _Args)
@@ -389,14 +400,14 @@ void Component::Release(const bool & _ReleaseChildren)
 	}
 }
 
-bool Component::Collides(const __MATH Vector2 & _With) const
+bool Component::Collides(const __MATH Vector2 & _With)
 {
 	__MATH Region region = determineRegion( );
 
 	return _With.Intersects( region );
 }
 
-bool Component::Collides(const __UI Component * _With) const
+bool Component::Collides(const __UI Component * _With)
 {
 	return Collides( _With->getLocalPosition( ) + _With->getGlobalPosition( ) );
 }

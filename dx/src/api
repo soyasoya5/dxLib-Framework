@@ -44,9 +44,14 @@
 #include "lib/graphics/pen.h"
 #include "lib/graphics/font.h"
 #include "lib/graphics/text.h"
+#include "lib/graphics/texture.h"
+
+// UI
+#include "lib/graphics/ui/style.h"
 #include "lib/graphics/ui/component.h"
 #include "lib/graphics/ui/button.h"
-#include "lib/graphics/ui/style.h"
+#include "lib/graphics/ui/checkbox.h"
+#include "lib/graphics/ui/textbox.h"
 #endif
 
 #include "lib/net/tcp.h"

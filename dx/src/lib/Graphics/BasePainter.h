@@ -13,6 +13,7 @@ class Text;
 class Line;
 class Pen;
 class Font;
+class Circle;
 
 
 class BasePainter
@@ -35,6 +36,11 @@ public:
 	///	Paint a shape onto the target buffer.
 	///</summary>
 	virtual void Paint( const __GRAPHICS Shape &_Shape ) = 0;
+
+	///<summary>
+	/// Paint a circle onto the target buffer.
+	///</summary>
+	virtual void Paint( const __GRAPHICS Circle &_Circle ) = 0;
 
 	///<summary>
 	///	Paint a rect onto the target buffer.
@@ -60,7 +66,7 @@ public:
 	///<summary>
 	/// get the default font
 	///</summary>
-	virtual __GRAPHICS Font* defaultFont( ) = 0;
+	virtual __GRAPHICS Font* defaultFont( ) const = 0;
 
 	///<summary>
 	/// set the default font.
@@ -70,7 +76,7 @@ public:
 	///<summary>
 	///	A native-ish device, e.g a directx device.
 	///</summary>
-	virtual void* native( ) = 0;
+	virtual void* native( ) const = 0;
 
 	static BasePainter* getSingleton( );
 	static void setSingleton( BasePainter *_Putr );

@@ -86,6 +86,11 @@ public:
 		this->assign( _Buffer, _Buffer + _Length );
 	}
 
+	_MyT* data( )
+	{
+		return _buffer;
+	}
+
 public:
 
 	_MyT *begin( )

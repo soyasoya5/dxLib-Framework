@@ -44,7 +44,7 @@ public: // Accessors
 	virtual __MATH Region getLocalRegion( ) const;
 	virtual __MATH Vector2 getLocalPosition( ) const;
 	virtual __MATH Region getGlobalRegion( ) const;
-	virtual __MATH Region determineRegion( ) const;
+	virtual __MATH Region determineRegion( );
 	virtual __MATH Vector2 getGlobalPosition( ) const;
 	virtual __MATH Vector2 getSize( ) const;
 	virtual __UI StyleManager getStyle( ) const;
@@ -103,8 +103,8 @@ public: // Virtuals/Logic
 	virtual void MouseReleased( __GRAPHICS Window *_Sender, __GRAPHICS MouseReleasedArgs &_Args );
 	virtual void MouseScrolled( __GRAPHICS Window *_Sender, __GRAPHICS ScrollArgs &_Args );
 	virtual void Release( const bool &_ReleaseChildren = true );
-	virtual bool Collides( const __MATH Vector2 &_With ) const;
-	virtual bool Collides( const __UI Component *_With ) const;
+	virtual bool Collides( const __MATH Vector2 &_With );
+	virtual bool Collides( const __UI Component *_With );
 
 public:
 	///<summary>
@@ -150,7 +150,7 @@ public:
 private:
 	__LIB String _text;
 	__GRAPHICS Font* _font;
-	__MATH Region _local, _global;
+	__MATH Region _local, _global, _determined;
 	__UI StyleManager _style;
 	__UI Component *_leftOf, *_rightOf, *_bottomOf, *_topOf, *_allignedOf;
 	__UI Component* _parent;
@@ -158,7 +158,7 @@ private:
 	__UI Allignment _allignment;
 	__UI Layout _layout;
 	int _state, _guid;
-	bool _hovering, _focusing, _clicking, _enabled, _visible;
+	bool _hovering, _focusing, _clicking, _enabled, _visible, _changed;
 	void *_userdata;
 
 private: // Events
