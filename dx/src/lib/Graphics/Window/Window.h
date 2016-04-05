@@ -115,12 +115,18 @@ public:
 	typedef std::chrono::time_point<clock> time_point;
 
 
+	///<summary>
+	///	Creates a window.
+	///</summary>
 	static Window* Create( const __LIB String &_Class, 
 						   const __LIB String &_Title,
 						   const __MATH Region &_Region,
 						   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
 						   DWORD dwExStyle = 0L );
 
+	///<summary>
+	///	Creates a window that is a child of _Parent
+	///</summary>
 	static Window* Create( Window *_Parent,
 						   const __LIB String &_Class, 
 						   const __LIB String &_Title,
@@ -282,6 +288,10 @@ public:
 	HWND native_handle( );
 
 public: // Others
+
+	///<summary>
+	///	Adds a task to the task queue.	
+	///</summary>
 	__LIB TimedTask<void(Window*)> &addTask( const time_point &_When, const std::function<void(Window*)> &_Function );
 
 	///<summary>

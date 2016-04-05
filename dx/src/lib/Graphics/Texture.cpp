@@ -13,7 +13,7 @@ Texture * Texture::Create(const __FILEIO Path & _Path, const __GRAPHICS BasePain
 	return Create( stream, _Painter );
 }
 
-Texture * Texture::Create(std::ifstream & _Stream, const __GRAPHICS BasePainter *_Painter)
+Texture * Texture::Create(std::istream & _Stream, const __GRAPHICS BasePainter *_Painter)
 {
 	_Stream.seekg( 0, std::ios_base::end );
 	auto size = _Stream.tellg( );
@@ -92,9 +92,7 @@ void Texture::Paint( const __MATH Vector2 & _Position, const __MATH Vector2 & _S
 
 void Texture::Paint(const __MATH Region & _Region)
 {
-	
-
-
+	Paint( _Region.position, _Region.size );
 }
 
 Texture::Texture()

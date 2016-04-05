@@ -9,7 +9,15 @@ begin_GRAPHICS
 class Pen
 {
 public:
+
+	///<summary>
+	///	Empty constructor
+	///</summary>
 	Pen( );
+
+	///<summary>
+	///	Construct with Color and Thickness.
+	///</summary>
 	Pen( const __DX uint &_Color, const __DX uint &_Thickness = 1 );
 
 	///<summary>

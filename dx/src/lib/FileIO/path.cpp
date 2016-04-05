@@ -28,6 +28,11 @@ const __LIB String & Path::string()
 	return _path;
 }
 
+const char * Path::c_str()
+{
+	return _path.c_str( );
+}
+
 Path FileIO::Path::Previous() const
 {
 	if ( !has_branches( ) )

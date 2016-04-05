@@ -21,9 +21,16 @@ struct TokenizerMessage
 	uint line;
 
 	TokenizerMessage( ) = default;
-	TokenizerMessage( const Message_t &type, const __LIB String &msg, const __DX uint &line );
+	
+	///<summary>
+	/// Construct this TokenizerMessage
+	///</summary>
+	TokenizerMessage( const Message_t &_Type, const __LIB String &_Msg, const __DX uint &_Line );
 
-	static __LIB String TypeToString( const Message_t &type );
+	///<summary>
+	/// Convert '_Type' to a String.
+	///</summary>
+	static __LIB String TypeToString( const Message_t &_Type );
 };
 
 class Tokenizer
@@ -41,18 +48,49 @@ private:
 
 	Tokenizer( );
 public:
+	///<summary>
+	/// Tokenize the code contained in this Tokenizer.
+	///</summary>
 	bool Tokenize( );
 
+	///<summary>
+	/// The begin iterator of tokens.
+	///</summary>
 	__FILEIO Tokenizer::iterator begin( );
+
+	///<summary>
+	/// The end iterator of tokens.
+	///</summary>
 	__FILEIO Tokenizer::iterator end( );
+
+	///<summary>
+	/// Raise 'OnMessage' event.
+	///</summary>
 	bool SendMessage( const __FILEIO TokenizerMessage& );
+
+	///<summary>
+	/// Return the code contents of this Tokenizer.
+	///</summary>
 	__LIB String ContentsFile( );
 
+	///<summary>
+	/// Clear the tokens.
+	///</summary>
 	void Clear( );
 
+	///<summary>
+	/// Messages from this Tokenizer.
+	///</summary>
 	__LIB Event<void( __FILEIO TokenizerMessage )>& OnMessage( );
 	
+	///<summary>
+	/// Create tokenizer from code.
+	///</summary>
 	static __FILEIO Tokenizer* CreateFromHeader( const __LIB String &contents );
+
+	///<summary>
+	/// Create tokenizer from file.
+	///</summary>
 	static __FILEIO Tokenizer* CreateFromFile( const __LIB String &file );
 };
 

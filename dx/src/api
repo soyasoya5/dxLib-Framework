@@ -14,13 +14,6 @@
 #include "lib/clock.h"
 #include "lib/application.h"
 
-// MEMORY
-#include "lib/memory/external.h"
-#include "lib/memory/handle.h"
-#include "lib/memory/internal.h"
-#include "lib/memory/memorybase.h"
-#include "lib/memory/module.h"
-#include "lib/memory/pattern.h"
 
 // FILEIO
 #include "lib/fileio/path.h"

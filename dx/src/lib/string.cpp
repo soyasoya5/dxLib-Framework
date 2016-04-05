@@ -171,7 +171,7 @@ void String::swap(String &str)
 	std::swap( _bufsz, str._bufsz );
 }
 
-String String::copy()
+String String::copy() const
 {
 	return String( *this );
 }
@@ -562,7 +562,7 @@ const String & String::operator+=(const String &str)
 }
 
 
-String String::fill(const char & _Filler)
+String String::fill(const char & _Filler) const
 {
 	auto tmp = *this;
 	for ( auto&x : tmp )

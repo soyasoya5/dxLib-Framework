@@ -61,8 +61,8 @@ int main( )
 	hotkey_down.OnHotkey( ) += [&window]( dx::Hotkey *sender, dx::EventArgs &args )
 	{
 		std::cout << "Hotkey " + sender->getName( ) << " pressed, stopping the handling of hotkeys" << std::endl;
-		window->OnKeyDown( ).remove_handler( "Hotkey_down" );
-		window->OnKeyUp( ).remove_handler( "Hotkey_up" );
+		window->OnKeyDown( ) -= "Hotkey_down";
+		window->OnKeyUp( ) -= "Hotkey_up";
 	};
 
 
@@ -79,8 +79,8 @@ int main( )
 	});
 
 	// Lets just unregister the 2 above to proove the next method also works
-	window->OnKeyDown( ).remove_handler( "Hotkey_down" );
-	window->OnKeyUp( ).remove_handler( "Hotkey_up" );
+	window->OnKeyDown( ) -= "Hotkey_down";
+	window->OnKeyUp( ) -= "Hotkey_up";
 
 	// ^ The 2 above can also be done like this
 	window->OnKeyDown( ) += dx::EventHandler<dx::Window::KeyDownSig>( hotkey.getName( ) + "_down", BIND_METHOD_2( &dx::Hotkey::OnKeyDown, &hotkey ) );

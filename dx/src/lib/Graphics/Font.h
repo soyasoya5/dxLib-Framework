@@ -8,6 +8,9 @@ begin_GRAPHICS
 
 struct FontContext
 {
+	///<summary>
+	///	Empty constructor
+	///</summary>
 	FontContext( )
 		: Height( 0 ), Width( 0 ), Weight( 0 ), MipLevels( 0 ), Italic( false ),
 		  CharSet( DEFAULT_CHARSET ), OutputPrecision( OUT_DEFAULT_PRECIS), Quality( DEFAULT_QUALITY ),
@@ -28,13 +31,32 @@ class Font
 {
 public:
 	~Font( );
+
+	///<summary>
+	///	Create font.
+	///</summary>
 	static Font* Create( const __LIB String &_FontName, 
 						 const __GRAPHICS FontContext &_Context, 
 						 __GRAPHICS BasePainter *_Painter = BasePainter::getSingleton( ) );
 
+	///<summary>
+	///	Release font.
+	///</summary>
 	void Release( );
+
+	///<summary>
+	///	Raw font data.
+	///</summary>
 	void* raw( );
+
+	///<summary>
+	///	The font context.
+	///</summary>
 	__GRAPHICS FontContext context( );
+
+	///<summary>
+	///	Calculate the size of '_Text' with this font.
+	///</summary>
 	__MATH Vector2 calculateMetrixOf( const __LIB String &_Text );
 private:
 	void* _data;

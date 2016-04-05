@@ -7,37 +7,37 @@
 begin_LIB
 
 
-void Clock::Start()
+void StopWatch::Start()
 {
 	_t = GetCurrentThreadId( );
 	_start = now( );
 }
 
-void Clock::End()
+void StopWatch::End()
 {
 	if (_t != GetCurrentThreadId())
 		return;
 	_end = now();
 }
 
-std::chrono::time_point<std::chrono::system_clock> Clock::now()
+std::chrono::time_point<std::chrono::system_clock> StopWatch::now()
 {
 	return std::chrono::system_clock::now( );
 }
 
-double Clock::Milli()
+double StopWatch::Milli()
 {
 	std::chrono::duration<double, std::milli> time = _start - _end;
 	return std::abs( time.count( ) );
 }
 
-double Clock::Nano()
+double StopWatch::Nano()
 {
 	std::chrono::duration<double, std::nano> time = _start - _end;
 	return std::abs( time.count( ) );
 }
 
-Timer::Timer()
+DeltaTimer::DeltaTimer()
 {
 	__int64 countsPerSec = 0;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
@@ -47,7 +47,7 @@ Timer::Timer()
 	QueryPerformanceCounter((LARGE_INTEGER*)&_prevTimeStamp);
 }
 
-float Timer::GetDeltaTime()
+float DeltaTimer::GetDeltaTime()
 {
 	__int64 currentTimeStamp = 0;
 	QueryPerformanceCounter((LARGE_INTEGER*)&currentTimeStamp);

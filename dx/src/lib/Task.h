@@ -20,6 +20,9 @@ public:
 		: _function( _Function ), _when( _When )
 	{ }
 
+	///<summary>
+	///	Calls the tasks function if enough time has past.
+	///</summary>
 	template<typename ..._Ax>
 	bool call_task_if_time( const time_point &_Now, _Ax&&..._Args )
 	{
@@ -33,7 +36,9 @@ public:
 		return false;
 	}
 
-	// An event that is called whenever a task is called
+	///<summary>
+	///	Raised when the task is completed.
+	///</summary>
 	__LIB Event<void(TimedTask*)>& Completed( )
 	{
 		return _Completed;

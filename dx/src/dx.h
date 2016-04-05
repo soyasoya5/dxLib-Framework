@@ -25,29 +25,13 @@
 
 
 namespace dx {
+
+	// Standard typedefs
 	typedef unsigned int uint;
 	typedef unsigned long ulong;
 	typedef unsigned char byte;
 
-	template<typename _Type>
-	class ScopeExit
-	{
-		_Type *_val;
-		std::function<void(_Type*)> _dest;
-	public:
-		ScopeExit( _Type *_Val, std::function<void(_Type*)> _Destructor )
-		{
-			_val = _Val;
-			_dest = _Destructor;
-		}
-	
-		~ScopeExit( )
-		{
-			if ( _dest )
-				_dest( _val );
-		}
-	};
-
+	// Key
 	enum Key : uint
 	{
 		key_leftButton = 1,
@@ -152,6 +136,7 @@ namespace dx {
 		key_dot = 0xBE
 	};
 
+	// .NET Color port
 	class Colors
 	{
 	public:
@@ -385,7 +370,7 @@ namespace dx {
     // =			 remove_all				     =
     // =	if the type is anything but the      =
     // =    type itself, it'll be removed        =
-    // =    e.g int[] turns int					 =
+    // =    e.g int[] turns into int					 =
     // =    usage: remove_all<int[]>::type var;  =
     // ===========================================
     

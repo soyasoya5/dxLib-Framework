@@ -16,6 +16,10 @@ private:
 	std::chrono::time_point<std::chrono::system_clock> _last;
 	std::chrono::milliseconds _delay;
 public:
+
+	///<summary>
+	/// Construct this with '_Func' being a function.
+	///</summary>
 	template<typename _Func>
 	timed_function( const _Func &_func )
 	{
@@ -24,8 +28,9 @@ public:
 		_last = __LIB Clock::now( );
 	}
 
-
-
+	///<summary>
+	/// Invoke the function if enough time has passed since the last call to the function.
+	///</summary>
 	template<typename..._Args>
 	void invoke_if_time( std::chrono::time_point<std::chrono::system_clock> &_Now, _Args&&..._args )
 	{
@@ -37,6 +42,10 @@ public:
 		}
 	}
 
+	///<summary>
+	/// Set the minimum delay per invoke to this function, meaning:
+	/// Invoke only if N time has passed since last call.
+	///</summary>
 	void Every( const std::chrono::milliseconds &_By )
 	{
 		_delay = _By;
@@ -52,12 +61,22 @@ private:
 	timed_function<_Sig> _func;
 public:
 
+	///<summary>
+	/// Construct this EventHandler with a Name and Function.
+	///</summary>
 	template<typename _Func>
 	EventHandler( const __LIB String &_Name, const _Func &_Function )
 		: _name( _Name ), _func( _Function )
 	{}
 
+	///<summary>
+	/// Return a reference to the timed_function that is held by this handler.
+	///</summary>
 	auto& get( ) { return _func; }
+
+	///<summary>
+	/// Return the name of this EventHandler.
+	///</summary>
 	auto& name( ) { return _name; }
 };
 
@@ -77,10 +96,14 @@ public:
 		clear( );
 	}
 
-	// Get list of handlers
+	///<summary>
+	/// Return the vector of EventHandlers that this contains.
+	///</summary>
 	auto& getF( ) { return _fs; }
 
-	// Clear the handlers
+	///<summary>
+	/// Clear all the EventHandlers that this contains.
+	///</summary>
 	void clear( )
 	{
 		for ( auto&x : _fs )
@@ -88,7 +111,9 @@ public:
 		_fs.clear( );
 	}
 
-	// Invoke
+	///<summary>
+	/// Raise the event.
+	///</summary>
 	template<typename ..._Args>
 	void Invoke( _Args&&..._args )
 	{
@@ -101,6 +126,9 @@ public:
 		}
 	}
 
+	///<summary>
+	/// Remove a event handler from this Event by name.
+	///</summary>
 	void remove_handler( const __LIB String &name )
 	{
 		for ( auto it = _fs.begin( ); it < _fs.end( ); ++it )
@@ -114,13 +142,14 @@ public:
 		}
 	}
 
-
-
+	///<summary>
+	///	Add an EventHandler to this Event.
+	///</summary>
 	template<typename T>
-	timed_function<_Sig>& operator+=(const T &f )
+	timed_function<_Sig>& operator+=(const T &_Function )
 	{
 		// Create an unamed handler
-		auto handler = new EventHandler<_Sig>( "unamed", f );
+		auto handler = new EventHandler<_Sig>( "unamed", _Function );
 
 		// Push it
 		_fs.push_back( handler );
@@ -129,6 +158,9 @@ public:
 		return handler->get( );
 	}
 	
+	///<summary>
+	///	Add an EventHandler to this Event.
+	///</summary>
 	template<>
 	timed_function<_Sig>& operator+=<EventHandler<_Sig>>( const EventHandler<_Sig> &_Function )
 	{
@@ -139,54 +171,20 @@ public:
 		return _fs.back( )->get( );
 	}
 
+	///<summary>
+	/// Remove a event handler from this Event by name.
+	///</summary>
+	auto& operator-=( const __LIB String &_Name )
+	{
+		remove_handler( _Name );
+		return *this;
+	}
+
 
 };
 
 
-//template<typename _Sig>
-//class Event 
-//{
-//	typedef timed_function<_Sig>* Signature;
-//	std::vector<Signature> _fs;
-//public:
-//	Event( ) = default;
-//	~Event( )
-//	{
-//		for ( auto&x : _fs )
-//			delete x;
-//	}
-//
-//	std::vector<Signature>& getF() { return _fs; }
-//
-//	void clear( )
-//	{
-//		for ( auto&x : _fs )
-//			delete x;
-//		_fs.clear( );
-//	}
-//
-//	template<typename..._Args>
-//	void Invoke( _Args&&..._args )
-//	{
-//		auto now = __LIB Clock::now( );
-//		for ( auto&x : _fs ) {
-//			x->invoke_if_time( now, std::forward<_Args>( _args )... );
-//			std::this_thread::sleep_for( std::chrono::nanoseconds( 5000 ) );
-//		}
-//	}
-//
-//	template<typename _Func>
-//	timed_function<_Sig>& operator+=( _Func&&f )
-//	{
-//		timed_function<_Sig>* func = new timed_function<_Sig>( std::forward<_Func>( f ) );
-//		_fs.push_back( func );
-//		return *func;
-//	}
-//
-//};
-
-
-	// Base class
+// Base EventArgs class
 class EventArgs
 {
 public:

@@ -73,9 +73,21 @@ enum Token_t : uint
 	keyword_typename, // "typename"
 };
 
+///<summary>
+/// Returns true if '_Identifier' is a keyword.
+///</summary>
 bool isKeyword( const __LIB String &_Identifier );
+
+///<summary>
+/// Convert '_Identifier' to a keyword.
+///</summary>
 Token_t toKeyword( const __LIB String &_Identifier );
+
+///<summary>
+/// Convert token to string.
+///</summary>
 __LIB String TokenToString( const Token_t &_Token );
+
 
 class Token
 {
@@ -84,33 +96,105 @@ private:
 	__LIB String _identifier;
 	__DX uint _line, _char_count;
 public:
+
+	///<summary>
+	/// Construct this tokenizer optional more parameters.
+	///</summary>
 	Token( const __FILEIO Token_t& tok, const __LIB String& identifier, const __DX uint& line, const __DX uint char_count );
+
+	///<summary>
+	/// Construct this tokenizer.
+	///</summary>
 	Token( const __FILEIO Token_t& tok, const __LIB String& identifier );
+
+	///<summary>
+	/// Empty constructor
+	///</summary>
 	Token( );
 
+	///<summary>
+	/// Return the token type.
+	///</summary>
 	__FILEIO Token_t getToken( ) const;
+
+	///<summary>
+	/// Set the token type.
+	///</summary>
 	void setToken( const __FILEIO Token_t& );
 
+	///<summary>
+	/// Get the identifier of this token.
+	///</summary>
 	__LIB String getIdentifier( ) const;
+
+	///<summary>
+	/// Set the identifier of this token.
+	///</summary>
 	void setIdentifier( const __LIB String& );
 	
+	///<summary>
+	/// Get the line of this token.
+	///</summary>
 	__DX uint getLine( ) const;
+	
+	///<summary>
+	/// Set the line of this token.
+	///</summary>
 	void setLine( const uint& );
 
+	///<summary>
+	///	Get the char count of this token.
+	///</summary>
 	__DX uint getCharCount( ) const;
+
+	///<summary>
+	///	Set the char count of this token.
+	///</summary>
 	void setCharCount( const __DX uint& );
 
 public:
 	
 };
 
+
+///<summary>
+/// Return true if '_Lhs''s  identifier is equal to _Rhs.
+///</summary>
 bool operator==( const __FILEIO Token &_Lhs, const __LIB String &_Rhs );
+
+///<summary>
+/// Return true if '_Lhs''s token is equal to _Rhs.
+///</summary>
 bool operator==( const __FILEIO Token &_Lhs, const __FILEIO Token_t &_Rhs );
+
+///<summary>
+/// Return true if '_Lhs''s  identifier is equal to _Rhs. (Reversed)
+///</summary>
 bool operator==( const __LIB String &_Lhs, const Token &_Rhs );
+
+///<summary>
+/// Return true if '_Lhs''s token is equal to _Rhs. (Reversed)
+///</summary>
 bool operator==( const __FILEIO Token_t &_Lhs, const __FILEIO Token &_Rhs );
+
+///<summary>
+/// Return false if '_Lhs''s  identifier is equal to _Rhs.
+///</summary>
 bool operator!=( const __FILEIO Token &_Lhs, const __LIB String &_Rhs );
+
+///<summary>
+/// Return true if '_Lhs''s token is equal to _Rhs.
+///</summary>
 bool operator!=( const __FILEIO Token &_Lhs, const __FILEIO Token_t &_Rhs );
+
+///<summary>
+/// Return true if '_Lhs''s  identifier is equal to _Rhs. (Reversed)
+///</summary>
 bool operator!=( const __LIB String &_Lhs, const __FILEIO Token &_Rhs );
+
+///<summary>
+/// Return true if '_Lhs''s token is equal to _Rhs. (Reversed)
+///</summary>
 bool operator!=( const __FILEIO Token_t &_Lhs, const __FILEIO Token &_Rhs );
 
 

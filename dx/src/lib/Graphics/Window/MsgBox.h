@@ -49,15 +49,27 @@ public:
 
 public:
 	MsgBox( ) = delete;
+	
+	///<summary>
+	///	Construct message box.
+	///</summary>
 	MsgBox( const __LIB String &_Message, 
 			const __LIB String &_Title,
 			const __DX uint &_Type );
 
+	///<summary>
+	///	Construct message box as a popup from '_Parent'.
+	/// Meaning that '_Parent' will not function untill this
+	/// MsgBox is closed.
+	///</summary>
 	MsgBox( __GRAPHICS Window *_Parent,
 			const __LIB String &_Message, 
 			const __LIB String &_Title,
 			const __DX uint &_Type );
 
+	///<summary>
+	///	Show the dialog.
+	///</summary>
 	DialogResult Show( );
 private:
 	__GRAPHICS Window *_parent;

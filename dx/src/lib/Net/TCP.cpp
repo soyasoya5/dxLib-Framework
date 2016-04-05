@@ -192,9 +192,6 @@ TCPMessage TCPSocketImpl::front()
 
 void TCPSocketImpl::send(char * _Data, const::dx::uint & _Length)
 {
-	// Send length
-	::send( _socket, reinterpret_cast<const char*>( &_Length ), sizeof( ::dx::uint ), 0 );
-
 	// Send data
 	::send( _socket, _Data, _Length, 0 );
 }

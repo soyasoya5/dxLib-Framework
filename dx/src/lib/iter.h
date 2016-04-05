@@ -8,7 +8,6 @@ begin_LIB
 // These iterators are indexed, meaning that they are slower than 
 // the normal iterators, but provide more functionality.
 
-
 template<typename Px>
 class Iterator
 {
@@ -21,108 +20,175 @@ private:
 	using _MyT = Iterator<Px>;
 
 public:
-	Iterator() : _arr(nullptr), _count(0), _len(0) {}
-	Px* get()
+	Iterator( ) : _arr( nullptr ), _count( 0 ), _len( 0 ) {}
+
+	///<summary>
+	/// Returns a pointer to the element.
+	///</summary>
+	Px* get( )
 	{
-		return reinterpret_cast<Px*>(_arr + _count);
+		return reinterpret_cast<Px*>( _arr + _count );
 	}
-	const size_t& length()
+
+	///<summary>
+	/// Return the lenth of the internal array.
+	///</summary>
+	const size_t& length( ) const
 	{
 		return _len;
 	}
-	const size_t& index()
+
+	///<summary>
+	/// Return the index of this iterator.
+	///</summary>
+	const size_t& index( ) const
 	{
 		return _count;
 	}
 public: // Operators
+
+	///<summary>
+	/// Return a copy of this iterator that has its index decreased by '_Offset'.
+	///</summary>
 	template<typename off_t>
-	Iterator<Px> operator-(const off_t& off)
+	Iterator<Px> operator-( const off_t& _Offset )
 	{
-		return (CreateIterator(_arr, _len, _count - off));
+		return (CreateIterator( _arr, _len, _count - _Offset ));
 	}
+
+	///<summary>
+	/// Return a copy of this iterator that has its index increased by '_Offset'.
+	///</summary>
 	template<typename off_t>
-	Iterator<Px> operator+(const off_t& off)
+	Iterator<Px> operator+( const off_t& _Offset )
 	{
-		return (CreateIterator(_arr, _len, _count + off));
+		return (CreateIterator( _arr, _len, _count + _Offset ));
 	}
+
+	///<summary>
+	/// Increase index by '_Offset'.
+	///</summary>
 	template<typename off_t>
-	Iterator<Px>& operator+=(const off_t& off)
+	Iterator<Px>& operator+=( const off_t& _Offset )
 	{
-		this->index() += off;
+		_count += _Offset;
 		return (*this);
 	}
+
+	///<summary>
+	/// Decrease index by '_Offset'.
+	///</summary>
 	template<typename off_t>
-	Iterator<Px>& operator-=(const off_t& off)
+	Iterator<Px>& operator-=( const off_t& _Offset )
 	{
-		this->index() -= off;
+		_count -= _Offset;
 		return (*this);
 	}
-	Px& operator*()
+
+	///<summary>
+	/// Dereference the element.
+	///</summary>
+	Px& operator*( )
 	{
 		return (_arr[_count]);
 	};
-	Px* operator->()
+
+	///<summary>
+	/// Return a pointer to the element.
+	///</summary>
+	Px* operator->( )
 	{
-		return get();
+		return get( );
 	}
 
-	_MyT& operator++()
+	///<summary>
+	///	Pre Increment the index by one.
+	///</summary>
+	_MyT& operator++( )
 	{
-		if (_count >= _len)
+		if ( _count >= _len )
 			return (*this);
 		++_count;
 		return (*this);
 	}
 
-	_MyT& operator--()
+	///<summary>
+	///	Pre Decrement the index by one.
+	///</summary>
+	_MyT& operator--( )
 	{
-		if (_count <= 0)
+		if ( _count <= 0 )
 			return (*this);
 		--_count;
 		return (*this);
 	}
 
-	_MyT operator++(int)
+	///<summary>
+	///	Post Increment the index by one.
+	///</summary>
+	_MyT operator++( int )
 	{
 		_MyT tmp = *this;
 		operator++( );
 		return tmp;
 	}
 
-	_MyT operator--(int)
+	///<summary>
+	///	Post Decrement the index by one.
+	///</summary>
+	_MyT operator--( int )
 	{
 		_MyT tmp = *this;
 		operator--( );
 		return tmp;
 	}
 
-	bool operator==(const Iterator<Px>& lhs) const
+	///<summary>
+	/// Compare this iterator to '_Rhs'.
+	///</summary>
+	bool operator==( const Iterator<Px> &_Rhs ) const
 	{
-		return (this->_arr + _count) == (lhs._arr + lhs._count);
+		return (this->_arr + _count) == (_Rhs._arr + _Rhs._count);
 	}
-	bool operator!=(const Iterator<Px>& lhs) const
+
+	///<summary>
+	/// Compare this iterator to '_Rhs' and return true if they are not equal.
+	///</summary>
+	bool operator!=( const Iterator<Px> &_Rhs ) const
 	{
-		return !operator==(lhs);
+		return !( *this == _Rhs );
 	}
-	bool operator>(const Iterator<Px>& lhs) const
+
+	///<summary>
+	/// Return wether or not the index of this is greater than '_Rhs'.
+	///</summary>
+	bool operator>( const Iterator<Px> &_Rhs ) const
 	{
-		return (this->_count > lhs._count);
+		return (this->_count > _Rhs._count);
 	}
-	bool operator>=(const Iterator<Px>& lhs) const
+
+	///<summary>
+	///	Return wether or not the index of this is greater than equal to '_Rhs'.
+	///</summary>
+	bool operator>=( const Iterator<Px> &_Rhs ) const
 	{
-		return (this->_count >= lhs._count);
+		return (this->_count >= _Rhs._count);
 	}
-	bool operator<(const Iterator<Px>& lhs) const
+
+	///<summary>
+	///	Return wether or not the index of this is less than '_Rhs'.
+	///</summary>
+	bool operator<( const Iterator<Px> &_Rhs ) const
 	{
-		return (this->_count < lhs._count);
+		return (this->_count < _Rhs._count);
 	}
-	bool operator<=(const Iterator<Px>& lhs) const
+
+	///<summary>
+	///	Return wether or not the index of this is less than equal to '_Rhs'.
+	///</summary>
+	bool operator<=( const Iterator<Px> &_Rhs) const
 	{
-		return (this->_count <= lhs._count);
-	}
-	Iterator<Px> operator[](const size_t& off)
-	{
-		return CreateIterator(_arr, _count, off);
+		return (this->_count <= _Rhs._count);
 	}
 };
 
@@ -138,107 +204,180 @@ class ReverseIterator
 
 public:
 	ReverseIterator() : _arr(nullptr), _count(0), _len(0) {}
-	Px* get()
+
+	///<summary>
+	/// Returns a pointer to the element.
+	///</summary>
+	Px* get( )
 	{
-		return reinterpret_cast<Px*>(_arr + (_len - 1) - _count);
+		return reinterpret_cast<Px*>( _arr + (_len - 1) - _count );
 	}
-	const size_t& length()
+
+	///<summary>
+	/// Return the lenth of the internal array.
+	///</summary>
+	const size_t& length( ) const
 	{
 		return _len;
 	}
-	const size_t& index()
+
+	///<summary>
+	/// Return the index of this iterator.
+	///</summary>
+	const size_t& index( ) const
 	{
 		return _count;
 	}
 public: // Operators
-	ReverseIterator<Px> operator-(const size_t& off)
+	///<summary>
+	/// Return a copy of this iterator that has its index decreased by '_Offset'.
+	///</summary>
+	template<typename off_t>
+	Iterator<Px> operator-( const off_t& _Offset )
 	{
-		return (CreateReverseIterator(_arr, _len, _count - off));
-	}
-	ReverseIterator<Px> operator+(const size_t& off)
-	{
-		return (CreateReverseIterator(_arr, _len, _count + off));
-	}
-	ReverseIterator<Px>& operator+=(const size_t& off)
-	{
-		this->index() += off;
-		return (*this);
-	}
-	ReverseIterator<Px>& operator-=(const size_t& off)
-	{
-		this->index() -= off;
-		return (*this);
-	}
-	Px& operator*()
-	{
-		return *get();
-	};
-	Px* operator->()
-	{
-		return get();
+		return (CreateIterator( _arr, _len, _count - _Offset ));
 	}
 
-	_MyT& operator++()
+	///<summary>
+	/// Return a copy of this iterator that has its index increased by '_Offset'.
+	///</summary>
+	template<typename off_t>
+	Iterator<Px> operator+( const off_t& _Offset )
 	{
-		if (_count >= _len)
+		return (CreateIterator( _arr, _len, _count + _Offset ));
+	}
+
+	///<summary>
+	/// Increase index by '_Offset'.
+	///</summary>
+	template<typename off_t>
+	Iterator<Px>& operator+=( const off_t& _Offset )
+	{
+		_count += _Offset;
+		return (*this);
+	}
+
+	///<summary>
+	/// Decrease index by '_Offset'.
+	///</summary>
+	template<typename off_t>
+	Iterator<Px>& operator-=( const off_t& _Offset )
+	{
+		_count -= _Offset;
+		return (*this);
+	}
+
+	///<summary>
+	/// Dereference the element.
+	///</summary>
+	Px& operator*( )
+	{
+		return (_arr[_count]);
+	};
+
+	///<summary>
+	/// Return a pointer to the element.
+	///</summary>
+	Px* operator->( )
+	{
+		return get( );
+	}
+
+	///<summary>
+	///	Pre Increment the index by one.
+	///</summary>
+	_MyT& operator++( )
+	{
+		if ( _count >= _len )
 			return (*this);
 		++_count;
 		return (*this);
 	}
 
-	_MyT& operator--()
+	///<summary>
+	///	Pre Decrement the index by one.
+	///</summary>
+	_MyT& operator--( )
 	{
-		if (_count <= 0)
+		if ( _count <= 0 )
 			return (*this);
 		--_count;
 		return (*this);
 	}
 
-	_MyT operator++(int)
+	///<summary>
+	///	Post Increment the index by one.
+	///</summary>
+	_MyT operator++( int )
 	{
 		_MyT tmp = *this;
 		operator++( );
 		return tmp;
 	}
 
-	_MyT operator--(int)
+	///<summary>
+	///	Post Decrement the index by one.
+	///</summary>
+	_MyT operator--( int )
 	{
 		_MyT tmp = *this;
 		operator--( );
 		return tmp;
 	}
 
-	bool operator==(const ReverseIterator<Px>& other) const
+	///<summary>
+	/// Compare this iterator to '_Rhs'.
+	///</summary>
+	bool operator==( const ReverseIterator<Px> &_Rhs ) const
 	{
-		return (this->_arr + _len - _count) == (other._arr + other._len - other._count);
+		return (this->_arr + _len - _count) == (_Rhs._arr + _Rhs._len - _Rhs._count);
 	}
-	bool operator!=(const ReverseIterator<Px>& other) const
+
+	///<summary>
+	/// Compare this iterator to '_Rhs' and return true if they are not equal.
+	///</summary>
+	bool operator!=( const ReverseIterator<Px> &_Rhs ) const
 	{
-		return !operator==(other);
+		return !(*this == _Rhs);
 	}
-	bool operator>(const Iterator<Px>& lhs) const
+
+	///<summary>
+	/// Return wether or not the index of this is greater than '_Rhs'.
+	///</summary>
+	bool operator>( const Iterator<Px> &_Rhs ) const
 	{
-		return (this->_count > lhs._count);
+		return (this->_count > _Rhs._count);
 	}
-	bool operator>=(const Iterator<Px>& lhs) const
+
+	///<summary>
+	///	Return wether or not the index of this is greater than equal to '_Rhs'.
+	///</summary>
+	bool operator>=( const Iterator<Px> &_Rhs ) const
 	{
-		return (this->_count >= lhs._count);
+		return (this->_count >= _Rhs._count);
 	}
-	bool operator<(const Iterator<Px>& lhs) const
+
+	///<summary>
+	///	Return wether or not the index of this is less than '_Rhs'.
+	///</summary>
+	bool operator<( const Iterator<Px> &_Rhs ) const
 	{
-		return (this->_count < lhs._count);
+		return (this->_count < _Rhs._count);
 	}
-	bool operator<=(const Iterator<Px>& lhs) const
+
+	///<summary>
+	///	Return wether or not the index of this is less than equal to '_Rhs'.
+	///</summary>
+	bool operator<=( const Iterator<Px> &_Rhs ) const
 	{
-		return (this->_count <= lhs._count);
-	}
-	ReverseIterator<Px> operator[](const size_t& off)
-	{
-		return CreateReverseIterator(_arr, _count, off);
+		return (this->_count <= _Rhs._count);
 	}
 };
 
 
+///<summary>
+///	Create a forward iterator
+///</summary>
 template<typename Px>
 static Iterator<Px> CreateIterator(Px* array = nullptr, size_t length = 0, size_t offset = 0)
 {
@@ -248,6 +387,10 @@ static Iterator<Px> CreateIterator(Px* array = nullptr, size_t length = 0, size_
 	iter._count = offset;
 	return (iter);
 }
+
+///<summary>
+///	Create a reverse iterator
+///</summary>
 template<typename Px>
 static ReverseIterator<Px> CreateReverseIterator(Px* array = nullptr, size_t length = 0, size_t offset = 0)
 {

@@ -9,7 +9,15 @@ begin_GRAPHICS
 class Line
 {
 public:
+
+	///<summary>
+	///	Empty constructor
+	///</summary>
 	Line( );
+
+	///<summary>
+	///	Construct line.
+	///</summary>
 	Line( const __MATH Vector2 &_Position, const __MATH Vector2 &_Target, const __GRAPHICS Pen &_Pen );
 
 	///<summary>

@@ -78,7 +78,14 @@ public:
 	///</summary>
 	virtual void* native( ) const = 0;
 
+	///<summary>
+	///	Get the BasePainter singleton pointer.
+	///</summary>
 	static BasePainter* getSingleton( );
+
+	///<summary>
+	///	Set the BasePainter Singleton pointer.
+	///</summary>
 	static void setSingleton( BasePainter *_Putr );
 
 private:
