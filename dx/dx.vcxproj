@@ -81,6 +81,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -103,6 +104,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -144,6 +146,7 @@
     <ClCompile Include="src\lib\Graphics\UI\Component.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Style.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Textbox.cpp" />
+    <ClCompile Include="src\lib\Graphics\Window\Hotkey.cpp" />
     <ClCompile Include="src\lib\Graphics\Window\MsgBox.cpp" />
     <ClCompile Include="src\lib\Math\Region.cpp" />
     <ClCompile Include="src\lib\Math\Vector2.cpp" />
@@ -183,6 +186,7 @@
     <ClInclude Include="src\lib\Graphics\UI\lib.h" />
     <ClInclude Include="src\lib\Graphics\UI\Style.h" />
     <ClInclude Include="src\lib\Graphics\UI\Textbox.h" />
+    <ClInclude Include="src\lib\Graphics\Window\Hotkey.h" />
     <ClInclude Include="src\lib\Graphics\Window\MsgBox.h" />
     <ClInclude Include="src\lib\iter.h" />
     <ClInclude Include="src\lib\lib.h" />

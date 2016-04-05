@@ -53,6 +53,7 @@ class MouseMovedArgs : public EventArgs
 {
 public:
 	__MATH Vector2 position;
+	bool shift, ctrl;
 };
 
 class MouseClickedArgs : public EventArgs
@@ -60,6 +61,7 @@ class MouseClickedArgs : public EventArgs
 public:
 	__DX uint key;
 	__MATH Vector2 position;
+	bool shift, ctrl;
 };
 
 class MouseReleasedArgs : public EventArgs
@@ -67,6 +69,7 @@ class MouseReleasedArgs : public EventArgs
 public:
 	__DX uint key;
 	__MATH Vector2 position;
+	bool shift, ctrl;
 };
 
 class ScrollArgs : public EventArgs
@@ -75,11 +78,12 @@ public:
 	enum ScrollDirection { Up, Down };
 	ScrollDirection direction;
 	int delta;
+	bool shift, ctrl;
 	inline bool up( ) { return direction == Up; }
 	inline bool down( ) { return direction == Down; }
 };
 
-class MessageData : public EventArgs
+class MessageDataArgs : public EventArgs
 {
 public:
 	__DX uint Msg;
@@ -90,6 +94,17 @@ public:
 class Window
 {
 public:
+	using WindowMovedSig = void(Window*, WindowMovedArgs&);
+	using WindowClosingSig = void(Window*, WindowClosingArgs&);
+	using KeyDownSig = void(Window*, KeyDownArgs&);
+	using KeyUpSig = void(Window*, KeyUpArgs&);
+	using KeyDownCharSig = void(Window*, KeyDownCharArgs&);
+	using MouseMovedSig = void(Window*, MouseMovedArgs&);
+	using MouseClickedSig = void(Window*, MouseClickedArgs&);
+	using MouseReleasedSig = void(Window*, MouseReleasedArgs&);
+	using ScrollSig = void(Window*, ScrollArgs&);
+	using MessageDataSig = void(Window*, MessageDataArgs&);
+
 	enum PaintStyle_t
 	{
 		OnEvent_t,
@@ -250,6 +265,20 @@ public:
 	///</summary>
 	float Height( ) const;
 
+	///<summary>
+	/// Returns wether or not Ctrl is held
+	///</summary>
+	bool isCtrlHeld( ) const;
+
+	///<summary>
+	/// Returns wether or not Shift is held
+	///</summary>
+	bool isShiftHeld( ) const;
+
+
+	///<summary>
+	/// Returns the native window handle for this window.
+	///</summary>
 	HWND native_handle( );
 
 public: // Others
@@ -363,7 +392,7 @@ public:
 	///<summary>
 	/// You can use this handle custom messages.
 	///</summary>
-	__LIB Event<void(Window*, MessageData&)>& OnHandleMessage( );
+	__LIB Event<void(Window*, MessageDataArgs&)>& OnHandleMessage( );
 
 	///<summary>
 	/// Called every tick.
@@ -381,6 +410,7 @@ private:
 	std::vector<__LIB TimedTask<void(Window*)>*> _tasks;
 	HWND _hwnd;
 	__MATH Region _region;
+	bool _s, _c;
 
 private:
 	__LIB Event<void(Window*, WindowMovedArgs&)> _OnWindowMoved;
@@ -396,7 +426,7 @@ private:
 	__LIB Event<void(Window*, KeyUpArgs&)> _OnKeyUp;
 	__LIB Event<void(Window*, KeyDownCharArgs&)> _OnKeyDownChar;
 	__LIB Event<void(Window*, BasePainter*)> _OnPaint;
-	__LIB Event<void(Window*, MessageData&)> _OnHandleMessage;
+	__LIB Event<void(Window*, MessageDataArgs&)> _OnHandleMessage;
 	__LIB Event<void(Window*)> _OnTick;
 
 private:

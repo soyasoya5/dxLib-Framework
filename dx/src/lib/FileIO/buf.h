@@ -67,6 +67,7 @@ public:
 		this->assign( old, _It, _It2 );
 	}
 
+
 	void append( _MyT *_Buffer, __DX uint _Length )
 	{
 		append( _Buffer, _Buffer + _Length );
@@ -91,6 +92,11 @@ public:
 		return _buffer;
 	}
 
+	uint length( )
+	{
+		return _length;
+	}
+
 public:
 
 	_MyT *begin( )
@@ -99,6 +105,16 @@ public:
 	}
 
 	_MyT *end( )
+	{
+		return _buffer + _length;
+	}
+
+	const _MyT *cbegin( ) const
+	{
+		return _buffer;
+	}
+
+	const _MyT* cend( ) const
 	{
 		return _buffer + _length;
 	}

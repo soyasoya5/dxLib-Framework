@@ -23,6 +23,7 @@
 #undef SendMessage
 #endif
 
+
 namespace dx {
 	typedef unsigned int uint;
 	typedef unsigned long ulong;
@@ -45,6 +46,110 @@ namespace dx {
 			if ( _dest )
 				_dest( _val );
 		}
+	};
+
+	enum Key : uint
+	{
+		key_leftButton = 1,
+		key_rightButton,
+		key_reserved_01,
+		key_middleButton,
+		key_xbutton,
+		key_xbutton2,
+		key_reserved_02,
+		key_backspace,
+		key_tab,
+		key_reserved_03 = 0x0A,
+		key_clear = 0x0C,
+		key_enter = 0x0D,
+		key_shift = 0x10,
+		key_control = 0x11,
+		key_alt = 0x12,
+		key_pause = 0x13,
+		key_caps = 0x14,
+		key_escape = 0x1B,
+		key_space = 0x20,
+		key_pgup = 0x21,
+		key_pgdn = 0x22,
+		key_end = 0x23,
+		key_home = 0x24,
+		key_left = 0x25,
+		key_up = 0x26,
+		key_right = 0x27,
+		key_down = 0x28,
+		key_insert = 0x2D,
+		key_delete = 0x2E,
+		key_help = 0x2F,
+		key_0 = 0x30,
+		key_1 = 0x31,
+		key_2 = 0x32,
+		key_3 = 0x33,
+		key_4 = 0x34,
+		key_5 = 0x35,
+		key_6 = 0x36,
+		key_7 = 0x37,
+		key_8 = 0x38,
+		key_9 = 0x39,
+		key_a = 0x41,
+		key_b = 0x42,
+		key_c = 0x43,
+		key_d = 0x44,
+		key_e = 0x45,
+		key_f = 0x46,
+		key_g = 0x47,
+		key_h = 0x48,
+		key_i = 0x49,
+		key_j = 0x4A,
+		key_k = 0x4B,
+		key_l = 0x4C,
+		key_m = 0x4D,
+		key_n = 0x4E,
+		key_o = 0x4F,
+		key_p = 0x50,
+		key_q = 0x51,
+		key_r = 0x52,
+		key_s = 0x53,
+		key_t = 0x54,
+		key_u = 0x55,
+		key_v = 0x56,
+		key_w = 0x57,
+		key_x = 0x58,
+		key_y = 0x59,
+		key_z = 0x5A,
+		key_leftWindows = 0x5B,
+		key_rightWindows = 0x5C,
+		key_num0 = 0x60,
+		key_num1 = 0x61,
+		key_num2 = 0x62,
+		key_num3 = 0x63,
+		key_num4 = 0x64,
+		key_num5 = 0x65,
+		key_num6 = 0x66,
+		key_num7 = 0x67,
+		key_num8 = 0x68,
+		key_num9 = 0x69,
+		key_F1 = 0x70,
+		key_F2 = 0x71,
+		key_F3 = 0x72,
+		key_F4 = 0x73,
+		key_F5 = 0x74,
+		key_F6 = 0x75,
+		key_F7 = 0x76,
+		key_F8 = 0x77,
+		key_F9 = 0x78,
+		key_F10 = 0x79,
+		key_F11 = 0x7A,
+		key_F12 = 0x7B,
+		key_F13 = 0x7C,
+		key_F14 = 0x7D,
+		key_F15 = 0x7E,
+		key_numlock = 0x90,
+		key_leftShift = 0xA1,
+		key_leftControl = 0xA2,
+		key_rightControl = 0xA3,
+		key_comma = 0xBC,
+		key_minus = 0xBD,
+		key_dot = 0xBE
 	};
 
 	class Colors
@@ -310,6 +415,13 @@ namespace dx {
 		class AsyncKeeper;
 		class AsyncGuard;
 		class FlexibleGuard;
+		template<typename _Sig>
+		class timed_function;
+		template<typename _Sig>
+		class EventHandler;
+		template<typename _Sig>
+		class Event;
+		class EventArgs;
 
 		namespace Memory {
 			struct Destructor { };
@@ -332,17 +444,53 @@ namespace dx {
 			class Token;
 			class Tokenizer;
 			struct TokenizerMessage;
+			template<typename _Type>
+			class Buffer;
 		}
 
-		namespace IO
+		namespace Math
 		{
-			template<typename _Tx>
-			class _Streambuf;
-			class stream;
+			class Vector2;
+			class Region;
 		}
 
+		namespace Graphics
+		{
+			class BasePainter;
+			class Font;
+			class Line;
+			class Painter;
+			class Pen;
+			class Text;
+			class Circle;
+			class Texture;
+			class Window;
+			class MsgBox;
+
+			/* Event Args */
+			class WindowMovedArgs;
+			class WindowClosingArgs;
+			class KeyDownArgs;
+			class KeyUpArgs;
+			class KeyDownCharArgs;
+			class MouseMovedArgs;
+			class MouseClickedArgs;
+			class MouseReleasedArgs;
+			class ScrollArgs;
+			class MessageDataArgs;
+
+			namespace UI 
+			{
+				enum Style;
+				enum Theme;
+				class StyleManager;
+				class Component;
+				class Button;
+				class Checkbox;
+				class Textbox;
+			}
+		}
 
 	}
 
 }
-

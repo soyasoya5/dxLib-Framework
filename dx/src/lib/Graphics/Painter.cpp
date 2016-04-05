@@ -171,7 +171,7 @@ bool Painter::ResetPainter(const __MATH Vector2 & _Size, __GRAPHICS Window *_Tar
 
 void Painter::BeginPaint()
 {
-	((IDirect3DDevice9*)_device)->Clear( 0, nullptr, D3DCLEAR_TARGET, 0x0, 1.f, 0 );
+	((IDirect3DDevice9*)_device)->Clear( 0, nullptr, D3DCLEAR_TARGET, 0, 1.f, 0 );
 	((IDirect3DDevice9*)_device)->BeginScene( );
 }
 

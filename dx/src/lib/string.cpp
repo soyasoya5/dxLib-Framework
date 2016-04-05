@@ -511,9 +511,16 @@ std::vector<String> String::split(const String& splitter) const
 
 uint String::hash() const
 {
-	uint hash = 0x0;
-	for ( const auto&x : *this )
-		hash += x ^ ( rand( ) % 255 + 1 );
+	constexpr uint PRIME = 587u;
+	constexpr uint BASIS = 258u;
+
+	uint hash = BASIS;
+	for ( auto &x : *this )
+	{ 
+		hash ^= x;
+		hash *= PRIME;
+	}
+
 	return hash;
 }
 

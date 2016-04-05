@@ -105,6 +105,9 @@
     <ClCompile Include="src\lib\Graphics\UI\Textbox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\lib\Graphics\Window\Hotkey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\dx.h">
@@ -243,6 +246,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\lib\Graphics\UI\Textbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\Graphics\Window\Hotkey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

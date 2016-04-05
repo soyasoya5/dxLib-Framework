@@ -38,6 +38,7 @@
 #ifndef DONT_LINK_GRAPHICS
 #include "lib/graphics/window/window.h"
 #include "lib/graphics/window/msgbox.h"
+#include "lib/graphics/window/hotkey.h"
 #include "lib/graphics/BasePainter.h"
 #include "lib/graphics/Painter.h"
 #include "lib/graphics/line.h"
@@ -54,7 +55,9 @@
 #include "lib/graphics/ui/textbox.h"
 #endif
 
+// NET
 #include "lib/net/tcp.h"
+
 
 namespace dx 
 {

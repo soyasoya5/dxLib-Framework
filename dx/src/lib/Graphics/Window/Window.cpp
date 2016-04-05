@@ -110,7 +110,7 @@ __LIB Event<void(Window*, BasePainter*)>& Window::OnPaint()
 	return _OnPaint;
 }
 
-__LIB Event<void(Window*, MessageData&)>& Window::OnHandleMessage()
+__LIB Event<void(Window*, MessageDataArgs&)>& Window::OnHandleMessage()
 {
 	return _OnHandleMessage;
 }
@@ -286,6 +286,16 @@ float Window::Height() const
 	return this->_region.size.y;
 }
 
+bool Window::isCtrlHeld() const
+{
+	return _c;
+}
+
+bool Window::isShiftHeld() const
+{
+	return _s;
+}
+
 HWND Window::native_handle()
 {
 	return _hwnd;
@@ -306,7 +316,7 @@ __LIB TimedTask<void(Window*)>& Window::addTask( const time_point &_When, const 
 
 LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam)
 {
-	MessageData data;
+	MessageDataArgs data;
 	data.handled = false;
 	data.Msg = Msg;
 	data.wParam = wParam;
@@ -337,6 +347,13 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		KeyDownArgs args;
 		args.handled = false;
 		args.key_code = static_cast<uint>( wParam );
+
+		if ( args.key_code == dx::key_control )
+			this->_c = true;
+		else if ( args.key_code == dx::key_leftShift || args.key_code == dx::key_shift )
+			this->_s = true;
+		args.ctrl = _c;
+		args.shift = _s;
 		OnKeyDown( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -349,6 +366,15 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		KeyUpArgs args;
 		args.handled = false;
 		args.key_code = static_cast<uint>( wParam );
+
+		if ( args.key_code == dx::key_control )
+			this->_c = false;
+		else if ( args.key_code == dx::key_leftShift || args.key_code == dx::key_shift )
+			this->_s = false;
+
+		args.ctrl = _c;
+		args.shift = _s;
+
 		OnKeyUp( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -360,6 +386,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		MouseMovedArgs args;
 		args.handled = false;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = _c;
+		args.shift = _s;
 		OnMouseMoved( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -403,6 +431,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 1;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = _c;
+		args.shift = _s;
 		OnMouseClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -415,6 +445,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 1;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = _c;
+		args.shift = _s;
 		OnMouseReleased( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -427,6 +459,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = _c;
+		args.shift = _s;
 		OnMouseClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -439,6 +473,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = _c;
+		args.shift = _s;
 		OnMouseReleased( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -451,6 +487,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 1; 
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = _c;
+		args.shift = _s;
 		OnMouseDoubleClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -463,6 +501,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = _c;
+		args.shift = _s;
 		OnMouseDoubleClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -475,6 +515,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.delta = GET_WHEEL_DELTA_WPARAM( wParam );
 		args.direction = args.delta > 0 ? ScrollArgs::Up : ScrollArgs::Down;
+		args.ctrl = _c;
+		args.shift = _s;
 		OnScroll( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
