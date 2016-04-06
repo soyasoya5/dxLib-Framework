@@ -221,7 +221,7 @@ uint String::length() const
 	return ::strlen( _buffer );
 }
 
-uint String::capacity() const
+uint String::capacity() const noexcept
 {
 	return _bufsz;
 }

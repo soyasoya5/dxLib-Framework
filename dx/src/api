@@ -55,7 +55,6 @@
 namespace dx 
 {
 	using namespace lib;
-	using namespace Memory;
 	using namespace Math;
 	using namespace Graphics;
 	using namespace FileIO;

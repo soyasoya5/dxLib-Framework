@@ -119,12 +119,12 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 									painter->ResetPainter( args.region.size, sender );
 								  });
 
-	_Target->OnWindowMaximize( ) += __LIB EventHandler<void(__GRAPHICS Window*, __GRAPHICS WindowMovedArgs&)>( _Target->getClass( ) + "_Painter_Maximize", 
-	[]( __GRAPHICS Window *sender )
-	{
-		auto painter = (Painter*)sender->getPainter( );
-		painter->ResetPainter( { sender->Width( ), sender->Height( ) }, sender );
-	});
+	_Target->OnWindowMaximize( ) += __LIB EventHandler<void(__GRAPHICS Window*)>( _Target->getClass( ) + "_Painter_Maximize", 
+									[]( __GRAPHICS Window *sender )
+									{
+										auto painter = (Painter*)sender->getPainter( );
+										painter->ResetPainter( { sender->Width( ), sender->Height( ) }, sender );
+									});
 
 	if ( _Singleton )
 		BasePainter::setSingleton( painter );

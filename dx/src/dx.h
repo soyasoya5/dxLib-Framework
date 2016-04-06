@@ -400,6 +400,8 @@ namespace dx {
 		class AsyncKeeper;
 		class AsyncGuard;
 		class FlexibleGuard;
+		class StopWatch;
+		class DeltaTimer;
 		template<typename _Sig>
 		class timed_function;
 		template<typename _Sig>
@@ -407,20 +409,6 @@ namespace dx {
 		template<typename _Sig>
 		class Event;
 		class EventArgs;
-
-		namespace Memory {
-			struct Destructor { };
-			struct LiveFor { };
-			class Module;
-			template<typename _Lifetime = Destructor,
-				uint _Delay = static_cast<uint>(-1)>
-			class Handle;
-			class MemoryBase;
-			class InternalImpl;
-			class ExternalImpl;
-			class Address;
-			class Pattern;
-		}
 
 		namespace FileIO
 		{
