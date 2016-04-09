@@ -14,7 +14,7 @@ int main( )
 	auto appl = dx::Application::Create( );
 
 	// Set tick rate
-	appl->setTickRate( 25 );
+	appl->setTickRate( 10 );
 
 	// Create window & painter
 	auto window = dx::Window::Create( "ClassName", "UI Test", { { 300, 300 }, { 930, 590 } } );
@@ -90,10 +90,12 @@ int main( )
 	button3.setLayout( dx::Layout::Horizontal );
 	button3.setAllignment( dx::Allignment::Right );
 
+
 	dx::RichLabel label;
 	label.appendText( "Hi how are", dx::Colors::Green );
-	label.appendText( dx::Texture::Create( "tray.png" ) );
-	label.appendText( dx::Texture::Create( "tray.png" ) );
+	auto tray = dx::Texture::Create( "tray.png" );
+	label.appendText( tray );
+	label.appendText( tray );
 	label.appendText( " you?", dx::Colors::Red );
 	label.setBottomOf( &button3 );
 	label.setAllignedOf( &button3 );
