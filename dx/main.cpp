@@ -92,8 +92,9 @@ int main( )
 
 	dx::RichLabel label;
 	label.appendText( "Hi how are", dx::Colors::Green );
-	label.appendText( " you?", dx::Colors::Red );
 	label.appendText( dx::Texture::Create( "tray.png" ) );
+	label.appendText( dx::Texture::Create( "tray.png" ) );
+	label.appendText( " you?", dx::Colors::Red );
 	label.setBottomOf( &button3 );
 	label.setAllignedOf( &button3 );
 

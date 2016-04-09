@@ -16,6 +16,7 @@ public:
 		__GRAPHICS Font *font;
 		bool new_line; // If a new line is to be placed after this
 		bool is_texture; // If a tab is to be placed after this (8 spaces)
+		float orig_tex_y;
 	};
 
 	struct RichText

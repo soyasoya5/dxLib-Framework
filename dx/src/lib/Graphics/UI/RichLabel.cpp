@@ -36,17 +36,49 @@ void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Pai
 				it->container.font = (getFont( ) ? getFont( ) : _Painter->defaultFont( ));
 
 			// Recalculate position
-			if ( it == begin ) // First...
+			if (it == begin) // First...
+			{
 				it->position = pos.position;
+				it->container.orig_tex_y = it->position.y;
+			}
 			else
 			{
 				auto prev = (it - 1);
 				
 				// did the previus node end on a new line
-				if ( prev->container.new_line )
+				if ( prev->container.new_line ) {
 					it->position = { pos.position.x, prev->position.y + prev->size.y }; // kk then get original x pos and the prev y + its size
+					it->container.orig_tex_y = it->position.y;
+				}
+				else if ( it->container.is_texture )
+				{
+					it->position.x = prev->position.x + prev->size.x + 8;
+					it->position.y = (prev->size.y / 2 - it->container.texture->getSize( ).y / 2) + prev->position.y;
+					it->container.orig_tex_y = prev->container.orig_tex_y;
+				}
 				else 
-					it->position = prev->position + __MATH Vector2{ prev->size.x + (it->container.is_texture ? 5 : 0), (it->container.is_texture ? 2.0f : 0.0f) }; // Ok then get the vector of prev pos + prev size(x only)
+				{ 
+					// Is prev texture
+					if ( prev->container.is_texture )
+					{
+						// Set x
+						it->position.x = prev->position.x + prev->size.x;
+
+						// Now allign y PROPERLY.
+						it->position.y = prev->container.orig_tex_y;
+
+						// Set this ones orig_tex_y
+						it->container.orig_tex_y = prev->container.orig_tex_y;
+					}
+					else
+					{ 
+						// Set position
+						it->position = prev->position + __MATH Vector2{ prev->size.x, 0.0f }; // Ok then get the vector of prev pos + prev size(x only)
+
+
+						it->container.orig_tex_y = it->position.y;
+					}
+				}
 			}
 
 			// Size
@@ -87,6 +119,7 @@ void RichLabel::appendText(const __LIB String & _Text, __GRAPHICS Font * _Font, 
 			container.font = _Font;
 			container.color = _Color;
 			container.new_line = true;
+			container.is_texture = false;
 			_contrs.push_back( std::move( container ) );
 		}
 	}
