@@ -13,6 +13,8 @@ public:
 	
 private:
 	__MATH Vector2 determineText( __MATH Vector2 &_Pos, __MATH Vector2 &_TextSize );
+	__MATH Vector2 _determ;
+	bool _changed;
 };
 
 end_UI

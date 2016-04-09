@@ -158,7 +158,7 @@ private:
 	__UI Allignment _allignment;
 	__UI Layout _layout;
 	int _state, _guid;
-	bool _hovering, _focusing, _clicking, _enabled, _visible, _changed;
+	bool _hovering, _focusing, _clicking, _enabled, _visible, _region_changed;
 	void *_userdata;
 
 private: // Events

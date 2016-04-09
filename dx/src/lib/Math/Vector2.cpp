@@ -19,6 +19,7 @@ bool Vector2::Intersects(const __MATH Region & _Area) const
 
 float Vector2::Magnitude() const
 {
+	// Return the sqrt of dot(this).
 	return ::sqrt( x*x + y*y );
 }
 

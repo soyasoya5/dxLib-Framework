@@ -3,15 +3,18 @@
 #include <iomanip>
 #include <array>
 
+
+
 #pragma warning( disable : 4996 )
 int main( )
 {
+
 	//FreeConsole( );
 	// Create application
 	auto appl = dx::Application::Create( );
 
 	// Set tick rate
-	appl->setTickRate( 15 );
+	appl->setTickRate( 25 );
 
 	// Create window & painter
 	auto window = dx::Window::Create( "ClassName", "UI Test", { { 300, 300 }, { 930, 590 } } );
@@ -51,43 +54,54 @@ int main( )
 		texture->Paint( { 15, 15 }, { 1, 1 } );
 	};
 
-	dx::Hotkey hotkey{ { dx::key_control, dx::key_shift, dx::key_up }, "Ctrl|Shift|KeyUp" };
-	dx::Hotkey hotkey_down{ { dx::key_control, dx::key_shift, dx::key_down }, "Ctrl|Shift|KeyDown" };
-	hotkey.OnHotkey( ) += []( dx::Hotkey *sender, dx::EventArgs &args )
-	{
-		std::cout << "Hotkey " + sender->getName( ) << " pressed, sequence: { " << sender->sequence_as_string( ) << " }" << std::endl;
-	};
+	dx::Checkbox checkbox;
+	checkbox.setText( "Hello there" );
+	checkbox.setUIID( 1337 );
+	checkbox.setLocalRegion( { { 300, 300 }, { 25, 25 } } ); 
+	checkbox.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
+	checkbox.setLayout( dx::Layout::Horizontal );
+	checkbox.setAllignment( dx::Allignment::Center );
+	
+	dx::Button button;
+	button.setText( "(Text Left)" );
+	button.setUIID( 10 );
+	button.setLocalRegion( { { 15, 250 }, { 150, 30 } } );
+	button.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
+	button.setLayout( dx::Layout::Horizontal );
+	button.setAllignment( dx::Allignment::Left );
 
-	hotkey_down.OnHotkey( ) += [&window]( dx::Hotkey *sender, dx::EventArgs &args )
-	{
-		std::cout << "Hotkey " + sender->getName( ) << " pressed, stopping the handling of hotkeys" << std::endl;
-		window->OnKeyDown( ) -= "Hotkey_down";
-		window->OnKeyUp( ) -= "Hotkey_up";
-	};
+	dx::Button button2;
+	button2.setText( "(Text Center)" );
+	button2.setUIID( 11 );
+	button2.setBottomOf( &button );
+	button2.setAllignedOf( &button );
+	button2.setSize( { 150, 30 } );
+	button2.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
+	button2.setLayout( dx::Layout::Horizontal );
+	button2.setAllignment( dx::Allignment::Center );
 
+	dx::Button button3;
+	button3.setText( "(Text Right)" );
+	button3.setUIID( 12 );
+	button3.setBottomOf( &button2 );
+	button3.setAllignedOf( &button2 );
+	button3.setSize( { 150, 30 } );
+	button3.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
+	button3.setLayout( dx::Layout::Horizontal );
+	button3.setAllignment( dx::Allignment::Right );
 
-	window->OnKeyDown( ) += dx::EventHandler<dx::Window::KeyDownSig>( "Hotkey_down", [&]( dx::Window *sender, dx::KeyDownArgs &args )
-	{
-		hotkey.OnKeyDown( sender, args );
-		hotkey_down.OnKeyDown( sender, args );
-	});
+	dx::RichLabel label;
+	label.appendText( "Hi how are", dx::Colors::Green );
+	label.appendText( " you?", dx::Colors::Red );
+	label.appendText( dx::Texture::Create( "tray.png" ) );
+	label.setBottomOf( &button3 );
+	label.setAllignedOf( &button3 );
 
-	window->OnKeyUp( ) += dx::EventHandler<dx::Window::KeyUpSig>( "Hotkey_up", [&]( dx::Window *sender, dx::KeyUpArgs &args )
-	{
-		hotkey.OnKeyUp( sender, args );
-		hotkey_down.OnKeyUp( sender, args );
-	});
-
-	// Lets just unregister the 2 above to proove the next method also works
-	window->OnKeyDown( ) -= "Hotkey_down";
-	window->OnKeyUp( ) -= "Hotkey_up";
-
-	// ^ The 2 above can also be done like this
-	window->OnKeyDown( ) += dx::EventHandler<dx::Window::KeyDownSig>( hotkey.getName( ) + "_down", BIND_METHOD_2( &dx::Hotkey::OnKeyDown, &hotkey ) );
-	window->OnKeyUp( ) += dx::EventHandler<dx::Window::KeyUpSig>( hotkey.getName( ) + "_up", BIND_METHOD_2( &dx::Hotkey::OnKeyUp, &hotkey ) );
-	window->OnKeyDown( ) += dx::EventHandler<dx::Window::KeyDownSig>( hotkey_down.getName( ) + "_down", BIND_METHOD_2( &dx::Hotkey::OnKeyDown, &hotkey_down ) );
-	window->OnKeyUp( ) += dx::EventHandler<dx::Window::KeyUpSig>( hotkey_down.getName( ) + "_up", BIND_METHOD_2( &dx::Hotkey::OnKeyUp, &hotkey_down) );
-
+	window->HandleComponent( &checkbox );
+	window->HandleComponent( &button );
+	window->HandleComponent( &button2 );
+	window->HandleComponent( &button3 );
+	window->HandleComponent( &label );
 
 	return appl->run( );
 }

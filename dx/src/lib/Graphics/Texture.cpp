@@ -44,9 +44,16 @@ Texture * Texture::Create( char* _Buffer, const __DX uint &_Length, const __GRAP
 		return nullptr;
 	}
 
+	((LPDIRECT3DTEXTURE9)ptr->_texture)->GetLevelDesc( 0, (D3DSURFACE_DESC*)ptr->_desc );
+
 	return ptr;
 }
 
+
+__MATH Vector2 Texture::getSize() const
+{
+	return __MATH Vector2{ static_cast<float>( ((D3DSURFACE_DESC*)_desc)->Width ), static_cast<float>( ((D3DSURFACE_DESC*)_desc)->Height ) };
+}
 
 void * Texture::native_sprite()
 {
@@ -64,7 +71,7 @@ void Texture::Paint( const __MATH Vector2 & _Position, const __MATH Vector2 & _S
 	auto texture = (LPDIRECT3DTEXTURE9)_texture;
 	if ( !sprite || !texture )
 		return;
-	
+
 	// Begin
 	sprite->Begin( D3DXSPRITE_ALPHABLEND );
 

@@ -10,9 +10,20 @@ Checkbox::Checkbox()
 	: Component( )
 {
 	Component::OnMouseReleased( ) += []( Component *sender ) { sender->setState( !sender->getState( ) ); }; 
+	_changed = true;
 }
 
-// https://bitbucket.org/Yamiez/dxlib/src/3772a5230b86883fd890a41007e80d5502f63031/dx/main.cpp?at=master&fileviewer=file-view-default#main.cpp-42
+__MATH Vector2 Checkbox::determineText(__MATH Vector2 &pos, __MATH Vector2 &text_size )
+{
+	if ( _changed ) {
+		auto size = getSize( );
+		// Y is always gonna be in the middle for the sake of no clip
+		_determ.y = (size.y / 2 - text_size.y / 2) + pos.y;
+		_determ.x = pos.x + size.x + 10;
+		_changed = false;
+	}
+	return _determ;
+}
 
 void Checkbox::Paint( Window *_Sender, BasePainter *_Painter )
 {
@@ -31,18 +42,19 @@ void Checkbox::Paint( Window *_Sender, BasePainter *_Painter )
 		font = _Painter->defaultFont( );
 
 	// Setup Text
-	Text text{ font, getText( ), pos.position + __MATH Vector2{ pos.size.x + 15, 3 } };
+	Text text{ font, getText(), { } };
+	auto textSize = font->calculateMetrixOf( text.getText( ) );
+	text.setPosition( determineText( pos.position, textSize ) );
 
 	// Setup Colors/Style
 	auto style = getStyle( );
-	auto color_inner = style.theme( ) == Dark ? 0xFF2C2C2C : 0xFFC8C8C8;
-	auto color_outer = 0xFF4B4B4B;
+	inner.Color( style.theme( ) == Dark ? 0xFF2C2C2C : 0xFFC8C8C8 );
 	pen_text.Color( style.theme( ) == Dark ? Colors::White : Colors::Black );
 
 	if ( isClicked( ) || isHovered( ) )
 		outer.Color( style.style( ) );
 	else
-		outer.Color( color_outer );
+		outer.Color( 0xFF4B4B4B );
 	
 
 	_Painter->PaintRectOutlined( pos, inner, outer );

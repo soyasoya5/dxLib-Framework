@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2CCF7D66-8B65-49ED-88B3-BCFB5E285EB0}</ProjectGuid>
+    <ProjectGuid>{1E8D8E65-3287-4584-83BA-85DF58221CDC}</ProjectGuid>
     <RootNamespace>dx</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -68,11 +68,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -82,6 +82,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -104,7 +105,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -127,35 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\lib\Application.cpp" />
-    <ClCompile Include="src\lib\async.cpp" />
-    <ClCompile Include="src\lib\clock.cpp" />
-    <ClCompile Include="src\lib\FileIO\path.cpp" />
-    <ClCompile Include="src\lib\FileIO\token.cpp" />
-    <ClCompile Include="src\lib\FileIO\tokenizer.cpp" />
-    <ClCompile Include="src\lib\Graphics\BasePainter.cpp" />
-    <ClCompile Include="src\lib\Graphics\Font.cpp" />
-    <ClCompile Include="src\lib\Graphics\Line.cpp" />
-    <ClCompile Include="src\lib\Graphics\Painter.cpp" />
-    <ClCompile Include="src\lib\Graphics\Pen.cpp" />
-    <ClCompile Include="src\lib\Graphics\Text.cpp" />
-    <ClCompile Include="src\lib\Graphics\Texture.cpp" />
-    <ClCompile Include="src\lib\Graphics\UI\Button.cpp" />
-    <ClCompile Include="src\lib\Graphics\UI\Checkbox.cpp" />
-    <ClCompile Include="src\lib\Graphics\UI\Component.cpp" />
-    <ClCompile Include="src\lib\Graphics\UI\Style.cpp" />
-    <ClCompile Include="src\lib\Graphics\UI\Textbox.cpp" />
-    <ClCompile Include="src\lib\Graphics\Window\Hotkey.cpp" />
-    <ClCompile Include="src\lib\Graphics\Window\MsgBox.cpp" />
-    <ClCompile Include="src\lib\Math\Region.cpp" />
-    <ClCompile Include="src\lib\Math\Vector2.cpp" />
-    <ClCompile Include="src\lib\Net\TCP.cpp" />
-    <ClCompile Include="src\lib\string.cpp" />
-    <ClCompile Include="src\lib\Graphics\Window\Window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\api" />
     <ClInclude Include="src\dx.h" />
     <ClInclude Include="src\dx_config.h" />
     <ClInclude Include="src\lib\Application.h" />
@@ -179,21 +150,54 @@
     <ClInclude Include="src\lib\Graphics\UI\Checkbox.h" />
     <ClInclude Include="src\lib\Graphics\UI\Component.h" />
     <ClInclude Include="src\lib\Graphics\UI\lib.h" />
+    <ClInclude Include="src\lib\Graphics\UI\RichLabel.h" />
     <ClInclude Include="src\lib\Graphics\UI\Style.h" />
     <ClInclude Include="src\lib\Graphics\UI\Textbox.h" />
     <ClInclude Include="src\lib\Graphics\Window\Hotkey.h" />
     <ClInclude Include="src\lib\Graphics\Window\MsgBox.h" />
+    <ClInclude Include="src\lib\Graphics\Window\Window.h" />
     <ClInclude Include="src\lib\iter.h" />
     <ClInclude Include="src\lib\lib.h" />
-    <ClInclude Include="src\lib\Math\Region.h" />
     <ClInclude Include="src\lib\Math\lib.h" />
     <ClInclude Include="src\lib\Math\math.h" />
+    <ClInclude Include="src\lib\Math\Region.h" />
     <ClInclude Include="src\lib\Math\Vector2.h" />
-    <ClInclude Include="src\lib\Graphics\Window\Window.h" />
     <ClInclude Include="src\lib\Net\lib.h" />
     <ClInclude Include="src\lib\Net\TCP.h" />
     <ClInclude Include="src\lib\string.h" />
     <ClInclude Include="src\lib\Task.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\lib\Application.cpp" />
+    <ClCompile Include="src\lib\async.cpp" />
+    <ClCompile Include="src\lib\clock.cpp" />
+    <ClCompile Include="src\lib\FileIO\path.cpp" />
+    <ClCompile Include="src\lib\FileIO\token.cpp" />
+    <ClCompile Include="src\lib\FileIO\tokenizer.cpp" />
+    <ClCompile Include="src\lib\Graphics\BasePainter.cpp" />
+    <ClCompile Include="src\lib\Graphics\Font.cpp" />
+    <ClCompile Include="src\lib\Graphics\Line.cpp" />
+    <ClCompile Include="src\lib\Graphics\Painter.cpp" />
+    <ClCompile Include="src\lib\Graphics\Pen.cpp" />
+    <ClCompile Include="src\lib\Graphics\Text.cpp" />
+    <ClCompile Include="src\lib\Graphics\Texture.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Button.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Checkbox.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Component.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\RichLabel.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Style.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Textbox.cpp" />
+    <ClCompile Include="src\lib\Graphics\Window\Hotkey.cpp" />
+    <ClCompile Include="src\lib\Graphics\Window\MsgBox.cpp" />
+    <ClCompile Include="src\lib\Graphics\Window\Window.cpp" />
+    <ClCompile Include="src\lib\Math\Region.cpp" />
+    <ClCompile Include="src\lib\Math\Vector2.cpp" />
+    <ClCompile Include="src\lib\Net\TCP.cpp" />
+    <ClCompile Include="src\lib\string.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\api" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

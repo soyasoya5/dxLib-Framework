@@ -8,7 +8,7 @@ Component::Component()
 	  _rightOf( nullptr ), _bottomOf( nullptr ), _topOf( nullptr ),
 	  _parent( nullptr ), _allignment( Center ), _layout( Horizontal ),
 	  _state( 0 ), _hovering( false ), _focusing( false ), _clicking( false ),
-	  _enabled( true ), _visible( true ), _userdata( nullptr )	  
+	  _enabled( true ), _visible( true ), _userdata( nullptr ), _region_changed( true )
 {
 
 }
@@ -35,8 +35,7 @@ __MATH Region Component::getGlobalRegion() const
 
 __MATH Region Component::determineRegion()
 {
-
-	if ( _changed ) {
+	if ( _region_changed ) {
 		_determined.position = _local.position + _global.position;
 		_determined.size = _local.size;
 		
@@ -71,7 +70,7 @@ __MATH Region Component::determineRegion()
 			if ( _determined.position.x == 0 )
 				_determined.position.x = detAllign.position.x;
 		}
-		_changed = false;
+		_region_changed = false;
 	}
 
 	return _determined;
@@ -187,14 +186,14 @@ void Component::setLocalRegion(const __MATH Region & _Region)
 	OnModified( ).Invoke( this );
 	_local = _Region;
 	_global.size = _local.size;
-	_changed = true;
+	_region_changed = true;
 }
 
 void Component::setLocalPosition(const __MATH Vector2 & _Position)
 {
 	OnModified( ).Invoke( this );
 	_local.position = _Position;
-	_changed = true;
+	_region_changed = true;
 }
 
 void Component::setGlobalRegion(const __MATH Region & _Region)
@@ -202,14 +201,14 @@ void Component::setGlobalRegion(const __MATH Region & _Region)
 	OnModified( ).Invoke( this );
 	_global = _Region;
 	_local.size = _global.size;
-	_changed = true;
+	_region_changed = true;
 }
 
 void Component::setGlobalPosition(const __MATH Vector2 & _Position)
 {
 	OnModified( ).Invoke( this );
 	_global.position = _Position;
-	_changed = true;
+	_region_changed = true;
 }
 
 void Component::setSize(const __MATH Vector2 & _Size)
@@ -217,7 +216,7 @@ void Component::setSize(const __MATH Vector2 & _Size)
 	OnModified( ).Invoke( this );
 	_local.size = _Size;
 	_global.size = _Size;
-	_changed = true;
+	_region_changed = true;
 }
 
 void Component::setStyle(const __UI StyleManager & _Style)

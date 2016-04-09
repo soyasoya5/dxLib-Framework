@@ -25,6 +25,12 @@ public:
 	///</summary>
 	static Texture *Create( char* _Buffer, const __DX uint &_Length, const __GRAPHICS BasePainter *_Painter = __GRAPHICS BasePainter::getSingleton( ) );
 
+
+	///<summary>
+	/// Get the size of this texture (NON SCALED)
+	///</summary>
+	__MATH Vector2 getSize( ) const;
+
 	///<summary>
 	///	Get the native sprite of this texture.
 	///</summary>
@@ -47,6 +53,7 @@ public:
 private:
 	Texture( );
 	void *_sprite, *_texture;
+	unsigned char _desc[32u];
 };
 
 

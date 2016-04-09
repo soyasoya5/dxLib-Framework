@@ -587,15 +587,26 @@ bool Window::PollEvents()
 
 void Window::HandleComponent(__UI Component * _Comp)
 {
-	this->OnMouseMoved( ) += BIND_METHOD_2( &UI::Component::MouseMoved, _Comp );
-	this->OnMouseClicked( ) += BIND_METHOD_2( &UI::Component::MouseClicked, _Comp );
-	this->OnMouseReleased( ) += BIND_METHOD_2( &UI::Component::MouseReleased, _Comp );
-	this->OnScroll( ) += BIND_METHOD_2( &UI::Component::MouseScrolled, _Comp );
-	this->OnKeyDown( ) += BIND_METHOD_2( &UI::Component::KeyDown, _Comp );
-	this->OnKeyUp( ) += BIND_METHOD_2( &UI::Component::KeyUp, _Comp );
-	this->OnKeyDownChar( ) += BIND_METHOD_2( &UI::Component::KeyDownChar, _Comp );
-	this->OnPaint( ) += BIND_METHOD_2( &UI::Component::Paint, _Comp );
+	this->OnMouseMoved( ) += __LIB EventHandler<MouseMovedSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseMoved, _Comp ) );
+	this->OnMouseClicked() += __LIB EventHandler<MouseClickedSig>(__LIB to_string(_Comp->getUIID()) + "_component", BIND_METHOD_2(&UI::Component::MouseClicked , _Comp));
+	this->OnMouseReleased( ) += __LIB EventHandler<MouseReleasedSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseReleased, _Comp ) );
+	this->OnScroll( ) += __LIB EventHandler<ScrollSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseScrolled, _Comp ) );
+	this->OnKeyDown( ) += __LIB EventHandler<KeyDownSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyDown, _Comp ) );
+	this->OnKeyUp( ) += __LIB EventHandler<KeyUpSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyUp, _Comp ) );
+	this->OnKeyDownChar( ) += __LIB EventHandler<KeyDownCharSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyDownChar, _Comp ) );
+	this->OnPaint( ) += __LIB EventHandler<void(__GRAPHICS Window*, __GRAPHICS BasePainter*)>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::Paint, _Comp ) );
+}
 
+void Window::StopHandlingComponent(__UI Component * _Comp)
+{
+	this->OnMouseMoved( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnMouseClicked( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnMouseReleased( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnScroll( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnKeyDown( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnKeyUp( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnKeyDownChar( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnPaint( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
 }
 
 __LIB Event<void(Window*, WindowMovedArgs&)>& Window::OnWindowMoved()

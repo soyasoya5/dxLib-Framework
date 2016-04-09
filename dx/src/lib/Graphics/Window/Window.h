@@ -315,6 +315,11 @@ public: // Others
 	///</summary>
 	void HandleComponent( __UI Component *_Comp );
 
+	///<summary>
+	///	Remove the handling of this component, uses the ID to determine which event handler(s) to remove.
+	///</summary>
+	void StopHandlingComponent( __UI Component *_Comp );
+
 public:
 		// Events
 
