@@ -32,11 +32,21 @@ public:
 
 	float getMaxDelta( ) const;
 
+	void setWheel( const float &_Delta );
+	
+	float getWheel( ) const;
+
+	void setWheelSize( const __MATH Vector2 &_Size );
+
+	__MATH Vector2 getWheelSize( ) const;
+
+
 	bool CollidesWheel( const __MATH Vector2 &_Position );
+
+	bool inScrollableRegion( const __MATH Vector2 &_Cursor ) const;
 
 	const Textbox *getTextbox( ) const;
 
-	const RichLabel *getLabel( ) const;
 
 private:
 	void moveWheelToDelta( );

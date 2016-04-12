@@ -66,19 +66,7 @@ Slider::Slider()
 	
 	OnModified( ) += [this]( Component *sender )
 	{
-		this->_changed = true;
-
-		if ( this->_layout == Horizontal ) 
-		{
-			this->_wheelSize.y = this->_local.size.y;
-			this->_wheelSize.x = 15;
-		}
-		else
-		{
-			this->_wheelSize.x = this->_local.size.x;
-			this->_wheelSize.y = 15;
-		}
-		
+		this->_changed = true;		
 		this->_textbox->setStyle( this->_style );
 		this->_textbox->setFont( this->_font );
 	};
@@ -155,23 +143,31 @@ void Slider::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharArgs
 void Slider::MouseMoved(__GRAPHICS Window * _Sender, __GRAPHICS MouseMovedArgs & _Args)
 {
 	//If dragging
-	if ( _dragging )
+	if ( _dragging && inScrollableRegion( _Args.position ) )
 	{
-		// __
-		if ( _layout == Horizontal )
+		if ( _moved.x != 0 && _moved.y != 0 )
 		{
-			auto delta = (_Args.position.x) - _determined.position.x;
-			if ( delta > 0 && delta <= (_local.size.x - _wheelSize.x) )
-				_wheel.x = delta;
-			this->_changed = true;
+			auto increment = (_Args.position - _determined.position) - (_moved - _determined.position);
+			
+			if ( _layout == Horizontal )
+			{ 
+				_wheel.x += increment.x;
+				if ( _wheel.x > (_local.size.x - _wheelSize.x) )
+					_wheel.x = (_local.size.x - _wheelSize.x);
+				if ( _wheel.x < 0 )
+					_wheel.x = 0;
+			}
+			else
+			{ 
+				_wheel.y += increment.y;
+				if ( _wheel.y > (_local.size.y - _wheelSize.y) )
+					_wheel.y = (_local.size.y - _wheelSize.y);
+				if ( _wheel.y < 0 )
+					_wheel.y = 0;
+			}
 		}
-		else // |
-		{
-			auto delta = (_Args.position.y) - _determined.position.y;
-			if ( delta > 0 && delta <= (_local.size.y - _wheelSize.y) )
-				_wheel.y = delta;
-			this->_changed = true;
-		}
+		_moved = _Args.position;
+		_changed = true;
 	}
 
 	_textbox->MouseMoved( _Sender, _Args );
@@ -179,51 +175,26 @@ void Slider::MouseMoved(__GRAPHICS Window * _Sender, __GRAPHICS MouseMovedArgs &
 
 void Slider::MouseClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClickedArgs & _Args)
 {
-
 	// If collides anywhere & pressing ctrl, then directly move
 	// the wheel.
 	if ( Collides( _Args.position ) && _Args.ctrl )
 	{
 		// Get the sub offset from mouse - determined_position.
 		if ( _layout == Horizontal )
-		{
 			_wheel.x = (_Args.position.x) - _determined.position.x;
-			this->_changed = true;
-		}
 		else // |
-		{
 			_wheel.y = (_Args.position.y) - _determined.position.y;
-			this->_changed = true;
-		}
 		this->_changed = true;
-		this->_hovering = true;
-	}
-
-
-	// If hovering
-	if ( _hovering )
-	{
-		// Do stuff
-		
-		// If was not already clicking then raise mousepressed event.
-		if ( !_clicking )
-			OnMousePressed( ).Invoke( this );
-		// Set
-		this->_clicking = true;
-		this->_moved = { 0, 0 };
-	}
-	else
-	{
-		// set
-		this->_clicking = false;
-		this->_moved = { 0, 0 };
 	}
 
 	// Collides with the wheel
 	if ( CollidesWheel( _Args.position ) )
 		_dragging = true;
 	else
+	{
 		_dragging = false;
+		_moved = { 0, 0 };
+	}
 	
 	_textbox->MouseClicked( _Sender, _Args );
 }
@@ -234,6 +205,7 @@ void Slider::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseReleased
 		OnMouseReleased( ).Invoke( this );
 	_dragging = false;
 	_clicking = false;
+	_moved = { 0, 0 };
 	_textbox->MouseReleased( _Sender, _Args );
 }
 
@@ -252,16 +224,53 @@ float Slider::getMaxDelta() const
 	return _maxDelta;
 }
 
+void Slider::setWheel(const float & _Delta)
+{
+	if ( _layout == Horizontal )
+		_wheel.x = _Delta;
+	else
+		_wheel.y == _Delta;
+}
+
+
+
+
+float Slider::getWheel( ) const
+{
+	if ( _layout == Horizontal )
+		return _wheel.x;
+	else
+		return _wheel.y;
+}
+
+void Slider::setWheelSize(const __MATH Vector2 & _Size)
+{
+	_wheelSize = _Size;
+	_changed = true;
+}
+
+__MATH Vector2 Slider::getWheelSize() const
+{
+	return _wheelSize;
+}
+
 bool Slider::CollidesWheel(const __MATH Vector2 & _Position)
 {
 	return _Position.Intersects( { _determined.position + _wheel, _wheelSize } );
 }
 
+bool Slider::inScrollableRegion(const __MATH Vector2 & _Cursor) const
+{
+	return (_layout == Horizontal ? 
+		   _Cursor.Intersects( { { _determined.position.x, 0 }, { _determined.size.x, 100000 } } ) : 
+		   _Cursor.Intersects( { { 0, _determined.position.y }, { 100000, _determined.size.y } } ) );
+}
 
 const Textbox * Slider::getTextbox() const
 {
 	return _textbox;
 }
+
 
 void Slider::moveWheelToDelta()
 {

@@ -12,6 +12,7 @@ begin_GRAPHICS class Font; end_GRAPHICS
 
 begin_UI
 
+
 // Allignment enum
 enum Allignment
 {
@@ -92,6 +93,7 @@ public: // Modifiers
 	virtual void setFont( __GRAPHICS Font *_Font );
 	virtual void setUIID( const int &_GUID );
 	virtual void setText( const __LIB String &_Text );
+	virtual void flipLayout( );
 
 public: // Virtuals/Logic
 	virtual void Paint( __GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter ) = 0;

@@ -46,6 +46,8 @@ public:
 
 	void setText( const __LIB String &_Text ) override;
 
+	RichText *textAt( const int &index );
+
 private:
 	void recalculate_text( );
 

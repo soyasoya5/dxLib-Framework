@@ -54,10 +54,33 @@ int main( )
 
 	auto slider = new dx::Slider( );
 	slider->setLocalRegion( { { 25, 200 }, { 200, 30 } } );
+	slider->setWheelSize( { 10, 30 } );
 	slider->setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
 	slider->setLayout( dx::Horizontal );
 	
+	auto button = new dx::Button( );
+	button->setText( "Flip Layout" );
+	button->setBottomOf( slider );
+	button->setAllignedOf( slider );
+	button->setSize( { 125, 30 } );
+	button->setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
+	button->OnMouseReleased( ) += [slider]( dx::Component *sender )
+	{
+		slider->flipLayout( );
+		if ( slider->getLayout( ) == dx::Horizontal )
+		{
+			slider->setSize( { 200, 30 } );
+			slider->setWheelSize( { 10, 30 } );
+		}
+		else
+		{
+			slider->setSize( { 30, 200 } );
+			slider->setWheelSize( { 30, 10 } );
+		} 
+	};
+
 	window->HandleComponent( slider );
+	window->HandleComponent( button );
 
 	return appl->run( );
 }

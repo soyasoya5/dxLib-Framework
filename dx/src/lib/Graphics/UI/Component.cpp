@@ -183,150 +183,163 @@ __LIB String Component::getText() const
 
 void Component::setLocalRegion(const __MATH Region & _Region)
 {
-	OnModified( ).Invoke( this );
 	_local = _Region;
 	_global.size = _local.size;
 	_region_changed = true;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setLocalPosition(const __MATH Vector2 & _Position)
 {
-	OnModified( ).Invoke( this );
 	_local.position = _Position;
 	_region_changed = true;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setGlobalRegion(const __MATH Region & _Region)
 {
-	OnModified( ).Invoke( this );
 	_global = _Region;
 	_local.size = _global.size;
 	_region_changed = true;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setGlobalPosition(const __MATH Vector2 & _Position)
 {
-	OnModified( ).Invoke( this );
 	_global.position = _Position;
 	_region_changed = true;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setSize(const __MATH Vector2 & _Size)
 {
-	OnModified( ).Invoke( this );
 	_local.size = _Size;
 	_global.size = _Size;
 	_region_changed = true;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setStyle(const __UI StyleManager & _Style)
 {
-	OnModified( ).Invoke( this );
 	_style = _Style;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setLeftOf(__UI Component * _Component)
 {
-	OnModified( ).Invoke( this );
 	_leftOf = _Component;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setRightOf(__UI Component * _Component)
 {
-	OnModified( ).Invoke( this );
 	_rightOf = _Component;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setBottomOf(__UI Component * _Component)
 {
-	OnModified( ).Invoke( this );
 	_bottomOf = _Component;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setTopOf(__UI Component * _Component)
 {
-	OnModified( ).Invoke( this );
 	_topOf = _Component;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setAllignedOf(__UI Component * _Component)
 {
 	_allignedOf = _Component;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setParent(__UI Component * _Parent)
 {
-	OnModified( ).Invoke( this );
 	_parent = _Parent;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setAllignment(const __UI Allignment & _Allignment)
 {
-	OnModified( ).Invoke( this );
 	_allignment = _Allignment;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setLayout(const __UI Layout & _Layout)
 {
-	OnModified( ).Invoke( this );
 	_layout = _Layout;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setState( const int &_State )
 {
-	OnModified( ).Invoke( this );
 	_state = _State;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setHovered(const bool & _Hovered)
 {
-	OnModified( ).Invoke( this );
 	_hovering = _Hovered;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setFocused(const bool & _Focused)
 {
-	OnModified( ).Invoke( this );
 	_focusing = _Focused;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setClicked(const bool & _Clicked)
 {
-	OnModified( ).Invoke( this );
 	_clicking = _Clicked;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setEnabled(const bool & _Enabled)
 {
-	OnModified( ).Invoke( this );
 	_enabled = _Enabled;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setVisible(const bool & _Visible)
 {
-	OnModified( ).Invoke( this );
 	_visible = _Visible;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setUserdata(void * _Data)
 {
-	OnModified( ).Invoke( this );
 	_userdata = _Data;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setFont(__GRAPHICS Font * _Font)
 {
 	this->_font = _Font;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setUIID(const int & _GUID)
 {
 	_guid = _GUID;
+	OnModified( ).Invoke( this );
 }
 
 void Component::setText(const __LIB String & _Text)
 {
 	_text = _Text;
+	OnModified( ).Invoke( this );
+}
+
+void Component::flipLayout()
+{
+	if ( _layout == Horizontal )
+		setLayout( Vertical );
+	else
+		setLayout( Horizontal );
+
 }
 
 void Component::KeyDown(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownArgs & _Args)
