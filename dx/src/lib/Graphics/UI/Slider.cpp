@@ -102,11 +102,8 @@ void Slider::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Painte
 	// Determine pos
 	auto pos = determineRegion( );
 
-	// First lets do some nasty calculations
 	if ( _changed )
 	{
-		// _barPos.x / (getSize().x - _barSize.x)) * getMax();
-		// Lets calcualte the delta of X
 		_delta.x = (_wheel.x / (_local.size.x - _wheelSize.x)) * _maxDelta;
 		_delta.y = (_wheel.x / (_local.size.y - _wheelSize.y)) * _maxDelta;
 
@@ -268,8 +265,6 @@ const Textbox * Slider::getTextbox() const
 
 void Slider::moveWheelToDelta()
 {
-
-	// return ((float)getState() / getMax()) * (getSize().x - _barSize.x);
 	if ( _layout == Horizontal )
 	{
 		auto wheel = (_delta.x / _maxDelta) * (_local.size.x - _wheelSize.x);
