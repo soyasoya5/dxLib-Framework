@@ -401,7 +401,7 @@ void Component::Release(const bool & _ReleaseChildren)
 
 bool Component::Collides(const __MATH Vector2 & _With)
 {
-	__MATH Region region = determineRegion( );
+	auto region = determineRegion( );
 
 	return _With.Intersects( region );
 }

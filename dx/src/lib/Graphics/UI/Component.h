@@ -147,7 +147,7 @@ public:
 	///</summary>
 	__LIB Event<void(Component*)>& OnRelease( );
 
-private:
+protected:
 	__LIB String _text;
 	__GRAPHICS Font* _font;
 	__MATH Region _local, _global, _determined;

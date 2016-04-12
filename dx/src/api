@@ -47,6 +47,7 @@
 #include "lib/graphics/ui/checkbox.h"
 #include "lib/graphics/ui/textbox.h"
 #include "lib/graphics/ui/richlabel.h"
+#include "lib/graphics/ui/slider.h"
 #endif
 
 // NET

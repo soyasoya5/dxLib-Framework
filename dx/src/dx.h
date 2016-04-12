@@ -14,6 +14,10 @@
 #include <vector>
 #include <list>
 #include <sstream>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h> // aka <cancer.h>

@@ -93,12 +93,19 @@ void Textbox::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharArg
 			font = _Sender->getPainter( )->defaultFont( );
 
 		auto key = _Args.key_char;
+		if ( key == _loose )
+		{
+			_canwrite = false;
+			OnLostFocus( ).Invoke( this );
+			return;
+		}
+
 		if ( key == '\n' && !isMultiline( ) )
 			return;
 		
 		if ( key == '\b' && !text.empty( ) )
 			text.pop_back( );
-		else if ( key != '\b' )
+		else if ( key != '\b' && isInFilter( key ) )
 			text.push_back( key );
 		setText( text );
 		_Sender->ForcePaint( );
@@ -109,8 +116,11 @@ void Textbox::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharArg
 void Textbox::MouseClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClickedArgs & _Args)
 {
 	__super::MouseClicked( _Sender, _Args );
-	if ( !isClicked( ) )
+	if ( !isClicked( ) ) 
+	{
 		_canwrite = false;
+		OnLostFocus( ).Invoke( this );
+	}
 }
 
 void Textbox::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseReleasedArgs & _Args)
@@ -122,6 +132,7 @@ void Textbox::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseRelease
 			_canwrite = true;
 			setClicked( false );
 			OnMousePressed( ).Invoke( this );
+			OnGainFocus( ).Invoke( this );
 		}
 	}
 }
@@ -141,6 +152,11 @@ __LIB String Textbox::getPromptText() const
 	return _prompt;
 }
 
+__LIB String Textbox::getFilter() const
+{
+	return _filter;
+}
+
 char Textbox::getPasswordChar() const
 {
 	return _passwordChar;
@@ -151,29 +167,81 @@ bool Textbox::getUsePasswordChar() const
 	return _usePasswordChar;
 }
 
+char Textbox::getLooseFocusKey() const
+{
+	return _loose;
+}
+
+bool Textbox::isInFilter(const char & _Key) const
+{
+	if ( _filter.empty( ) )
+		return true;
+	for ( auto x : _filter )
+		if ( x == _Key )
+			return true;
+	return false;
+}
+
+bool Textbox::isWriting() const
+{
+	return _canwrite;
+}
+
+void Textbox::setLooseFocusKey(const char & _Key)
+{
+	_loose = _Key;
+}
+
 void Textbox::setCanWrite(const bool & _Can)
 {
 	_canwrite = _Can;
+	OnModified( ).Invoke( this );
 }
 
 void Textbox::setPromptText(const __LIB String & _Text)
 {
 	_prompt = _Text;
+	OnModified( ).Invoke( this );
 }
 
 void Textbox::setPasswordChar( const char &_Char )
 {
 	_passwordChar = _Char;
+	OnModified( ).Invoke( this );
 }
 
 void Textbox::setUsePasswordChar(const bool & _Use)
 {
 	_usePasswordChar = _Use;
+	OnModified( ).Invoke( this );
 }
 
 void Textbox::setMultiline(const bool & _Can)
 {
 	_multiline = _Can;
+	OnModified( ).Invoke( this );
+}
+
+void Textbox::setFilter(const __LIB String & _Filter)
+{
+	this->_filter = _Filter;
+	OnModified( ).Invoke( this );
+}
+
+void Textbox::addFilterCharacter(const char & _Character)
+{
+	this->_filter.push_back( _Character );
+	OnModified( ).Invoke( this );
+}
+
+__LIB Event<void(Component*)>& Textbox::OnLostFocus()
+{
+	return _OnLostFocus;
+}
+
+__LIB Event<void(Component*)>& Textbox::OnGainFocus()
+{
+	return _OnGainFocus;
 }
 
 __MATH Vector2 Textbox::determineText(__MATH Vector2 & pos, __MATH Vector2 & text_size)

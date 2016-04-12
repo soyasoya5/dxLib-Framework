@@ -151,6 +151,7 @@
     <ClInclude Include="src\lib\Graphics\UI\Component.h" />
     <ClInclude Include="src\lib\Graphics\UI\lib.h" />
     <ClInclude Include="src\lib\Graphics\UI\RichLabel.h" />
+    <ClInclude Include="src\lib\Graphics\UI\Slider.h" />
     <ClInclude Include="src\lib\Graphics\UI\Style.h" />
     <ClInclude Include="src\lib\Graphics\UI\Textbox.h" />
     <ClInclude Include="src\lib\Graphics\Window\Hotkey.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="src\lib\Graphics\UI\Checkbox.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Component.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\RichLabel.cpp" />
+    <ClCompile Include="src\lib\Graphics\UI\Slider.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Style.cpp" />
     <ClCompile Include="src\lib\Graphics\UI\Textbox.cpp" />
     <ClCompile Include="src\lib\Graphics\Window\Hotkey.cpp" />

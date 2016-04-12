@@ -26,6 +26,7 @@ void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Pai
 	auto pos = determineRegion( );
 
 
+	__MATH Vector2 fullsize{ 0, 0 };
 	for ( auto it = _all_text.begin( ), begin = _all_text.begin( ), end = _all_text.end( ); it < end; ++it )
 	{
 		// First lets check if we changed
@@ -75,7 +76,7 @@ void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Pai
 						// Set position
 						it->position = prev->position + __MATH Vector2{ prev->size.x, 0.0f }; // Ok then get the vector of prev pos + prev size(x only)
 
-
+						// Set orig
 						it->container.orig_tex_y = it->position.y;
 					}
 				}
@@ -83,8 +84,11 @@ void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Pai
 
 			// Size
 			it->size = (it->container.is_texture ? it->container.texture->getSize( ) : it->container.font->calculateMetrixOf( it->container.text ));
+			if ( it->container.new_line )
+				fullsize.y += it->size.y;
+			else if ( it->size.x > fullsize.x )
+				fullsize.x = it->size.x;
 		}
-
 		// Right, lets draw
 		if ( it->container.is_texture )
 			it->container.texture->Paint( it->position, { 1, 1 } );
@@ -100,6 +104,9 @@ void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Pai
 		}
 	}
 	
+	// We dont wanna raise a modified event if its not needed, obviously.
+	if ( getSize( ) != fullsize )
+		this->setSize( fullsize );
 
 	_changed = false;
 	OnPostPaint( ).Invoke( this, _Painter );
@@ -179,6 +186,11 @@ void RichLabel::setText(const __LIB String & _Text)
 	_contrs.clear( );
 	_contrs.push_back( TextContainer{ nullptr, _Text, __DX Colors::White, getFont( ), false, false  } );
 	recalculate_text( );
+}
+
+RichLabel::RichText * RichLabel::textAt(const int & index)
+{
+	return &_all_text[index];
 }
 
 void RichLabel::recalculate_text()

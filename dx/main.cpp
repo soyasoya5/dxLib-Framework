@@ -8,7 +8,6 @@
 #pragma warning( disable : 4996 )
 int main( )
 {
-
 	//FreeConsole( );
 	// Create application
 	auto appl = dx::Application::Create( );
@@ -45,7 +44,6 @@ int main( )
 	context.Weight = 75;
 	painter->setDefaultFont( dx::Font::Create( "Consolas", context ) );
 
-
 	// Do background
 	auto texture = dx::Texture::Create( "res/icons/Icon.png" );
 	window->OnPaint( ) += [&texture]( dx::Window *sender, dx::BasePainter *painter )
@@ -54,57 +52,12 @@ int main( )
 		texture->Paint( { 15, 15 }, { 1, 1 } );
 	};
 
-	dx::Checkbox checkbox;
-	checkbox.setText( "Hello there" );
-	checkbox.setUIID( 1337 );
-	checkbox.setLocalRegion( { { 300, 300 }, { 25, 25 } } ); 
-	checkbox.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
-	checkbox.setLayout( dx::Layout::Horizontal );
-	checkbox.setAllignment( dx::Allignment::Center );
+	auto slider = new dx::Slider( );
+	slider->setLocalRegion( { { 25, 200 }, { 200, 30 } } );
+	slider->setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
+	slider->setLayout( dx::Horizontal );
 	
-	dx::Button button;
-	button.setText( "(Text Left)" );
-	button.setUIID( 10 );
-	button.setLocalRegion( { { 15, 250 }, { 150, 30 } } );
-	button.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
-	button.setLayout( dx::Layout::Horizontal );
-	button.setAllignment( dx::Allignment::Left );
-
-	dx::Button button2;
-	button2.setText( "(Text Center)" );
-	button2.setUIID( 11 );
-	button2.setBottomOf( &button );
-	button2.setAllignedOf( &button );
-	button2.setSize( { 150, 30 } );
-	button2.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
-	button2.setLayout( dx::Layout::Horizontal );
-	button2.setAllignment( dx::Allignment::Center );
-
-	dx::Button button3;
-	button3.setText( "(Text Right)" );
-	button3.setUIID( 12 );
-	button3.setBottomOf( &button2 );
-	button3.setAllignedOf( &button2 );
-	button3.setSize( { 150, 30 } );
-	button3.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
-	button3.setLayout( dx::Layout::Horizontal );
-	button3.setAllignment( dx::Allignment::Right );
-
-
-	dx::RichLabel label;
-	label.appendText( "Hi how are", dx::Colors::Green );
-	auto tray = dx::Texture::Create( "tray.png" );
-	label.appendText( tray );
-	label.appendText( tray );
-	label.appendText( " you?", dx::Colors::Red );
-	label.setBottomOf( &button3 );
-	label.setAllignedOf( &button3 );
-
-	window->HandleComponent( &checkbox );
-	window->HandleComponent( &button );
-	window->HandleComponent( &button2 );
-	window->HandleComponent( &button3 );
-	window->HandleComponent( &label );
+	window->HandleComponent( slider );
 
 	return appl->run( );
 }
