@@ -50,7 +50,7 @@ Path FileIO::Path::UptoPrevious() const
 
 Path FileIO::Path::Root() const
 {
-	auto pos = _path.find( "\\" );
+	auto pos = _path.find( '/' );
 	if ( pos == String::bad )
 		return "";
 	return _path.substr( { 0, pos } );
@@ -58,7 +58,7 @@ Path FileIO::Path::Root() const
 
 Path FileIO::Path::Filename() const
 {
-	auto pos = _path.find_last_of( "\\" );
+	auto pos = _path.find_last_of( '/' );
 	if ( pos == String::bad )
 		return *this;
 	return _path.substr( pos + 1 );
@@ -68,14 +68,14 @@ Path FileIO::Path::Extension() const
 {
 	if ( !has_extension( ) )
 		return "";
-	auto pos = _path.find_last_of( "." );
+	auto pos = _path.find_last_of( '.' );
 	return _path.substr( pos );
 }
 
 std::vector<Path> FileIO::Path::Branches() const
 {
 	std::vector<Path> ret;
-	for ( auto &x : _path.split( "\\" ) )
+	for ( auto &x : _path.split( '/' ) )
 		ret.push_back( Path( x ) );
 	return ret;
 }
@@ -90,7 +90,7 @@ Path & FileIO::Path::remove_extension()
 
 Path & FileIO::Path::remove_filename()
 {
-	auto pos = _path.find_last_of( '\\' );
+	auto pos = _path.find_last_of( '/' );
 	if ( pos == String::bad ) return *this; // return right away...
 	_path = _path.substr( 0, pos );
 	return *this;
@@ -98,7 +98,7 @@ Path & FileIO::Path::remove_filename()
 
 Path & FileIO::Path::remove_directories()
 {
-	auto last = _path.find_last_of( '\\' );
+	auto last = _path.find_last_of( '/' );
 	if ( last == String::bad ) return *this;
 	_path.erase( 0, last + 1 );
 	return *this;
@@ -122,7 +122,7 @@ bool FileIO::Path::has_filename() const
 
 bool FileIO::Path::has_branches() const
 {
-	return _path.find( '\\' ) != String::bad;
+	return _path.find( '/' ) != String::bad;
 }
 
 bool FileIO::Path::is_directory() const

@@ -225,4 +225,7 @@
   <ItemGroup>
     <None Include="src\api" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\words\words.txt" />
+  </ItemGroup>
 </Project>

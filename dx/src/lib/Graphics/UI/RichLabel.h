@@ -16,6 +16,7 @@ public:
 		__GRAPHICS Font *font;
 		bool new_line; // If a new line is to be placed after this
 		bool is_texture; // If a tab is to be placed after this (8 spaces)
+		bool is_selected;
 		float orig_tex_y;
 	};
 
@@ -47,6 +48,14 @@ public:
 	void setText( const __LIB String &_Text ) override;
 
 	RichText *textAt( const int &index );
+
+	RichText *textFrom( const std::function<bool(RichText *text)> &_Functor );
+
+	RichText *textFromText( const __LIB String &_Text );
+
+	RichText *textInRegion( const __MATH Region &_Region );
+	
+	void clearText( );
 
 private:
 	void recalculate_text( );

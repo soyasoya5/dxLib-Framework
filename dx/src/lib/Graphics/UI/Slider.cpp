@@ -16,6 +16,7 @@ Slider::Slider()
 	_textbox->setAllignedOf( this );
 	_textbox->setSize( { 50, 30 } );
 	_textbox->setLooseFocusKey( '\r' );
+	_textbox->setAllignment( Allignment::Left );
 
 	_maxDelta = 100;
 	
@@ -229,7 +230,7 @@ void Slider::setWheel(const float & _Delta)
 	if ( _layout == Horizontal )
 		_wheel.x = _Delta;
 	else
-		_wheel.y == _Delta;
+		_wheel.y = _Delta;
 }
 
 

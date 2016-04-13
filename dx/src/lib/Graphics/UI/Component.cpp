@@ -227,31 +227,82 @@ void Component::setStyle(const __UI StyleManager & _Style)
 
 void Component::setLeftOf(__UI Component * _Component)
 {
+	if ( _leftOf )
+		_leftOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_leftof" );
+
 	_leftOf = _Component;
+	
+	if ( _leftOf )
+		_leftOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_leftof", 
+								  [this]( Component* sender )
+								  {
+									  this->_region_changed = true;
+								  	  this->OnModified( ).Invoke( this );
+								  });
 	OnModified( ).Invoke( this );
 }
 
 void Component::setRightOf(__UI Component * _Component)
 {
+	if ( _rightOf )
+		_rightOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_rightof" );
+
 	_rightOf = _Component;
+	if ( _rightOf )
+		_rightOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_rightof", 
+								  [this]( Component* sender )
+								  {
+									  this->_region_changed = true;
+								  	  this->OnModified( ).Invoke( this );
+								  });
 	OnModified( ).Invoke( this );
 }
 
 void Component::setBottomOf(__UI Component * _Component)
 {
+	if ( _bottomOf )
+		_bottomOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_bottomof" );
+
 	_bottomOf = _Component;
+	if ( _bottomOf )
+		_bottomOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_bottomof",
+								  [this]( Component* sender )
+								  {
+									  this->_region_changed = true;
+								  	  this->OnModified( ).Invoke( this );
+								  });
 	OnModified( ).Invoke( this );
 }
 
 void Component::setTopOf(__UI Component * _Component)
 {
+	if ( _topOf )
+		_topOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_topof" );
+
 	_topOf = _Component;
+	if ( _topOf )
+		_topOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_topof",
+								 [this]( Component* sender )
+								 {
+									  this->_region_changed = true;
+								 	  this->OnModified( ).Invoke( this );
+								 });
 	OnModified( ).Invoke( this );
 }
 
 void Component::setAllignedOf(__UI Component * _Component)
 {
+	if ( _allignedOf )
+		_allignedOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_allignedof" );
+
 	_allignedOf = _Component;
+	if ( _allignedOf )
+		_allignedOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_allignedof",
+									  [this]( Component* sender )
+									  {
+									  	  this->_region_changed = true;
+									  	  this->OnModified( ).Invoke( this );
+									  });
 	OnModified( ).Invoke( this );
 }
 

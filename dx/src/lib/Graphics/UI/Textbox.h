@@ -37,6 +37,7 @@ public:
 	
 	__LIB Event<void(Component*)> &OnLostFocus( );
 	__LIB Event<void(Component*)> &OnGainFocus( );
+	__LIB Event<void(Component*, const char&)> &OnCharacterAdded( );
 private:
 	__MATH Vector2 determineText( __MATH Vector2 &_Pos, __MATH Vector2 &_TextSize );
 	__LIB String _prompt, _filter;
@@ -47,6 +48,7 @@ private:
 	__DX uint _lblink;
 	__LIB Event<void(Component*)> _OnLostFocus;
 	__LIB Event<void(Component*)> _OnGainFocus;
+	__LIB Event<void(Component*, const char&)> _OnCharacterAdded;
 };
 
 

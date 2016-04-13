@@ -98,6 +98,7 @@ void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Pai
 			text.setPosition( it->position );
 			text.setFont( it->container.font );
 			text.setText( it->container.text );
+			text.setMaxClip( it->size );
 
 			// Paintaronie
 			_Painter->Paint( text, Pen( it->container.color, 1 ) );
@@ -127,6 +128,7 @@ void RichLabel::appendText(const __LIB String & _Text, __GRAPHICS Font * _Font, 
 			container.color = _Color;
 			container.new_line = true;
 			container.is_texture = false;
+			container.is_selected = false;
 			_contrs.push_back( std::move( container ) );
 		}
 	}
@@ -138,6 +140,7 @@ void RichLabel::appendText(const __LIB String & _Text, __GRAPHICS Font * _Font, 
 		container.color = _Color;
 		container.new_line = false;
 		container.is_texture = false;
+		container.is_selected = false;
 		_contrs.push_back( std::move( container ) );
 	}
 
@@ -169,6 +172,7 @@ void RichLabel::appendText(__GRAPHICS Texture * _Texture)
 	container.font = nullptr;
 	container.color = 0;
 	container.new_line = false;
+	container.is_selected = false;
 	container.is_texture = true;
 	container.texture = _Texture;
 	_contrs.push_back( std::move( container ) );
@@ -191,6 +195,41 @@ void RichLabel::setText(const __LIB String & _Text)
 RichLabel::RichText * RichLabel::textAt(const int & index)
 {
 	return &_all_text[index];
+}
+
+RichLabel::RichText * RichLabel::textFrom(const std::function<bool(RichText*text)>& _Functor)
+{
+	for ( auto it = _all_text.begin( ); it < _all_text.end( ); ++it )
+		if ( _Functor( &(*it) ) )
+			return &(*it);
+	return nullptr;
+}
+
+RichLabel::RichText * RichLabel::textFromText(const __LIB String & _Text)
+{
+	for ( auto it = _all_text.begin( ); it < _all_text.end( ); ++it )
+		if ( it->container.text == _Text )
+			return &(*it);
+	return nullptr;
+}
+
+RichLabel::RichText * RichLabel::textInRegion(const __MATH Region & _Region)
+{
+	for ( auto it = _all_text.begin( ); it < _all_text.end( ); ++it )
+	{
+		if ( it->position.Intersects( _Region ) )
+			return &(*it);
+	}
+	return nullptr;
+}
+
+void RichLabel::clearText()
+{
+	_text = "";
+	_all_text.clear( );
+	_contrs.clear( );
+	_mtext = "";
+	_changed = true;
 }
 
 void RichLabel::recalculate_text()
