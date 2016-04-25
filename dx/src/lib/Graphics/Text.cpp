@@ -32,7 +32,7 @@ void Text::setAllignment(const __GRAPHICS TextAllignment & _Allignment)
 	_allign = _Allignment;
 }
 
-__LIB String Text::getText() const
+const __LIB String &Text::getText() const
 {
 	return _text;
 }
@@ -42,7 +42,7 @@ void Text::setText(const __LIB String & _Text)
 	_text = _Text;
 }
 
-__MATH Vector2 Text::getPosition() const
+const __MATH Vector2 &Text::getPosition() const
 {
 	return _position;
 }
@@ -52,7 +52,7 @@ void Text::setPosition(const __MATH Vector2 & _Position)
 	_position = _Position;
 }
 
-__MATH Vector2 Text::getMaxClip() const
+const __MATH Vector2 &Text::getMaxClip() const
 {
 	return _max;
 }

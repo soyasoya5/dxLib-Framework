@@ -27,38 +27,40 @@ public:
 		__MATH Vector2 position; // Position, calculated every time _all_Text is changed.
 	};
 
-	
+
 public:
-	RichLabel( );
+	RichLabel();
 
-	void Paint( __GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter );
+	void Paint(__GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter);
 
-	void appendText( const __LIB String &_Text, __GRAPHICS Font *font, const __DX uint &_Color );
+	void appendText(const __LIB String &_Text, __GRAPHICS Font *font, const __DX uint &_Color);
 
-	void appendText( const __LIB String &_Text, __GRAPHICS Font *font );
+	void appendText(const __LIB String &_Text, __GRAPHICS Font *font);
 
-	void appendText( const __LIB String &_Text, const __DX uint &_Color );
+	void appendText(const __LIB String &_Text, const __DX uint &_Color);
 
-	void appendText( const __LIB String &_Text );
-	
-	void appendText( __GRAPHICS Texture *_Texture );
+	void appendText(const __LIB String &_Text);
 
-	__LIB String getText( ) const override;
+	void appendText(__GRAPHICS Texture *_Texture);
 
-	void setText( const __LIB String &_Text ) override;
+	__LIB String getText() const override;
 
-	RichText *textAt( const int &index );
+	void setText(const __LIB String &_Text) override;
 
-	RichText *textFrom( const std::function<bool(RichText *text)> &_Functor );
+	RichText *textAt(const int &index);
 
-	RichText *textFromText( const __LIB String &_Text );
+	RichText *textFrom(const std::function<bool(RichText *text)> &_Functor);
 
-	RichText *textInRegion( const __MATH Region &_Region );
-	
-	void clearText( );
+	RichText *textFromText(const __LIB String &_Text);
+
+	RichText *textInRegion(const __MATH Region &_Region);
+
+	void clearText();
+
+	AsyncKeeper &AquireMutex( );
 
 private:
-	void recalculate_text( );
+	void recalculate_text();
 
 	__LIB AsyncKeeper _kpr;
 	std::vector<RichText> _all_text;
@@ -70,4 +72,3 @@ private:
 
 
 end_UI
-

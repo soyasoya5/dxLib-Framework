@@ -84,6 +84,42 @@ void Application::setTickRate(const int & _Rate)
 	_tick = _Rate;
 }
 
+void Application::setClipboard(const __LIB String & _Data)
+{
+	if ( FAILED( OpenClipboard( nullptr ) ) )
+		throw std::runtime_error( "'Application::setClipboard' Failed to open clipboard" );
+
+	if ( FAILED( EmptyClipboard( ) ) )
+		throw std::runtime_error( "'Application::setClipboard' Failed to empty clipboard" );
+
+	auto length = _Data.capacity( );
+	auto glob = GlobalAlloc( GMEM_MOVEABLE, length );
+	
+	if ( !glob )
+	{
+		CloseClipboard( );
+		throw std::runtime_error( "'Application::setClipboard' Failed to Allocate glob" );
+	}
+
+	memcpy( GlobalLock( glob ), _Data.c_str( ), length );
+	GlobalUnlock( glob );
+	SetClipboardData( CF_TEXT, glob );
+	CloseClipboard( );
+	GlobalFree( glob );
+}
+
+__LIB String Application::getClipboard() const
+{
+	if ( FAILED( OpenClipboard( nullptr ) ) )
+		throw std::runtime_error( "'Application::setClipboard' Failed to open clipboard" );
+	auto glob = GetClipboardData( CF_TEXT );
+	String string;
+	string.reserve( GlobalSize( glob ) );
+	memcpy( (char*)string.c_str( ), GlobalLock( glob ), GlobalSize( glob ) );
+	GlobalUnlock( glob );
+	return string;
+}
+
 __LIB Event<void(Application*)>& Application::OnTick()
 {
 	return _OnTick;

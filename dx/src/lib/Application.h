@@ -63,6 +63,16 @@ public:
 	void setTickRate( const int &_Rate );
 
 	///<summary>
+	/// Sets the clipboard data
+	///</summary>
+	void setClipboard( const __LIB String &_Data );
+
+	///<summary>
+	/// Gets the clipboard data
+	///</summary>
+	__LIB String getClipboard( ) const;
+
+	///<summary>
 	/// Called every tick.
 	///</summary>
 	__LIB Event<void(Application*)> &OnTick( );

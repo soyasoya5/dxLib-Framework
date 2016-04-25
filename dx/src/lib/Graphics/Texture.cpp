@@ -25,28 +25,24 @@ Texture * Texture::Create(std::istream & _Stream, const __GRAPHICS BasePainter *
 
 Texture * Texture::Create( char* _Buffer, const __DX uint &_Length, const __GRAPHICS BasePainter *_Painter)
 {
-	auto ptr = new Texture( );
+	auto ptr = std::unique_ptr<Texture>( new Texture( ) );
 	auto device = (IDirect3DDevice9*)_Painter->native( );
 	auto result = D3DXCreateTextureFromFileInMemory( device, _Buffer, _Length, (LPDIRECT3DTEXTURE9*)&ptr->_texture );
 
 	if ( FAILED(result) )
-	{
-		delete ptr;
 		return nullptr;
-	}
 
 	result = D3DXCreateSprite( device, (LPD3DXSPRITE*)&ptr->_sprite );
 
 	if ( FAILED( result ) )
 	{
 		((LPDIRECT3DTEXTURE9)ptr->_texture)->Release( );
-		delete ptr;
 		return nullptr;
 	}
 
 	((LPDIRECT3DTEXTURE9)ptr->_texture)->GetLevelDesc( 0, (D3DSURFACE_DESC*)ptr->_desc );
 
-	return ptr;
+	return ptr.release( );
 }
 
 

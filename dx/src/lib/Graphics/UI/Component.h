@@ -104,6 +104,7 @@ public: // Virtuals/Logic
 	virtual void MouseClicked( __GRAPHICS Window *_Sender, __GRAPHICS MouseClickedArgs &_Args );
 	virtual void MouseReleased( __GRAPHICS Window *_Sender, __GRAPHICS MouseReleasedArgs &_Args );
 	virtual void MouseScrolled( __GRAPHICS Window *_Sender, __GRAPHICS ScrollArgs &_Args );
+	virtual void MouseDoubleClicked( __GRAPHICS Window *_Sender, __GRAPHICS MouseClickedArgs &_Args );
 	virtual void Release( const bool &_ReleaseChildren = true );
 	virtual bool Collides( const __MATH Vector2 &_With );
 	virtual bool Collides( const __UI Component *_With );

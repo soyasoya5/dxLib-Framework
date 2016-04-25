@@ -12,22 +12,22 @@ public:
 	///<summary>
 	/// Moves the position by '_Amount' amount.
 	///</summary>
-	void MoveBy( const __MATH Vector2 &_Amount );
+	Region &MoveBy( const __MATH Vector2 &_Amount );
 	
 	///<summary>
 	/// Moves the position to '_Position'.
 	///</summary>
-	void MoveTo( const __MATH Vector2 &_Position );
+	Region &MoveTo( const __MATH Vector2 &_Position );
 
 	///<summary>
 	/// Resizes the size by '_Amount' amount.
 	///</summary>
-	void ResizeBy( const __MATH Vector2 &_Amount );
+	Region &ResizeBy( const __MATH Vector2 &_Amount );
 
 	///<summary>
 	/// Resizes the size to '_Size'.
 	///</summary>
-	void ResizeTo( const __MATH Vector2 &_Size );
+	Region &ResizeTo( const __MATH Vector2 &_Size );
 
 	///</summary>
 	/// Returns wether '_Other' positon intersects with this Region.

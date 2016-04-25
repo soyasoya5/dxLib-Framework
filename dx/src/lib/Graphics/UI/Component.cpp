@@ -453,6 +453,10 @@ void Component::MouseScrolled(__GRAPHICS Window * _Sender, __GRAPHICS ScrollArgs
 {
 }
 
+void Component::MouseDoubleClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClickedArgs & _Args)
+{
+}
+
 void Component::Release(const bool & _ReleaseChildren)
 {
 	OnRelease( ).Invoke( this );

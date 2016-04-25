@@ -36,7 +36,7 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 		application->exit( );
 	}
 
-	auto painter = new Painter( );
+	auto painter = std::unique_ptr<Painter>( new Painter( ) );
 	if ( FAILED( Direct3DCreate9Ex( D3D9b_SDK_VERSION, (IDirect3D9Ex**)&painter->_d3dobj ) ) )
 	{
 		auto ids = __GRAPHICS MsgBox( "Unable to create DirectX9 Painter.\n"
@@ -69,7 +69,6 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 	
 	auto obj = (IDirect3D9Ex*)painter->_d3dobj;
 
-	// D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, _windowptr->_hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &params, &_device
 	auto result = obj->CreateDevice( D3DADAPTER_DEFAULT, 
 									 D3DDEVTYPE_HAL, 
 									 _Target->native_handle( ), 
@@ -110,7 +109,7 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 		}
 	}
 
-	_Target->setPainter( painter );
+	_Target->setPainter( painter.get( ) );
 
 	_Target->OnWindowResize( ) += __LIB EventHandler<void(__GRAPHICS Window*, __GRAPHICS WindowMovedArgs&)>( _Target->getClass( ) + "_Painter_Resize", 
 								  []( __GRAPHICS Window *sender, __GRAPHICS WindowMovedArgs &args )
@@ -127,14 +126,14 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 									});
 
 	if ( _Singleton )
-		BasePainter::setSingleton( painter );
+		BasePainter::setSingleton( painter.get( ) );
 
 	FontContext context;
 	context.Height = 18;
 	context.Weight = 20;
-	painter->_default = Font::Create( "Arial", context, painter );
+	painter->_default = Font::Create( "Arial", context, painter.get( ) );
 
-	return painter;
+	return painter.release( );
 }
 
 Painter::~Painter()
@@ -152,23 +151,22 @@ bool Painter::ResetPainter(const __MATH Vector2 & _Size, __GRAPHICS Window *_Tar
 		this->_target = _Target;
 		this->_target->setPainter( this, false );
 	}
-
+	// D3D_OK, D3DERR_DEVICELOST, D3DERR_DEVICEREMOVED, D3DERR_DRIVERINTERNALERROR, or D3DERR_OUTOFVIDEOMEMORY
 	D3DPRESENT_PARAMETERS params;
 	ZeroMemory(&params, sizeof(params));
-	params.Windowed = TRUE;
 	params.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	params.BackBufferFormat = D3DFMT_A8R8G8B8;
+	params.BackBufferFormat = D3DFMT_A8R8G8B8; // 0xAARRGGBB (ARGB)
 	params.EnableAutoDepthStencil = TRUE;
 	params.AutoDepthStencilFormat = D3DFMT_D16;
 	params.MultiSampleType = D3DMULTISAMPLE_NONE;
 	params.BackBufferWidth = _Size.x;
 	params.BackBufferHeight = _Size.y;
-	params.hDeviceWindow = _target->native_handle( );
+	params.hDeviceWindow = _Target->native_handle( );
 	params.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
-	auto res = SUCCEEDED( ((IDirect3DDevice9*)_device)->Reset( &params ) );
+	auto res = ((IDirect3DDevice9*)_device)->Reset( &params );
 	((ID3DXFont*)this->_default->raw( ))->OnResetDevice( );
-	return res;
+	return SUCCEEDED( res );
 }
 
 void Painter::BeginPaint()

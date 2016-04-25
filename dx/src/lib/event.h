@@ -135,8 +135,9 @@ public:
 		{
 			if ( (*it)->name( ) == name )
 			{
+				auto ptr = (*it);
 				_fs.erase( it );
-				delete (*it);
+				delete ptr;
 				break;
 			}
 		}

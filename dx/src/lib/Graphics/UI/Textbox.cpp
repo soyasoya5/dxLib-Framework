@@ -108,6 +108,8 @@ void Textbox::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharArg
 		else if ( key != '\b' && isInFilter( key ) )
 			text.push_back( key );
 		setText( text );
+		OnCharacterAdded( ).Invoke( this, key );
+
 		_Sender->ForcePaint( );
 		_Args.handled = true;
 	}
@@ -243,6 +245,11 @@ __LIB Event<void(Component*)>& Textbox::OnGainFocus()
 {
 	return _OnGainFocus;
 }
+__LIB Event<void(Component*, const char&)> &Textbox::OnCharacterAdded( )
+{
+	return _OnCharacterAdded;
+}
+
 
 __MATH Vector2 Textbox::determineText(__MATH Vector2 & pos, __MATH Vector2 & text_size)
 {

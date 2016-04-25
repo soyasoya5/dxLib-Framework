@@ -25,11 +25,14 @@ struct FontContext
 
 	// Below can be ignored
 	DWORD CharSet, OutputPrecision, Quality, PitchAndFamily;
+
 };
 
 class Font
 {
 public:
+	static const __DX uint SPACE_CHARACTER_WIDTH = 10;
+
 	~Font( );
 
 	///<summary>
@@ -59,6 +62,7 @@ public:
 	///</summary>
 	__MATH Vector2 calculateMetrixOf( const __LIB String &_Text );
 private:
+	__MATH Vector2 strSize( const __LIB String &_Text );
 	void* _data;
 	__LIB String _name;
 	__GRAPHICS FontContext _context;

@@ -128,13 +128,11 @@ Window::Window( )
 
 void Window::push_task(Task * _Task)
 {
-	AsyncGuard guard{ _ak_tasks };
 	_tasks.push_back( _Task );
 }
 
 void Window::remove_task(std::vector<Task*>::iterator _Where)
 {
-	AsyncGuard guard{ _ak_tasks };
 	_tasks.erase( _Where );
 }
 
@@ -310,7 +308,7 @@ void Window::Close()
 __LIB TimedTask<void(Window*)>& Window::addTask( const time_point &_When, const std::function<void(Window*)> &_Function )
 {
 	auto task = new __LIB TimedTask<void(Window*)>( _Function, _When );
-	std::async( BIND_METHOD_1( &Window::push_task, this ), task );
+	_tasks.push_back( task );
 	return *task;
 }
 
@@ -407,17 +405,17 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		break;
 	case WM_SIZE:
 	{
+		_region.size = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		WindowResizeArgs args;
+		args.handled = false;
+		args.region = _region;
+
 		if ( wParam == SIZE_MINIMIZED ) {
 			OnWindowMinimize( ).Invoke( this );
 			return 0;
 		}
 		else if ( wParam == SIZE_MAXIMIZED )
 			OnWindowMaximize( ).Invoke( this );
-
-		_region.size = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		WindowResizeArgs args;
-		args.handled = false;
-		args.region = _region;
 		OnWindowRestored( ).Invoke( this );
 		OnWindowResize( ).Invoke( this, args );
 		if ( args.handled )
@@ -557,13 +555,14 @@ void Window::HandleTasks()
 {
 	OnTick( ).Invoke( this );
 	auto now = clock::now( );
+	AsyncGuard guard{ _ak_tasks };
 	for ( auto it = _tasks.begin( ); it < _tasks.end( ); ++it )
 	{
 		auto&x = *it;
 		if ( x->call_task_if_time( now, this ) )
 		{
-			remove_task( it );
 			delete x;
+			_tasks.erase( it );
 			break;
 		}
 		std::this_thread::sleep_for( std::chrono::nanoseconds( 500 ) );
@@ -594,6 +593,7 @@ void Window::HandleComponent(__UI Component * _Comp)
 	this->OnKeyDown( ) += __LIB EventHandler<KeyDownSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyDown, _Comp ) );
 	this->OnKeyUp( ) += __LIB EventHandler<KeyUpSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyUp, _Comp ) );
 	this->OnKeyDownChar( ) += __LIB EventHandler<KeyDownCharSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyDownChar, _Comp ) );
+	this->OnMouseDoubleClicked( ) += __LIB EventHandler<MouseClickedSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseDoubleClicked, _Comp ) );
 	this->OnPaint( ) += __LIB EventHandler<void(__GRAPHICS Window*, __GRAPHICS BasePainter*)>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::Paint, _Comp ) );
 }
 
@@ -606,6 +606,7 @@ void Window::StopHandlingComponent(__UI Component * _Comp)
 	this->OnKeyDown( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
 	this->OnKeyUp( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
 	this->OnKeyDownChar( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnMouseDoubleClicked( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
 	this->OnPaint( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
 }
 

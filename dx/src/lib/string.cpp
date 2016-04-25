@@ -218,7 +218,7 @@ String::crvrsIterator String::crend() const
 
 uint String::length() const
 {
-	return ::strlen( _buffer );
+	return _buffer ? ::strlen( _buffer ) : 0;
 }
 
 uint String::capacity() const noexcept
@@ -228,7 +228,7 @@ uint String::capacity() const noexcept
 
 void String::push_back(const char &c)
 {
-	if ( !__dim( strlen( _buffer ) + 1 ) )
+	if ( !__dim( length( ) + 1 ) )
 		throw;
 	_buffer[ strlen( _buffer ) ] = c;
 }
@@ -568,6 +568,15 @@ String String::fill(const char & _Filler) const
 	for ( auto&x : tmp )
 		x = _Filler;
 	return tmp;
+}
+
+uint String::count(const char & _Character) const
+{
+	uint count = 0;
+	for ( auto&x : *this )
+		if ( x == _Character )
+			++count;
+	return count;
 }
 
 const String & String::operator+=(const char &c)

@@ -31,6 +31,27 @@ __GRAPHICS FontContext Font::context()
 
 __MATH Vector2 Font::calculateMetrixOf(const __LIB String & _Text)
 {
+	if ( _Text.contains( " " ) )
+	{
+		__MATH Vector2 size{ 0, 0 };
+		auto strs = _Text.split( ' ' );
+		for ( auto &x : strs )
+		{
+			auto sz = strSize( x );
+			size.x += sz.x;
+			if (sz.y > size.y)
+				size.y = sz.y;
+		}
+		
+		size.x += (this->SPACE_CHARACTER_WIDTH) * _Text.count( ' ' );
+
+		return size;
+	}
+	return strSize( _Text );
+}
+
+__MATH Vector2 Font::strSize(const __LIB String & _Text)
+{
 	auto font = (ID3DXFont*)this->_data;
 	if ( !font )
 		return { 0, 0 };

@@ -40,6 +40,14 @@ public: // Ctors / Move Semantics / C++11
 	String( const char*, __DX uint len );
 	String( const std::initializer_list<char> &_List );
 	String( std::nullptr_t null );
+	template<class _Iter,
+			class = typename std::enable_if<std::_Is_iterator<_Iter>::value,void>::type>
+	String( _Iter i1, _Iter i2 )
+	{
+		for ( ; i1 != i2; ++i1 )
+			push_back( *i1 );
+	}
+	
 	~String( );
 
 	///<summary>
@@ -346,6 +354,11 @@ public: // __LIB String function
 	/// Returns a copy of this string that is filled with '_Filler'.
 	///</summary>
 	String fill( const char &_Filler ) const;
+
+	///<summary>
+	/// Counts the amount of references of character
+	///</summary>
+	uint count( const char &_Character ) const;
 
 public: 
 	///<summary>

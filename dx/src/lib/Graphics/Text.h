@@ -56,7 +56,7 @@ public:
 	///<summary>
 	///	Get the text.
 	///</summary>
-	__LIB String getText( ) const;
+	const __LIB String &getText( ) const;
 
 	///<summary>
 	/// Set the text.
@@ -66,7 +66,7 @@ public:
 	///<summary>
 	/// Get the position.
 	///</summary>
-	__MATH Vector2 getPosition( ) const;
+	const __MATH Vector2 &getPosition( ) const;
 
 	///<summary>
 	/// Set the position.
@@ -76,7 +76,7 @@ public:
 	///<summary>
 	/// Get the clipping.
 	///</summary>
-	__MATH Vector2 getMaxClip( ) const;
+	const __MATH Vector2 &getMaxClip( ) const;
 
 	///<summary>
 	/// Set the clipping.
