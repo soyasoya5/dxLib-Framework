@@ -4,8 +4,8 @@
 begin_MATH class Vector2; end_MATH
 
 begin_GRAPHICS
-class Window;
 class Font;
+class Window;
 
 	// DirectX9 Painter
 
@@ -17,32 +17,40 @@ public:
 	///<summary>
 	/// Create a Painter for '_Target' window.
 	///</summary>
-	static Painter *Create( __GRAPHICS Window *_Target, const bool &_Windowed = true, const bool &_Singleton = true );
+	static Painter *Create( std::shared_ptr<Window> target, const bool &windowed = true, const bool &singleton = true );
 	~Painter( );
-
-
 
 	///<summary>
 	///	Clears the target and Begins the scene.
 	///</summary>
-	bool ResetPainter( const __MATH Vector2 &_Size, __GRAPHICS Window *_Target );
+	bool ResetPainter( const __MATH Vector2 &size, __GRAPHICS Window *target );
 
 	void BeginPaint( ) override;
-	virtual void Paint( const __GRAPHICS Text &_Text, const __GRAPHICS Pen &_Pen ) override;
-	virtual void Paint( const __GRAPHICS Shape &_Shape ) override;
-	virtual void Paint( const __GRAPHICS Circle &_Circle ) override;
-	virtual void PaintRect( const __MATH Region &_Region, const __GRAPHICS Pen &_Pen ) override;
-	virtual void PaintRectOutlined( const __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter ) override;
-	virtual void PaintLine( const __GRAPHICS Line &_Line ) override;
+
+	virtual void Paint( const __GRAPHICS Text &text, const __GRAPHICS Pen &pen ) override;
+
+	virtual void Paint( const __GRAPHICS Shape &shape ) override;
+
+	virtual void Paint( const __GRAPHICS Circle &circle ) override;
+
+	virtual void PaintRect( const __MATH Region &region, const __GRAPHICS Pen &pen ) override;
+
+	virtual void PaintRectOutlined( const __MATH Region &region, const __GRAPHICS Pen &inner, const __GRAPHICS Pen &outer ) override;
+
+	virtual void PaintLine( const __GRAPHICS Line &line ) override;
+
 	virtual void PresentPaint( ) override;
+
 	virtual void* native( ) const override;
-	__GRAPHICS Font *defaultFont( ) const override;
-	void setDefaultFont( __GRAPHICS Font *_Font ) override;
+
+	std::shared_ptr<Font> defaultFont( ) const override;
+
+	void setDefaultFont( std::shared_ptr<Font> font ) override;
 
 private:
-	void *_device, *_d3dobj, *_line;
-	__GRAPHICS Window *_target;
-	__GRAPHICS Font *_default;
+	void *device_, *d3dobj_, *line_;
+	std::shared_ptr<Window> target_;
+	std::shared_ptr<Font> default_;
 	Painter( );
 };
 

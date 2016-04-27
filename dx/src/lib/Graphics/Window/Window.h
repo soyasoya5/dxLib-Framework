@@ -118,21 +118,21 @@ public:
 	///<summary>
 	///	Creates a window.
 	///</summary>
-	static Window* Create( const __LIB String &_Class, 
-						   const __LIB String &_Title,
-						   const __MATH Region &_Region,
-						   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
-						   DWORD dwExStyle = 0L );
+	static std::shared_ptr<Window> Create( const __LIB String &Class, 
+										   const __LIB String &Title,
+										   const __MATH Region &Region,
+										   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
+										   DWORD dwExStyle = 0L );
 
 	///<summary>
 	///	Creates a window that is a child of _Parent
 	///</summary>
-	static Window* Create( Window *_Parent,
-						   const __LIB String &_Class, 
-						   const __LIB String &_Title,
-						   const __MATH Region &_Region,
-						   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
-						   DWORD dwExStyle = 0L );
+	static std::shared_ptr<Window> Create( Window *_Parent,
+										   const String &Class, 
+										   const String &Title,
+										   const __MATH Region &Region,
+										   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
+										   DWORD dwExStyle = 0L );
 
 
 public:
@@ -149,22 +149,22 @@ public:
 	///<summary>
 	///	Sets the title of this window.
 	///</summary>
-	void setTitle( const __LIB String &_Title );
+	void setTitle( const String &title );
 
 	///<summary>
 	///	Retrieves the class name of a window.
 	///</summary>
-	__LIB String getClass( );
+	String getClass( );
 	
 	///<summary>
 	///	Converts the client-area coordinates of a specified point to screen coordinates
 	///</summary>
-	bool ClientToScreen( __MATH Vector2 &_PointOut );
+	bool ClientToScreen( __MATH Vector2 &pointOut );
 	
 	///<summary>
 	/// Converts the screen coordinates of a specified point on the screen to client-area coordinates
 	///</summary>
-	bool ScreenToClient( __MATH Vector2 &_PointOut );
+	bool ScreenToClient( __MATH Vector2 &pointOut );
 
 	///<summary>
 	///	Hides the widnow.
@@ -216,13 +216,13 @@ public:
 	/// Load the icon showed in taskbar (32x32). 
 	/// Supports bitmaps and ico's.
 	///</summary>
-	bool LoadIcon( const __FILEIO Path &_Path	);
+	bool LoadIcon( const __FILEIO Path &path );
 
 	///<summary>
 	/// Load the icon showed in the top left corner of the window.
 	/// Supports bitmaps and ico's.
 	///</summary>
-	bool LoadIconSm( const __FILEIO Path &_Path );
+	bool LoadIconSm( const __FILEIO Path &path );
 
 
 	///<summary>
@@ -234,12 +234,12 @@ public:
 	///<summary>
 	///	Retrives the parent of the window.
 	///</summary>
-	__GRAPHICS Window* getParent( );
+	Window* getParent( );
 
 	///<summary>
 	///	Changes the paint style of this window, only paint per event or paint per tick.
 	///</summary>
-	void SpecializePaint( const PaintStyle_t &_Style );
+	void SpecializePaint( const PaintStyle_t &style );
 
 	///<summary>
 	///	Retrives the paint style of this window.
@@ -249,12 +249,12 @@ public:
 	///<summary>
 	///	Retrives the painter of the window.
 	///</summary>
-	__GRAPHICS BasePainter* getPainter( );
+	BasePainter* getPainter( );
 
 	///<summary>
 	///	Sets the painter of the window.
 	///</summary>
-	void setPainter( __GRAPHICS BasePainter *_Painter, const bool &_Delete_Old = true );
+	void setPainter( BasePainter *painter, const bool &delete_old = true );
 
 	///<summary>
 	/// Returns wether or not this window has a painter.
@@ -281,6 +281,10 @@ public:
 	///</summary>
 	bool isShiftHeld( ) const;
 
+	///<summary>
+	///	returns wether or not the key is down.
+	///</summary>
+	bool isKeyDown( uint key ) const;
 
 	///<summary>
 	/// Returns the native window handle for this window.
@@ -288,11 +292,12 @@ public:
 	HWND native_handle( );
 
 public: // Others
+	using Task = TimedTask<void(Window*)>;
 
 	///<summary>
 	///	Adds a task to the task queue.	
 	///</summary>
-	__LIB TimedTask<void(Window*)> &addTask( const time_point &_When, const std::function<void(Window*)> &_Function );
+	Window::Task &addTask( const time_point &when, const std::function<void(Window*)> &functor );
 
 	///<summary>
 	///	This windows internal event loop, called from the respective WindowProc
@@ -313,12 +318,12 @@ public: // Others
 	///<summary>
 	/// Will automatically forward events to this component
 	///</summary>
-	void HandleComponent( __UI Component *_Comp );
+	void HandleComponent( UI::Component *component );
 
 	///<summary>
 	///	Remove the handling of this component, uses the ID to determine which event handler(s) to remove.
 	///</summary>
-	void StopHandlingComponent( __UI Component *_Comp );
+	void StopHandlingComponent( UI::Component *component );
 
 public:
 		// Events
@@ -357,7 +362,7 @@ public:
 	///</summary>
 	/// Called when the window is closed.
 	///<summary>
-	__LIB Event<void(Window*)>& OnWindowClosed( ); 
+	__LIB Event<void(Window*)>& OnWindowClosed( );
 
 	///<summary>
 	/// Called when the cursor moves
@@ -416,38 +421,32 @@ public:
 
 
 private:
-	using Task = __LIB TimedTask<void(Window*)>;
 
 	Window( );
-	__GRAPHICS Window *_parent;
-	__GRAPHICS BasePainter *_painter;
-	PaintStyle_t _style;
-	std::vector<__LIB TimedTask<void(Window*)>*> _tasks;
-	HWND _hwnd;
-	__MATH Region _region;
-	bool _s, _c;
+	Window *parent_;
+	BasePainter *painter_;
+	PaintStyle_t style_;
+	std::vector<Task> tasks_;
+	HWND hwnd_;
+	__MATH Region region_;
+	bool keys_[255];
 
 private:
-	__LIB Event<void(Window*, WindowMovedArgs&)> _OnWindowMoved;
-	__LIB Event<void(Window*, WindowResizeArgs&)> _OnWindowResize;
-	__LIB Event<void(Window*)> _OnWindowMaximize, _OnWindowRestored, _OnWindowMinimize, _OnWindowClosed;
-	__LIB Event<void(Window*, WindowClosingArgs&)> _OnWindowClosing;
-	__LIB Event<void(Window*, MouseMovedArgs&)> _OnMouseMoved;
-	__LIB Event<void(Window*, MouseClickedArgs&)> _OnMouseClicked;
-	__LIB Event<void(Window*, MouseReleasedArgs&)> _OnMouseReleased;
-	__LIB Event<void(Window*, MouseClickedArgs&)> _OnMouseDoubleClicked;
-	__LIB Event<void(Window*, ScrollArgs&)> _OnScroll;
-	__LIB Event<void(Window*, KeyDownArgs&)> _OnKeyDown;
-	__LIB Event<void(Window*, KeyUpArgs&)> _OnKeyUp;
-	__LIB Event<void(Window*, KeyDownCharArgs&)> _OnKeyDownChar;
-	__LIB Event<void(Window*, BasePainter*)> _OnPaint;
-	__LIB Event<void(Window*, MessageDataArgs&)> _OnHandleMessage;
-	__LIB Event<void(Window*)> _OnTick;
-
-private:
-	__LIB AsyncKeeper _ak_tasks;
-	void push_task( Task *_Task );
-	void remove_task( std::vector<Task*>::iterator _Where );
+	Event<void(Window*, WindowMovedArgs&)> _OnWindowMoved;
+	Event<void(Window*, WindowResizeArgs&)> _OnWindowResize;
+	Event<void(Window*)> _OnWindowMaximize, _OnWindowRestored, _OnWindowMinimize, _OnWindowClosed;
+	Event<void(Window*, WindowClosingArgs&)> _OnWindowClosing;
+	Event<void(Window*, MouseMovedArgs&)> _OnMouseMoved;
+	Event<void(Window*, MouseClickedArgs&)> _OnMouseClicked;
+	Event<void(Window*, MouseReleasedArgs&)> _OnMouseReleased;
+	Event<void(Window*, MouseClickedArgs&)> _OnMouseDoubleClicked;
+	Event<void(Window*, ScrollArgs&)> _OnScroll;
+	Event<void(Window*, KeyDownArgs&)> _OnKeyDown;
+	Event<void(Window*, KeyUpArgs&)> _OnKeyUp;
+	Event<void(Window*, KeyDownCharArgs&)> _OnKeyDownChar;
+	Event<void(Window*, BasePainter*)> _OnPaint;
+	Event<void(Window*, MessageDataArgs&)> _OnHandleMessage;
+	Event<void(Window*)> _OnTick;
 };
 
 

@@ -3,33 +3,33 @@
 begin_GRAPHICS
 
 Pen::Pen()
-	: _color( __DX Colors::White ), _thickness( 1 )
+	: color_( __DX Colors::White ), thickness_( 1 )
 {
 }
 
-Pen::Pen(const __DX uint & _Color, const __DX uint & _Thickness)
-	: _color( _Color ), _thickness( _Thickness )
+Pen::Pen(const __DX uint & color, const __DX uint & thickness)
+	: color_( color ), thickness_( thickness )
 {
 }
 
 __DX uint Pen::Color() const
 {
-	return _color;
+	return color_;
 }
 
 __DX uint Pen::Thickness() const
 {
-	return _thickness;
+	return thickness_;
 }
 
-void Pen::Color(const __DX uint & _Color)
+void Pen::Color(const __DX uint & color)
 {
-	_color = _Color;
+	color_ = color;
 }
 
-void Pen::Thickness(const __DX uint & _Thickness)
+void Pen::Thickness(const __DX uint & thickness)
 {
-	_thickness = _Thickness;
+	thickness_ = thickness;
 }
 
 

@@ -11,12 +11,12 @@ Textbox::Textbox()
 {
 }
 
-void Textbox::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Painter)
+void Textbox::Paint(Window *sender, BasePainter *painter)
 {
 	static Pen outer{ Colors::White, 2 }, pen_text{ Colors::White, 2 };
 	if ( !isVisible( ) )
 		return;
-	OnPrePaint( ).Invoke( this, _Painter );
+	OnPrePaint( ).Invoke( this, painter );
 
 	// pos
 	auto pos = determineRegion( );
@@ -24,15 +24,15 @@ void Textbox::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Paint
 	// Font
 	auto font = getFont( );
 	if ( !font )
-		font = _Painter->defaultFont( );
+		font = painter->defaultFont( );
 	
 
 	// Setup text
 	auto myText = getText( );
 	if ( myText.empty( ) )
-		myText = _prompt;
-	else if ( _usePasswordChar )
-		myText = myText.fill( _passwordChar );
+		myText = prompt_;
+	else if ( usePasswordChar_ )
+		myText = myText.fill( passwordChar_ );
 	
 	auto textsize = font->calculateMetrixOf( myText );
 	Text text{ font, myText, determineText( pos.position, textsize ) };
@@ -53,49 +53,49 @@ void Textbox::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Paint
 	line.Position( pos.position + __MATH Vector2{ 0, pos.size.y } );
 	line.Target( pos.position + __MATH Vector2{ pos.size.x, pos.size.y } );
 
-	_Painter->PaintLine( line );
-	_Painter->Paint( text, pen_text );
+	painter->PaintLine( line );
+	painter->Paint( text, pen_text );
 
-	if ( _canwrite  )
+	if ( canwrite_  )
 	{
-		if ( GetTickCount( ) > _lblink )
+		if ( GetTickCount( ) > lblink_ )
 		{
-			_lblink = GetTickCount( ) + 500;
-			_blink = !_blink;
+			lblink_ = GetTickCount( ) + 500;
+			blink_ = !blink_;
 		}
 
-		if ( _blink ) {
+		if ( blink_ ) 
+		{
 			__MATH Vector2 lpos = text.getPosition( );
 			lpos.x += textsize.x + 2;
 			lpos.y = pos.position.y + 2;
 			auto tlpos = lpos;
 			tlpos.y = pos.position.y + pos.size.y - 2;
 			Line line{ lpos, tlpos, Pen( Colors::White, 1 ) };
-			_Painter->PaintLine( line );
+			painter->PaintLine( line );
 		}
 	}
 
-	OnPostPaint( ).Invoke( this, _Painter );
+	OnPostPaint( ).Invoke( this, painter);
 }
 
 
 
-void Textbox::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharArgs & _Args)
+void Textbox::KeyDownChar(Window *sender, KeyDownCharArgs & args)
 {
-	if ( _Args.handled )
+	if ( args.handled )
 		return;
 
-	if ( _canwrite )
+	if ( canwrite_ )
 	{
-		auto text = getText( );
 		auto font = getFont();
 		if ( !font )
-			font = _Sender->getPainter( )->defaultFont( );
+			font = sender->getPainter( )->defaultFont( );
 
-		auto key = _Args.key_char;
-		if ( key == _loose )
+		auto key = args.key_char;
+		if ( key == loose_ )
 		{
-			_canwrite = false;
+			canwrite_ = false;
 			OnLostFocus( ).Invoke( this );
 			return;
 		}
@@ -103,35 +103,34 @@ void Textbox::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharArg
 		if ( key == '\n' && !isMultiline( ) )
 			return;
 		
-		if ( key == '\b' && !text.empty( ) )
-			text.pop_back( );
+		if ( key == '\b' && !text_.empty( ) )
+			text_.pop_back( );
 		else if ( key != '\b' && isInFilter( key ) )
-			text.push_back( key );
-		setText( text );
+			text_.push_back( key );
 		OnCharacterAdded( ).Invoke( this, key );
 
-		_Sender->ForcePaint( );
-		_Args.handled = true;
+		sender->ForcePaint( );
+		args.handled = true;
 	}
 }
 
-void Textbox::MouseClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClickedArgs & _Args)
+void Textbox::MouseClicked(Window *sender, MouseClickedArgs & args)
 {
-	__super::MouseClicked( _Sender, _Args );
+	__super::MouseClicked( sender, args );
 	if ( !isClicked( ) ) 
 	{
-		_canwrite = false;
+		canwrite_ = false;
 		OnLostFocus( ).Invoke( this );
 	}
 }
 
-void Textbox::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseReleasedArgs & _Args)
+void Textbox::MouseReleased(Window *sender, MouseReleasedArgs & args)
 {
-	if ( Collides( _Args.position ) )
+	if ( Collides( args.position ) )
 	{
 		if ( isClicked( ) )
 		{
-			_canwrite = true;
+			canwrite_ = true;
 			setClicked( false );
 			OnMousePressed( ).Invoke( this );
 			OnGainFocus( ).Invoke( this );
@@ -141,44 +140,44 @@ void Textbox::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseRelease
 
 bool Textbox::getCanWrite() const
 {
-	return _canwrite;
+	return canwrite_;
 }
 
 bool Textbox::isMultiline() const
 {
-	return _multiline;
+	return multiline_;
 }
 
 __LIB String Textbox::getPromptText() const
 {
-	return _prompt;
+	return prompt_;
 }
 
 __LIB String Textbox::getFilter() const
 {
-	return _filter;
+	return filter_;
 }
 
 char Textbox::getPasswordChar() const
 {
-	return _passwordChar;
+	return passwordChar_;
 }
 
 bool Textbox::getUsePasswordChar() const
 {
-	return _usePasswordChar;
+	return usePasswordChar_;
 }
 
 char Textbox::getLooseFocusKey() const
 {
-	return _loose;
+	return loose_;
 }
 
 bool Textbox::isInFilter(const char & _Key) const
 {
-	if ( _filter.empty( ) )
+	if ( filter_.empty( ) )
 		return true;
-	for ( auto x : _filter )
+	for ( auto x : filter_ )
 		if ( x == _Key )
 			return true;
 	return false;
@@ -186,53 +185,53 @@ bool Textbox::isInFilter(const char & _Key) const
 
 bool Textbox::isWriting() const
 {
-	return _canwrite;
+	return canwrite_;
 }
 
-void Textbox::setLooseFocusKey(const char & _Key)
+void Textbox::setLooseFocusKey( char key )
 {
-	_loose = _Key;
+	loose_ = key;
 }
 
-void Textbox::setCanWrite(const bool & _Can)
+void Textbox::setCanWrite( bool can )
 {
-	_canwrite = _Can;
+	canwrite_ = can;
 	OnModified( ).Invoke( this );
 }
 
-void Textbox::setPromptText(const __LIB String & _Text)
+void Textbox::setPromptText( String text )
 {
-	_prompt = _Text;
+	prompt_ = std::move( text );
 	OnModified( ).Invoke( this );
 }
 
-void Textbox::setPasswordChar( const char &_Char )
+void Textbox::setPasswordChar( char character )
 {
-	_passwordChar = _Char;
+	passwordChar_ = character;
 	OnModified( ).Invoke( this );
 }
 
-void Textbox::setUsePasswordChar(const bool & _Use)
+void Textbox::setUsePasswordChar(bool use)
 {
-	_usePasswordChar = _Use;
+	usePasswordChar_ = use;
 	OnModified( ).Invoke( this );
 }
 
-void Textbox::setMultiline(const bool & _Can)
+void Textbox::setMultiline(bool can)
 {
-	_multiline = _Can;
+	multiline_ = can;
 	OnModified( ).Invoke( this );
 }
 
-void Textbox::setFilter(const __LIB String & _Filter)
+void Textbox::setFilter( String filter )
 {
-	this->_filter = _Filter;
+	this->filter_ = filter;
 	OnModified( ).Invoke( this );
 }
 
-void Textbox::addFilterCharacter(const char & _Character)
+void Textbox::addFilterCharacter(char character)
 {
-	this->_filter.push_back( _Character );
+	this->filter_.push_back( character );
 	OnModified( ).Invoke( this );
 }
 

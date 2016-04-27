@@ -6,182 +6,115 @@
 begin_LIB
 
 
-// Wrapper to contain a function
-template<typename _Sig>
-class timed_function
+template<typename Fty>
+class function
 {
 private:
-	typedef std::function<_Sig> Signature;
-	Signature _f;
-	std::chrono::time_point<std::chrono::system_clock> _last;
-	std::chrono::milliseconds _delay;
+	using callable = std::function<Fty>;
+	callable callable_;
+
 public:
+	template<typename _Callable>
+	function( _Callable &&callable )
+		: callable_( std::forward<_Callable>( callable ) )
+	{}
 
-	///<summary>
-	/// Construct this with '_Func' being a function.
-	///</summary>
-	template<typename _Func>
-	timed_function( const _Func &_func )
+	function( )
+		: callable_( )
+	{}
+
+	template<typename..._Ax>
+	void invoke( _Ax&&...args )
 	{
-		_f = _func;
-		_delay = std::chrono::milliseconds( 0 );
-		_last = __LIB Clock::now( );
+		if ( callable_ )
+			callable_( std::forward<_Ax>( args )... );
 	}
 
-	///<summary>
-	/// Invoke the function if enough time has passed since the last call to the function.
-	///</summary>
-	template<typename..._Args>
-	void invoke_if_time( std::chrono::time_point<std::chrono::system_clock> &_Now, _Args&&..._args )
-	{
-		if ( (_Now.time_since_epoch( ) - _last.time_since_epoch( )) >= _delay )
-		{
-			_last = _Now;
-			if ( _f )
-				_f( std::forward<_Args>( _args )... );
-		}
-	}
-
-	///<summary>
-	/// Set the minimum delay per invoke to this function, meaning:
-	/// Invoke only if N time has passed since last call.
-	///</summary>
-	void Every( const std::chrono::milliseconds &_By )
-	{
-		_delay = _By;
-	}
+	auto& target( ) { return callable_; }
 };
 
-// Wrapper to contain a name for an event function
-template<typename _Sig>
+
+template<typename Fty>
 class EventHandler
 {
 private:
-	__LIB String _name;
-	timed_function<_Sig> _func;
-public:
+	function<Fty> f_;
+	String name_;
 
-	///<summary>
-	/// Construct this EventHandler with a Name and Function.
-	///</summary>
-	template<typename _Func>
-	EventHandler( const __LIB String &_Name, const _Func &_Function )
-		: _name( _Name ), _func( _Function )
+public:
+	template<typename _Callable>
+	EventHandler( _Callable&&callable )
+		: name_( "unknown" ), f_( std::forward<_Callable>( callable ) )
 	{}
 
-	///<summary>
-	/// Return a reference to the timed_function that is held by this handler.
-	///</summary>
-	auto& get( ) { return _func; }
+	template<typename _Callable>
+	EventHandler( String name, _Callable&&callable )
+		: name_( std::move( name ) ), f_( std::forward<_Callable>( callable ) )
+	{}
 
-	///<summary>
-	/// Return the name of this EventHandler.
-	///</summary>
-	auto& name( ) { return _name; }
+	template<typename..._Ax>
+	void invoke( _Ax&&...args )
+	{
+		f_.invoke( std::forward<_Ax>( args )... );
+	}
+
+	const auto& name( ) const { return name_; }
+
+	auto& name( ) { return name_; }
+
+	const auto& fty( ) const { return f_; }
+
+	auto &fty( ) { return f_; }
 };
 
-// An Event(Raiser)
-template<typename _Sig>
+
+template<typename Fty>
 class Event
 {
-	typedef EventHandler<_Sig>* Signature;
-	std::vector<Signature> _fs;
+private:
+	std::vector<EventHandler<Fty>> handlers_;
+
 public:
-	// Default
-	Event( ) = default;
+	Event( )
+		: handlers_( )
+	{ }
 
-	~Event( )
+	auto &getHandlers( ) { return handlers_; }
+
+	void clear( ) { handlers_.clear( ); }
+
+	template<typename..._Ax>
+	void Invoke( _Ax&&...args )
 	{
-		// Clear and delete handlers
-		clear( );
+		for ( auto &x : handlers_ )
+			x.invoke( std::forward<_Ax>( args )... );
 	}
 
-	///<summary>
-	/// Return the vector of EventHandlers that this contains.
-	///</summary>
-	auto& getF( ) { return _fs; }
-
-	///<summary>
-	/// Clear all the EventHandlers that this contains.
-	///</summary>
-	void clear( )
+	void remove_handler( const String &name )
 	{
-		for ( auto&x : _fs )
-			delete x;
-		_fs.clear( );
-	}
-
-	///<summary>
-	/// Raise the event.
-	///</summary>
-	template<typename ..._Args>
-	void Invoke( _Args&&..._args )
-	{
-		auto now = __LIB Clock::now( );
-		for ( auto&x : _fs )
+		for ( auto it = handlers_.begin( ), end = handlers_.end( );
+			  it < end;
+			  ++it )
 		{
-			// Invoke if time
-			x->get( ).invoke_if_time( now, std::forward<_Args>( _args )... );
-			std::this_thread::sleep_for( std::chrono::nanoseconds( 5000 ) );
-		}
-	}
-
-	///<summary>
-	/// Remove a event handler from this Event by name.
-	///</summary>
-	void remove_handler( const __LIB String &name )
-	{
-		for ( auto it = _fs.begin( ); it < _fs.end( ); ++it )
-		{
-			if ( (*it)->name( ) == name )
+			if ( it->name( ) == name )
 			{
-				auto ptr = (*it);
-				_fs.erase( it );
-				delete ptr;
+				handlers_.erase( it );
 				break;
 			}
 		}
 	}
 
-	///<summary>
-	///	Add an EventHandler to this Event.
-	///</summary>
-	template<typename T>
-	timed_function<_Sig>& operator+=(const T &_Function )
+	Event& operator+=( EventHandler<Fty> lhs )
 	{
-		// Create an unamed handler
-		auto handler = new EventHandler<_Sig>( "unamed", _Function );
-
-		// Push it
-		_fs.push_back( handler );
-
-		// Return a reference to the function
-		return handler->get( );
-	}
-	
-	///<summary>
-	///	Add an EventHandler to this Event.
-	///</summary>
-	template<>
-	timed_function<_Sig>& operator+=<EventHandler<_Sig>>( const EventHandler<_Sig> &_Function )
-	{
-		// Copy _Function and push the copy into the array
-		_fs.push_back( new EventHandler<_Sig>( _Function ) );
-
-		// Return function
-		return _fs.back( )->get( );
-	}
-
-	///<summary>
-	/// Remove a event handler from this Event by name.
-	///</summary>
-	auto& operator-=( const __LIB String &_Name )
-	{
-		remove_handler( _Name );
+		handlers_.push_back( std::move( lhs ) );
 		return *this;
 	}
 
-
+	Event& operator-=( const String &name )
+	{
+		remove_handler( name );
+		return *this;
+	}
 };
 
 

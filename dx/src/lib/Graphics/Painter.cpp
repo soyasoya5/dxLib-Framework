@@ -16,11 +16,11 @@
 
 begin_GRAPHICS
 
-Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, const bool &_Singleton)
+Painter * Painter::Create(std::shared_ptr<Window> target, const bool &windowed, const bool &singleton)
 {
 	auto application = __LIB Application::get( );
 
-	if ( !_Target )
+	if ( !target )
 	{
 		auto ids = __GRAPHICS MsgBox( "Unable to create DirectX9 Painter.\n"
 									  "Nullpointer passed as Target window.\n"
@@ -31,13 +31,11 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 									   __GRAPHICS OKCancel | __GRAPHICS IconError ).Show( );
 		if ( ids == __GRAPHICS MsgBox::Ok )
 			return nullptr;
-		else
-			application->exit( );
 		application->exit( );
 	}
 
 	auto painter = std::unique_ptr<Painter>( new Painter( ) );
-	if ( FAILED( Direct3DCreate9Ex( D3D9b_SDK_VERSION, (IDirect3D9Ex**)&painter->_d3dobj ) ) )
+	if ( FAILED( Direct3DCreate9Ex( D3D9b_SDK_VERSION, (IDirect3D9Ex**)&painter->d3dobj_ ) ) )
 	{
 		auto ids = __GRAPHICS MsgBox( "Unable to create DirectX9 Painter.\n"
 									  "Direct3DCreate9Ex failed.\n"
@@ -48,33 +46,31 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 									   __GRAPHICS OKCancel | __GRAPHICS IconError ).Show( );
 		if ( ids == __GRAPHICS MsgBox::Ok )
 			return nullptr;
-		else
-			application->exit( );
 		return nullptr;
 	}
 
 
 	D3DPRESENT_PARAMETERS params;
 	ZeroMemory(&params, sizeof(params));
-	params.Windowed = _Windowed;
+	params.Windowed = windowed;
 	params.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	params.BackBufferFormat = D3DFMT_A8R8G8B8; // 0xAARRGGBB (ARGB)
 	params.EnableAutoDepthStencil = TRUE;
 	params.AutoDepthStencilFormat = D3DFMT_D16;
 	params.MultiSampleType = D3DMULTISAMPLE_NONE;
-	params.BackBufferWidth = (_Windowed ? 0 : _Target->Width( ));
-	params.BackBufferHeight = (_Windowed ? 0 : _Target->Height( ));
-	params.hDeviceWindow = _Target->native_handle( );
+	params.BackBufferWidth = (!windowed ? 0 : target->Width( ));
+	params.BackBufferHeight = (!windowed ? 0 : target->Height( ));
+	params.hDeviceWindow = target->native_handle( );
 	params.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 	
-	auto obj = (IDirect3D9Ex*)painter->_d3dobj;
+	auto obj = (IDirect3D9Ex*)painter->d3dobj_;
 
 	auto result = obj->CreateDevice( D3DADAPTER_DEFAULT, 
 									 D3DDEVTYPE_HAL, 
-									 _Target->native_handle( ), 
+									 target->native_handle( ), 
 									 D3DCREATE_HARDWARE_VERTEXPROCESSING, 
 									 &params,
-									 (IDirect3DDevice9**)&painter->_device );
+									 (IDirect3DDevice9**)&painter->device_ );
 	
 	if ( FAILED(result) )
 	{
@@ -85,14 +81,12 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 									  "Press \"OK\" to continue the application, \"Cancel\" to exit the application.", 
 									  "Fatal Error", 
 									   __GRAPHICS OKCancel | __GRAPHICS IconError ).Show( );
-		if ( ids == __GRAPHICS MsgBox::Ok )
-			return nullptr;
-		else
+		if ( ids != __GRAPHICS MsgBox::Ok )
 			application->exit( );
 		return nullptr;
 	}
 
-	result = D3DXCreateLine( (IDirect3DDevice9*)painter->_device, (ID3DXLine**)&painter->_line );
+	result = D3DXCreateLine( (IDirect3DDevice9*)painter->device_, (ID3DXLine**)&painter->line_ );
 	if ( FAILED(result) )
 	{
 		auto ids = __GRAPHICS MsgBox( "Unable to create DirectX9 Line.\n"
@@ -103,169 +97,165 @@ Painter * Painter::Create(__GRAPHICS Window * _Target, const bool &_Windowed, co
 									  "Slight Error", 
 									   __GRAPHICS OKCancel | __GRAPHICS IconError ).Show( );
 		if ( ids == __GRAPHICS MsgBox::Cancel )
-		{
 			application->exit( );
-			return nullptr;
-		}
+		return nullptr;
 	}
 
-	_Target->setPainter( painter.get( ) );
+	target->setPainter( painter.get( ) );
 
-	_Target->OnWindowResize( ) += __LIB EventHandler<void(__GRAPHICS Window*, __GRAPHICS WindowMovedArgs&)>( _Target->getClass( ) + "_Painter_Resize", 
-								  []( __GRAPHICS Window *sender, __GRAPHICS WindowMovedArgs &args )
+	target->OnWindowResize( ) += __LIB EventHandler<void(__GRAPHICS Window*, __GRAPHICS WindowMovedArgs&)>( target->getClass( ) + "_Painter_Resize",
+								  []( Window *sender, WindowMovedArgs &args )
 								  {
-									auto painter = (Painter*)sender->getPainter( );
-									painter->ResetPainter( args.region.size, sender );
+										auto painter = (Painter*)sender->getPainter( );
+										painter->ResetPainter( args.region.size, sender );
 								  });
 
-	_Target->OnWindowMaximize( ) += __LIB EventHandler<void(__GRAPHICS Window*)>( _Target->getClass( ) + "_Painter_Maximize", 
-									[]( __GRAPHICS Window *sender )
-									{
-										auto painter = (Painter*)sender->getPainter( );
-										painter->ResetPainter( { sender->Width( ), sender->Height( ) }, sender );
-									});
-
-	if ( _Singleton )
+	if ( singleton )
 		BasePainter::setSingleton( painter.get( ) );
 
 	FontContext context;
 	context.Height = 18;
 	context.Weight = 20;
-	painter->_default = Font::Create( "Arial", context, painter.get( ) );
+	painter->default_ = Font::Create( "Arial", context, painter.get( ) );
 
 	return painter.release( );
 }
 
 Painter::~Painter()
 {
-	((IDirect3DDevice9*)_device)->Release( );
-	((IDirect3D9Ex*)_d3dobj)->Release( );
-	((ID3DXLine*)_line)->Release( );
+	if ( device_ )
+		((IDirect3DDevice9*)device_)->Release( );
+
+	if ( d3dobj_ )
+		((IDirect3D9Ex*)d3dobj_)->Release( );
+	
+	if ( line_ )
+		((ID3DXLine*)line_)->Release( );
 }
 
 bool Painter::ResetPainter(const __MATH Vector2 & _Size, __GRAPHICS Window *_Target)
 {
-	if ( _target != _Target ) {
-		if ( _target )
-			this->_target->setPainter( nullptr, false );
-		this->_target = _Target;
-		this->_target->setPainter( this, false );
+	if ( target_.get( ) != _Target )
+	{ 
+		if ( target_ )
+			target_->setPainter( nullptr, false );
+		target_.reset( _Target );
 	}
-	// D3D_OK, D3DERR_DEVICELOST, D3DERR_DEVICEREMOVED, D3DERR_DRIVERINTERNALERROR, or D3DERR_OUTOFVIDEOMEMORY
+
 	D3DPRESENT_PARAMETERS params;
 	ZeroMemory(&params, sizeof(params));
+	params.Windowed = TRUE;
 	params.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	params.BackBufferFormat = D3DFMT_A8R8G8B8; // 0xAARRGGBB (ARGB)
+	params.BackBufferFormat = D3DFMT_A8R8G8B8;
 	params.EnableAutoDepthStencil = TRUE;
 	params.AutoDepthStencilFormat = D3DFMT_D16;
 	params.MultiSampleType = D3DMULTISAMPLE_NONE;
 	params.BackBufferWidth = _Size.x;
 	params.BackBufferHeight = _Size.y;
-	params.hDeviceWindow = _Target->native_handle( );
+	params.hDeviceWindow = target_->native_handle( );
 	params.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
-	auto res = ((IDirect3DDevice9*)_device)->Reset( &params );
-	((ID3DXFont*)this->_default->raw( ))->OnResetDevice( );
-	return SUCCEEDED( res );
+	return SUCCEEDED( ((IDirect3DDevice9*)device_)->Reset( &params ) );
 }
 
 void Painter::BeginPaint()
 {
-	((IDirect3DDevice9*)_device)->Clear( 0, nullptr, D3DCLEAR_TARGET, 0, 1.f, 0 );
-	((IDirect3DDevice9*)_device)->BeginScene( );
+	((IDirect3DDevice9*)device_)->Clear( 0, nullptr, D3DCLEAR_TARGET, 0, 1.f, 0 );
+	((IDirect3DDevice9*)device_)->BeginScene( );
 }
 
-void Painter::Paint( const __GRAPHICS Text & _Text, const __GRAPHICS Pen & _Pen)
+void Painter::Paint( const __GRAPHICS Text & text, const __GRAPHICS Pen & pen)
 {
-	auto font_type = _Text.getFont( );
+	auto font_type = text.getFont( );
 	if ( !font_type )
 		font_type = this->defaultFont( );
 	auto font = (ID3DXFont*)font_type->raw( );
-	auto text = _Text.getText( );
-	auto pos = _Text.getPosition( );
-	auto clip = _Text.getMaxClip( );
-	auto format = _Text.getAllignment( );
-	RECT rect{ static_cast<LONG>( pos.x ), static_cast<LONG>( pos.y ), static_cast<LONG>( pos.x + clip.x ), static_cast<LONG>( pos.y + clip.y ) };
-	font->DrawTextA( nullptr, text.c_str( ), -1, &rect, format, _Pen.Color( ) );
+	auto texts = text.getText( );
+	auto pos = text.getPosition( );
+	auto clip = text.getMaxClip( );
+	auto format = text.getAllignment( );
+	RECT rect{ static_cast<LONG>( pos.x ), 
+			   static_cast<LONG>( pos.y ), 
+			   static_cast<LONG>( pos.x + clip.x ), 
+			   static_cast<LONG>( pos.y + clip.y ) };
+	font->DrawTextA( nullptr, texts.c_str( ), -1, &rect, format, pen.Color( ) );
 }
 
-void Painter::Paint(const __GRAPHICS Shape & _Shape)
+void Painter::Paint(const __GRAPHICS Shape & shape)
 {
 }
 
-void Painter::Paint(const __GRAPHICS Circle & _Circle)
+void Painter::Paint(const __GRAPHICS Circle & circle)
 {
-
 }
 
-void Painter::PaintRect( const __MATH Region & _Region, const __GRAPHICS Pen & _Pen)
+void Painter::PaintRect( const __MATH Region & region, const __GRAPHICS Pen & pen)
 {
 	static D3DRECT rect_angle;
-	rect_angle = { static_cast<LONG>( _Region.position.x ), 
-				   static_cast<LONG>( _Region.position.y ), 
-				   static_cast<LONG>( _Region.position.x + _Region.size.x ), 
-				   static_cast<LONG>( _Region.position.y + _Region.size.y ) };
-	((IDirect3DDevice9*)_device)->Clear( 1, &rect_angle, D3DCLEAR_TARGET, _Pen.Color( ), 1.f, 0 );
+	rect_angle = { static_cast<LONG>( region.position.x ), 
+				   static_cast<LONG>( region.position.y ), 
+				   static_cast<LONG>( region.position.x + region.size.x ), 
+				   static_cast<LONG>( region.position.y + region.size.y ) };
+	((IDirect3DDevice9*)device_)->Clear( 1, &rect_angle, D3DCLEAR_TARGET, pen.Color( ), 1.f, 0 );
 }
 
-void Painter::PaintRectOutlined( const __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter )
+void Painter::PaintRectOutlined( const __MATH Region &region, const __GRAPHICS Pen &inner, const __GRAPHICS Pen &outer )
 {
-	__MATH Region outer_region = _Region;
-	outer_region.position.x -= _PenOuter.Thickness( );
-	outer_region.position.y -= _PenOuter.Thickness( );
-	outer_region.size.x += _PenOuter.Thickness( ) * 2;
-	outer_region.size.y += _PenOuter.Thickness( ) * 2;
+	__MATH Region outer_region = region;
+	auto outThick = outer.Thickness( );
+	outer_region.position.x -= outThick;
+	outer_region.position.y -= outThick;
+	outer_region.size.x += outThick * 2;
+	outer_region.size.y += outThick * 2;
 
-	PaintRect( outer_region, _PenOuter );
-	PaintRect( _Region, _PenInner );
+	PaintRect( outer_region, outer );
+	PaintRect( region, inner );
 }
 
-void Painter::PaintLine(const __GRAPHICS Line & _Line)
+void Painter::PaintLine(const __GRAPHICS Line & line)
 {
-	auto pen = _Line.Pen( );
-	auto target = _Line.Target( );
-	auto pos = _Line.Position( );
+	auto pen = line.Pen( );
+	auto target = line.Target( );
+	auto pos = line.Position( );
 
-	if ( _line == nullptr )
+	if ( line_ == nullptr )
 	{
-		if ( FAILED( D3DXCreateLine( (IDirect3DDevice9*)_device, (ID3DXLine**)&_line ) ) )
+		if ( FAILED( D3DXCreateLine( (IDirect3DDevice9*)device_, (ID3DXLine**)&line_ ) ) )
 			return;
-		((ID3DXLine*)_line)->SetPattern( 0xFFFFFFFF );
-		((ID3DXLine*)_line)->SetAntialias( TRUE );
+		((ID3DXLine*)line_)->SetPattern( 0xFFFFFFFF );
+		((ID3DXLine*)line_)->SetAntialias( TRUE );
 	}
 
 	D3DXVECTOR2 points[2];
 	points[0] = { pos.x, pos.y };
 	points[1] = { target.x, target.y };
-	((ID3DXLine*)_line)->SetWidth( pen.Thickness( ) );
-	((ID3DXLine*)_line)->Draw( points, 2, pen.Color( ) );
+	((ID3DXLine*)line_)->SetWidth( pen.Thickness( ) );
+	((ID3DXLine*)line_)->Draw( points, 2, pen.Color( ) );
 }
 
 void Painter::PresentPaint()
 {
-	((IDirect3DDevice9*)_device)->EndScene( );
-	((IDirect3DDevice9*)_device)->Present( 0, 0, 0, 0 );
+	((IDirect3DDevice9*)device_)->EndScene( );
+	((IDirect3DDevice9*)device_)->Present( 0, 0, 0, 0 );
 }
 
 void * Painter::native() const
 {
-	return _device;
+	return device_;
 }
 
-Font * Painter::defaultFont() const
+std::shared_ptr<Font> Painter::defaultFont() const
 {
-	return _default;
+	return default_;
 }
 
-void Painter::setDefaultFont(__GRAPHICS Font * _Font)
+void Painter::setDefaultFont(std::shared_ptr<Font> font)
 {
-	if ( _default ) 
-		delete _default;
-	_default = _Font;
+	default_ = font;
 }
 
 Painter::Painter()
-	: _device( nullptr ), _d3dobj( nullptr ), _line( nullptr ), _target( nullptr )
+	: device_( nullptr ), d3dobj_( nullptr ), line_( nullptr ), target_( nullptr )
 {
 }
 

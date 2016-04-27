@@ -24,12 +24,12 @@ public:
 class AsyncGuard
 {
 private:
-	AsyncKeeper &_keeper;
+	AsyncKeeper &keeper_;
 public:
 	///<summary>
 	/// Construct this guard.
 	///</summary>
-	AsyncGuard(AsyncKeeper &_Keeper);
+	AsyncGuard( AsyncKeeper &keeper_ );
 	~AsyncGuard( );
 };
 
@@ -37,12 +37,12 @@ public:
 class FlexibleGuard
 {
 private:
-	AsyncKeeper &_keeper;
+	AsyncKeeper &keeper_;
 public:
 	///<summary>
 	/// Construct this guard.
 	///</summary>
-	FlexibleGuard(AsyncKeeper &_Keeper);
+	FlexibleGuard( AsyncKeeper &keeper );
 	~FlexibleGuard( );
 
 	///<summary>

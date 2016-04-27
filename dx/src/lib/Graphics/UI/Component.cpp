@@ -4,11 +4,11 @@
 begin_UI
 
 Component::Component()
-	: _local( ), _global( ), _style( Dark, Blue ), _leftOf( nullptr ),
-	  _rightOf( nullptr ), _bottomOf( nullptr ), _topOf( nullptr ),
-	  _parent( nullptr ), _allignment( Center ), _layout( Horizontal ),
-	  _state( 0 ), _hovering( false ), _focusing( false ), _clicking( false ),
-	  _enabled( true ), _visible( true ), _userdata( nullptr ), _region_changed( true )
+	: local_( ), global_( ), style_( Dark, Blue ), leftOf_( nullptr ),
+	  rightOf_( nullptr ), bottomOf_( nullptr ), topOf_( nullptr ),
+	  parent_( nullptr ), allignment_( Center ), layout_( Horizontal ),
+	  state_( 0 ), hovering_( false ), focusing_( false ), clicking_( false ),
+	  enabled_( true ), visible_( true ), userdata_( nullptr ), region_changed_( true )
 {
 
 }
@@ -20,463 +20,522 @@ Component::~Component()
 
 __MATH Region Component::getLocalRegion() const
 {
-	return _local;
+	return local_;
 }
 
 __MATH Vector2 Component::getLocalPosition() const
 {
-	return _local.position;
+	return local_.position;
 }
 
 __MATH Region Component::getGlobalRegion() const
 {
-	return _global;
+	return global_;
 }
 
 __MATH Region Component::determineRegion()
 {
-	if ( _region_changed ) {
-		_determined.position = _local.position + _global.position;
-		_determined.size = _local.size;
+	if ( region_changed_ ) 
+	{
+		determined_.position = local_.position + global_.position;
+		determined_.size = local_.size;
 		
 		// Determine X axis
-		if ( _leftOf )
+		if ( leftOf_ )
 		{
-			auto detLeft = _leftOf->determineRegion( );
-			_determined.position.x = detLeft.position.x - _local.size.x - 15;
+			auto detLeft = leftOf_->determineRegion( );
+			determined_.position.x = detLeft.position.x - local_.size.x - 15;
 		}
-		else if ( _rightOf )
+		else if ( rightOf_ )
 		{
-			auto detRight = _rightOf->determineRegion( );
-			_determined.position.x = detRight.position.x + detRight.size.x + 15;
-		}
-		
-		if ( _bottomOf )
-		{
-			auto detBottom = _bottomOf->determineRegion( );
-			_determined.position.y = detBottom.position.y + _bottomOf->_local.size.y + 15;
-		}
-		else if ( _topOf )
-		{
-			auto detTop = _topOf->determineRegion( );
-			_determined.position.y = detTop.position.y - 15;
+			auto detRight = rightOf_->determineRegion( );
+			determined_.position.x = detRight.position.x + detRight.size.x + 15;
 		}
 		
-		if ( _allignedOf && ( _determined.position.x == 0 || _determined.position.y == 0 ) )
+		if ( bottomOf_ )
 		{
-			auto detAllign = _allignedOf->determineRegion( );
-			if ( _determined.position.y == 0 )
-				_determined.position.y = detAllign.position.y;
-			if ( _determined.position.x == 0 )
-				_determined.position.x = detAllign.position.x;
+			auto detBottom = bottomOf_->determineRegion( );
+			determined_.position.y = detBottom.position.y + bottomOf_->local_.size.y + 15;
 		}
-		_region_changed = false;
+		else if ( topOf_ )
+		{
+			auto detTop = topOf_->determineRegion( );
+			determined_.position.y = detTop.position.y - 15;
+		}
+		
+		if ( allignedOf_ && ( determined_.position.x == 0 || determined_.position.y == 0 ) )
+		{
+			auto detAllign = allignedOf_->determineRegion( );
+			if ( determined_.position.y == 0 )
+				determined_.position.y = detAllign.position.y;
+			if ( determined_.position.x == 0 )
+				determined_.position.x = detAllign.position.x;
+		}
+		region_changed_ = false;
 	}
 
-	return _determined;
+	return determined_;
 }
 
 __MATH Vector2 Component::getGlobalPosition() const
 {
-	return _global.position;
+	return global_.position;
 }
 
 __MATH Vector2 Component::getSize() const
 {
-	return _local.size;
+	return local_.size;
 }
 
 __UI StyleManager Component::getStyle() const
 {
-	return _style;
+	return style_;
 }
 
 __UI Component * Component::getLeftOf() const
 {
-	return _leftOf;
+	return leftOf_;
 }
 
 __UI Component * Component::getRightOf() const
 {
-	return _rightOf;
+	return rightOf_;
 }
 
 __UI Component * Component::getBottomOf() const
 {
-	return _bottomOf;
+	return bottomOf_;
 }
 
 __UI Component * Component::getTopOf() const
 {
-	return _topOf;
+	return topOf_;
 }
 
 __UI Component * Component::getAllignedOf() const
 {
-	return _allignedOf;
+	return allignedOf_;
 }
 
 __UI Component * Component::getParent() const
 {
-	return _parent;
+	return parent_;
 }
 
 __UI Allignment Component::getAllignment() const
 {
-	return _allignment;
+	return allignment_;
 }
 
 __UI Layout Component::getLayout() const
 {
-	return _layout;
+	return layout_;
 }
 
 int Component::getState() const
 {
-	return _state;
+	return state_;
 }
 
 bool Component::isHovered() const
 {
-	return _hovering;
+	return hovering_;
 }
 
 bool Component::isFocused() const
 {
-	return _focusing;
+	return focusing_;
 }
 
 bool Component::isClicked() const
 {
-	return _clicking;
+	return clicking_;
 }
 
 bool Component::isEnabled() const
 {
-	return _enabled;
+	return enabled_;
 }
 
 bool Component::isVisible() const
 {
-	return _visible;
+	return visible_;
 }
 
 void * Component::getUserdata() const
 {
-	return _userdata;
+	return userdata_;
 }
 
-__GRAPHICS Font * Component::getFont() const
+std::shared_ptr<Font> Component::getFont() const
 {
-	return _font;
+	return font_;
 }
 
 int Component::getUIID() const
 {
-	return _guid;
+	return uiid_;
 }
 
 __LIB String Component::getText() const
 {
-	return _text;
+	return text_;
 }
 
-void Component::setLocalRegion(const __MATH Region & _Region)
+void Component::setLocalRegion(const __MATH Region & region)
 {
-	_local = _Region;
-	_global.size = _local.size;
-	_region_changed = true;
-	OnModified( ).Invoke( this );
-}
+	local_ = region;
+	global_.size = local_.size;
+	region_changed_ = true;
 
-void Component::setLocalPosition(const __MATH Vector2 & _Position)
-{
-	_local.position = _Position;
-	_region_changed = true;
-	OnModified( ).Invoke( this );
-}
-
-void Component::setGlobalRegion(const __MATH Region & _Region)
-{
-	_global = _Region;
-	_local.size = _global.size;
-	_region_changed = true;
-	OnModified( ).Invoke( this );
-}
-
-void Component::setGlobalPosition(const __MATH Vector2 & _Position)
-{
-	_global.position = _Position;
-	_region_changed = true;
-	OnModified( ).Invoke( this );
-}
-
-void Component::setSize(const __MATH Vector2 & _Size)
-{
-	_local.size = _Size;
-	_global.size = _Size;
-	_region_changed = true;
-	OnModified( ).Invoke( this );
-}
-
-void Component::setStyle(const __UI StyleManager & _Style)
-{
-	_style = _Style;
-	OnModified( ).Invoke( this );
-}
-
-void Component::setLeftOf(__UI Component * _Component)
-{
-	if ( _leftOf )
-		_leftOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_leftof" );
-
-	_leftOf = _Component;
+	if ( leftOf_ )
+		leftOf_->region_changed_ = true;
+	else if ( rightOf_ )
+		rightOf_->region_changed_ = true;
 	
-	if ( _leftOf )
-		_leftOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_leftof", 
+	if ( bottomOf_ )
+		bottomOf_->region_changed_ = true;
+	else if ( topOf_ )
+		topOf_->region_changed_ = true;
+
+	if ( allignedOf_ )
+		allignedOf_->region_changed_ = true;
+
+	OnModified( ).Invoke( this );
+}
+
+void Component::setLocalPosition(const __MATH Vector2 & position)
+{
+	local_.position = position;
+	region_changed_ = true;
+
+	if ( leftOf_ )
+		leftOf_->region_changed_ = true;
+	else if ( rightOf_ )
+		rightOf_->region_changed_ = true;
+	
+	if ( bottomOf_ )
+		bottomOf_->region_changed_ = true;
+	else if ( topOf_ )
+		topOf_->region_changed_ = true;
+
+	if ( allignedOf_ )
+		allignedOf_->region_changed_ = true;
+
+	OnModified( ).Invoke( this );
+}
+
+void Component::setGlobalRegion(const __MATH Region & region)
+{
+	global_ = region;
+	local_.size = global_.size;
+	region_changed_ = true;
+
+	if ( leftOf_ )
+		leftOf_->region_changed_ = true;
+	else if ( rightOf_ )
+		rightOf_->region_changed_ = true;
+	
+	if ( bottomOf_ )
+		bottomOf_->region_changed_ = true;
+	else if ( topOf_ )
+		topOf_->region_changed_ = true;
+
+	if ( allignedOf_ )
+		allignedOf_->region_changed_ = true;
+
+	OnModified( ).Invoke( this );
+}
+
+void Component::setGlobalPosition(const __MATH Vector2 & position)
+{
+	global_.position = position;
+	region_changed_ = true;
+
+	if ( leftOf_ )
+		leftOf_->region_changed_ = true;
+	else if ( rightOf_ )
+		rightOf_->region_changed_ = true;
+	
+	if ( bottomOf_ )
+		bottomOf_->region_changed_ = true;
+	else if ( topOf_ )
+		topOf_->region_changed_ = true;
+
+	if ( allignedOf_ )
+		allignedOf_->region_changed_ = true;
+
+	OnModified( ).Invoke( this );
+}
+
+void Component::setSize(const __MATH Vector2 & size)
+{
+	local_.size = size;
+	global_.size = size;
+	region_changed_ = true;
+	OnModified( ).Invoke( this );
+}
+
+void Component::setStyle(const __UI StyleManager & style)
+{
+	style_ = style;
+	OnModified( ).Invoke( this );
+}
+
+void Component::setLeftOf(__UI Component * component)
+{
+	if ( leftOf_ )
+		leftOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_leftof" );
+
+	leftOf_ = component;
+	
+	if ( leftOf_ )
+		leftOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_leftof", 
 								  [this]( Component* sender )
 								  {
-									  this->_region_changed = true;
+									  region_changed_ = true;
 								  	  this->OnModified( ).Invoke( this );
 								  });
 	OnModified( ).Invoke( this );
 }
 
-void Component::setRightOf(__UI Component * _Component)
+void Component::setRightOf(__UI Component * component)
 {
-	if ( _rightOf )
-		_rightOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_rightof" );
+	if ( rightOf_ )
+		rightOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_rightof" );
 
-	_rightOf = _Component;
-	if ( _rightOf )
-		_rightOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_rightof", 
+	rightOf_ = component;
+	
+	if ( rightOf_ )
+		rightOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_rightof", 
 								  [this]( Component* sender )
 								  {
-									  this->_region_changed = true;
+									  region_changed_ = true;
 								  	  this->OnModified( ).Invoke( this );
 								  });
 	OnModified( ).Invoke( this );
 }
 
-void Component::setBottomOf(__UI Component * _Component)
+void Component::setBottomOf(__UI Component * component)
 {
-	if ( _bottomOf )
-		_bottomOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_bottomof" );
+	if ( bottomOf_ )
+		bottomOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_bottomof" );
 
-	_bottomOf = _Component;
-	if ( _bottomOf )
-		_bottomOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_bottomof",
+	bottomOf_ = component;
+	
+	if ( bottomOf_ )
+		bottomOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_bottomof", 
 								  [this]( Component* sender )
 								  {
-									  this->_region_changed = true;
+									  region_changed_ = true;
 								  	  this->OnModified( ).Invoke( this );
 								  });
 	OnModified( ).Invoke( this );
 }
 
-void Component::setTopOf(__UI Component * _Component)
+void Component::setTopOf(__UI Component * component)
 {
-	if ( _topOf )
-		_topOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_topof" );
+	if ( topOf_ )
+		topOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_topof" );
 
-	_topOf = _Component;
-	if ( _topOf )
-		_topOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_topof",
-								 [this]( Component* sender )
-								 {
-									  this->_region_changed = true;
-								 	  this->OnModified( ).Invoke( this );
-								 });
+	topOf_ = component;
+	
+	if ( topOf_ )
+		topOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_topof",
+								  [this]( Component* sender )
+								  {
+									  region_changed_ = true;
+								  	  this->OnModified( ).Invoke( this );
+								  });
 	OnModified( ).Invoke( this );
 }
 
-void Component::setAllignedOf(__UI Component * _Component)
+void Component::setAllignedOf(__UI Component * component)
 {
-	if ( _allignedOf )
-		_allignedOf->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_allignedof" );
+	if ( allignedOf_ )
+		allignedOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_allignedof" );
 
-	_allignedOf = _Component;
-	if ( _allignedOf )
-		_allignedOf->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_allignedof",
-									  [this]( Component* sender )
-									  {
-									  	  this->_region_changed = true;
-									  	  this->OnModified( ).Invoke( this );
-									  });
+	allignedOf_ = component;
+	
+	if ( allignedOf_ )
+		allignedOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_allignedof",
+										[this]( Component* sender )
+										{
+											  region_changed_ = true;
+											  this->OnModified( ).Invoke( this );
+										});
 	OnModified( ).Invoke( this );
 }
 
-void Component::setParent(__UI Component * _Parent)
+void Component::setParent(__UI Component * parent)
 {
-	_parent = _Parent;
+	parent_ = parent;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setAllignment(const __UI Allignment & _Allignment)
+void Component::setAllignment(const __UI Allignment & allignment)
 {
-	_allignment = _Allignment;
+	allignment_ = allignment;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setLayout(const __UI Layout & _Layout)
+void Component::setLayout(const __UI Layout & layout)
 {
-	_layout = _Layout;
+	layout_ = layout;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setState( const int &_State )
+void Component::setState( const int &state )
 {
-	_state = _State;
+	state_ = state;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setHovered(const bool & _Hovered)
+void Component::setHovered(const bool & hovered)
 {
-	_hovering = _Hovered;
+	hovering_ = hovered;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setFocused(const bool & _Focused)
+void Component::setFocused(const bool & focused)
 {
-	_focusing = _Focused;
+	focusing_ = focused;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setClicked(const bool & _Clicked)
+void Component::setClicked(const bool & clicked)
 {
-	_clicking = _Clicked;
+	clicking_ = clicked;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setEnabled(const bool & _Enabled)
+void Component::setEnabled(const bool & enabled)
 {
-	_enabled = _Enabled;
+	enabled_ = enabled;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setVisible(const bool & _Visible)
+void Component::setVisible(const bool & visible)
 {
-	_visible = _Visible;
+	visible_ = visible;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setUserdata(void * _Data)
+void Component::setUserdata(void * data)
 {
-	_userdata = _Data;
+	userdata_ = data;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setFont(__GRAPHICS Font * _Font)
+void Component::setFont(std::shared_ptr<Font> font)
 {
-	this->_font = _Font;
+	font_ = font;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setUIID(const int & _GUID)
+void Component::setUIID(const int & id)
 {
-	_guid = _GUID;
+	uiid_ = id;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setText(const __LIB String & _Text)
+void Component::setText(const __LIB String & text)
 {
-	_text = _Text;
+	text_ = text;
 	OnModified( ).Invoke( this );
 }
 
 void Component::flipLayout()
 {
-	if ( _layout == Horizontal )
+	if ( layout_ == Horizontal )
 		setLayout( Vertical );
 	else
 		setLayout( Horizontal );
 
 }
 
-void Component::KeyDown(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownArgs & _Args)
+void Component::KeyDown(Window* sender, KeyDownArgs &args)
 {
 }
 
-void Component::KeyUp(__GRAPHICS Window * _Sender, __GRAPHICS KeyUpArgs & _Args)
+void Component::KeyUp(Window* sender, KeyUpArgs &args)
 {
 }
 
-void Component::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharArgs & _Args)
+void Component::KeyDownChar(Window* _Sender, KeyDownCharArgs &args)
 {
 }
 
-void Component::MouseMoved(__GRAPHICS Window * _Sender, __GRAPHICS MouseMovedArgs & _Args)
+void Component::MouseMoved(Window* _Sender, MouseMovedArgs &args)
 {
-	if ( Collides( _Args.position ) && !_Args.handled )
+	if ( Collides( args.position ) && !args.handled )
 	{
-		if ( !this->_hovering )
+		if ( !this->hovering_ )
 		{
-			this->_hovering = true;
+			this->hovering_ = true;
 			OnMouseEnter( ).Invoke( this );
 		}
-		_Args.handled = true;
+		args.handled = true;
 	}
-	else if (this->_hovering)
+	else if ( this->hovering_ )
 	{
-		this->_hovering = false;
+		this->hovering_ = false;
 		OnMouseLeave( ).Invoke( this );
-		_Args.handled = true;
+		args.handled = true;
 	}
 }
 
-void Component::MouseClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClickedArgs & _Args)
+void Component::MouseClicked(Window* sender, MouseClickedArgs &args)
 {
-	if ( _Args.handled )
+	if ( args.handled )
 		return;
 
-	if ( this->_hovering && !this->_clicking )
+	if ( this->hovering_ && !this->clicking_ )
 	{
 		OnMousePressed( ).Invoke( this );
-		this->_clicking = true;
-		_Args.handled = true;
+		this->clicking_ = true;
+		args.handled = true;
 	}
 	else
-		this->_clicking = false;
-
+		this->clicking_ = false;
 }
 
-void Component::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseReleasedArgs & _Args)
+void Component::MouseReleased(Window* sender, MouseReleasedArgs &args)
 {
-	if ( this->_hovering && this->_clicking ) {
+	if ( this->hovering_ && this->clicking_ ) {
 		OnMouseReleased( ).Invoke( this );
-		_Args.handled = true;
+		args.handled = true;
 	}
-	this->_clicking = false;
+	this->clicking_ = false;
 }
 
-void Component::MouseScrolled(__GRAPHICS Window * _Sender, __GRAPHICS ScrollArgs & _Args)
+void Component::MouseScrolled(Window* sender, ScrollArgs &args)
 {
 }
 
-void Component::MouseDoubleClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClickedArgs & _Args)
+void Component::MouseDoubleClicked(Window* sender, MouseClickedArgs &args)
 {
 }
 
-void Component::Release(const bool & _ReleaseChildren)
+void Component::Release(const bool & releaseChildren)
 {
 	OnRelease( ).Invoke( this );
-	if ( _ReleaseChildren )
+	if ( releaseChildren )
 	{
-		for ( auto &x : _children )
-			x->Release( _ReleaseChildren );
+		for ( auto &x : children_ )
+			x->Release( true );
 	}
 }
 
-bool Component::Collides(const __MATH Vector2 & _With)
+bool Component::Collides(const __MATH Vector2 & with)
 {
 	auto region = determineRegion( );
-
-	return _With.Intersects( region );
+	return with.Intersects( region );
 }
 
-bool Component::Collides(const __UI Component * _With)
+bool Component::Collides(const __UI Component * with)
 {
-	return Collides( _With->getLocalPosition( ) + _With->getGlobalPosition( ) );
+	return Collides( with->getLocalPosition( ) + with->getGlobalPosition( ) );
 }
 
 __LIB Event<void(Component*)>& Component::OnModified( )

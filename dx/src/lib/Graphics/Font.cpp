@@ -9,7 +9,7 @@ begin_GRAPHICS
 
 
 Font::Font()
-	: _data( nullptr ), _name( )
+	: data_( nullptr ), name_( )
 {
 
 }
@@ -21,20 +21,20 @@ Font::~Font( )
 
 void * Font::raw()
 {
-	return _data;
+	return data_;
 }
 
 __GRAPHICS FontContext Font::context()
 {
-	return _context;
+	return context_;
 }
 
-__MATH Vector2 Font::calculateMetrixOf(const __LIB String & _Text)
+__MATH Vector2 Font::calculateMetrixOf(const __LIB String & text)
 {
-	if ( _Text.contains( " " ) )
+	if ( text.contains( " " ) )
 	{
 		__MATH Vector2 size{ 0, 0 };
-		auto strs = _Text.split( ' ' );
+		auto strs = text.split( ' ' );
 		for ( auto &x : strs )
 		{
 			auto sz = strSize( x );
@@ -43,16 +43,16 @@ __MATH Vector2 Font::calculateMetrixOf(const __LIB String & _Text)
 				size.y = sz.y;
 		}
 		
-		size.x += (this->SPACE_CHARACTER_WIDTH) * _Text.count( ' ' );
+		size.x += (this->SPACE_CHARACTER_WIDTH) * text.count( ' ' );
 
 		return size;
 	}
-	return strSize( _Text );
+	return strSize( text );
 }
 
 __MATH Vector2 Font::strSize(const __LIB String & _Text)
 {
-	auto font = (ID3DXFont*)this->_data;
+	auto font = (ID3DXFont*)this->data_;
 	if ( !font )
 		return { 0, 0 };
 	RECT rect_textSize;
@@ -60,33 +60,34 @@ __MATH Vector2 Font::strSize(const __LIB String & _Text)
 	return { float(rect_textSize.right - rect_textSize.left), float(rect_textSize.bottom - rect_textSize.top) };
 }
 
-Font* Font::Create( const __LIB String &_FontName, const __GRAPHICS FontContext &_Context, BasePainter *_Painter )
+std::shared_ptr<Font> Font::Create( const __LIB String &fontName, const __GRAPHICS FontContext &context, BasePainter *painter )
 {
-	auto font = new Font( );
+	auto font = std::shared_ptr<Font>( new Font( ) );
 
-	auto device = (IDirect3DDevice9*)_Painter->native( );
+	auto device = (IDirect3DDevice9*)painter->native( );
 	auto result = D3DXCreateFontA( device, 
-								  _Context.Height, 
-								  _Context.Width, 
-								  _Context.Weight, 
-								  _Context.MipLevels, 
-								  _Context.Italic, 
-								  _Context.CharSet, 
-								  _Context.OutputPrecision, 
-								  _Context.Quality, 
-								  _Context.PitchAndFamily, 
-								  _FontName.c_str( ), 
-								  (ID3DXFont**)&font->_data );
-	font->_context = _Context;
-	font->_name = _FontName;
+								  context.Height, 
+								  context.Width, 
+								  context.Weight, 
+								  context.MipLevels, 
+								  context.Italic, 
+								  context.CharSet, 
+								  context.OutputPrecision, 
+								  context.Quality, 
+								  context.PitchAndFamily, 
+								  fontName.c_str( ), 
+								  (ID3DXFont**)&font->data_ );
+	font->context_ = context;
+	font->name_ = std::move( fontName );
 	Application::setLastError( result );
 	return font;
 }
 
 void Font::Release( )
 {
-	if ( _data )
-		((ID3DXFont*)_data)->Release( );
+	if ( data_ )
+		((ID3DXFont*)data_)->Release( );
+	data_ = nullptr;
 }
 
 

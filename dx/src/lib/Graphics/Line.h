@@ -18,7 +18,7 @@ public:
 	///<summary>
 	///	Construct line.
 	///</summary>
-	Line( const __MATH Vector2 &_Position, const __MATH Vector2 &_Target, const __GRAPHICS Pen &_Pen );
+	Line( const __MATH Vector2 &position, const __MATH Vector2 &target, const __GRAPHICS Pen &pen );
 
 	///<summary>
 	///	Gets the pen of Line.
@@ -38,21 +38,21 @@ public:
 	///<summary>
 	///	Sets the pen of this line.
 	///</summary>
-	void Pen( const __GRAPHICS Pen &_Pen );
+	void Pen( const __GRAPHICS Pen &pen );
 
 	///<summary>
 	///	Sets the start position of this line.
 	///</summary>
-	void Position( const __MATH Vector2 &_Position );
+	void Position( const __MATH Vector2 &position );
 
 	///<summary>
 	///	Sets the target position of this line.
 	///</summary>
-	void Target( const __MATH Vector2 &_Target );
+	void Target( const __MATH Vector2 &target );
 
 private:
-	__GRAPHICS Pen _pen;
-	__MATH Vector2 _pos, _target;
+	__GRAPHICS Pen pen_;
+	__MATH Vector2 pos_, target_;
 };
 
 end_GRAPHICS

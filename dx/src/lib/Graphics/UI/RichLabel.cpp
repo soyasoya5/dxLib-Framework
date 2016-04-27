@@ -10,34 +10,36 @@ RichLabel::RichLabel()
 	: Component()
 {
 	OnModified() += __LIB EventHandler<void(Component*)>("Constructor_Watcher",
-		[this](Component *component) { this->_changed = true; });
-	_changed = true;
+		[this](Component *component) { this->changed_ = true; });
+	changed_ = true;
 }
 
-void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Painter)
+void RichLabel::Paint(Window *sender, BasePainter *painter)
 {
-	if (!isVisible())
+	if ( !isVisible( ) )
 		return;
-	OnPrePaint().Invoke(this, _Painter);
+	OnPrePaint( ).Invoke( this, painter );
 
 	// Just incase :P
-	FlexibleGuard guard{ _kpr };
+	FlexibleGuard guard{ kpr_ };
 
 	auto pos = determineRegion();
 
 
 	__MATH Vector2 fullsize{ 0, 0 };
-	for (auto it = _all_text.begin(), begin = _all_text.begin(), end = _all_text.end(); it < end; ++it)
+	for ( auto it = all_text_.begin(), begin = all_text_.begin(), end = all_text_.end(); 
+		  it < end; 
+		  ++it )
 	{
 		// First lets check if we changed
-		if (_changed) // If so recalculate everything
+		if ( changed_ ) // If so recalculate everything
 		{
 			// Check font
-			if (!it->container.font)
-				it->container.font = (getFont() ? getFont() : _Painter->defaultFont());
+			if ( !it->container.font )
+				it->container.font = (getFont( ) ? getFont( ) : painter->defaultFont( ));
 
 			// Recalculate position
-			if (it == begin) // First...
+			if ( it == begin ) // First...
 			{
 				it->position = pos.position;
 				it->container.orig_tex_y = it->position.y;
@@ -47,20 +49,21 @@ void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Pai
 				auto prev = (it - 1);
 
 				// did the previus node end on a new line
-				if (prev->container.new_line) {
+				if ( prev->container.new_line ) 
+				{
 					it->position = { pos.position.x, prev->position.y + prev->size.y }; // kk then get original x pos and the prev y + its size
 					it->container.orig_tex_y = it->position.y;
 				}
-				else if (it->container.is_texture)
+				else if ( it->container.is_texture )
 				{
 					it->position.x = prev->position.x + prev->size.x + 8;
-					it->position.y = (prev->size.y / 2 - it->container.texture->getSize().y / 2) + prev->position.y;
+					it->position.y = (prev->size.y / 2 - it->container.texture->getSize( ).y / 2) + prev->position.y;
 					it->container.orig_tex_y = prev->container.orig_tex_y;
 				}
 				else
 				{
 					// Is prev texture
-					if (prev->container.is_texture)
+					if ( prev->container.is_texture )
 					{
 						// Set x
 						it->position.x = prev->position.x + prev->size.x;
@@ -75,97 +78,99 @@ void RichLabel::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Pai
 					{
 						// Set position
 						it->position = prev->position + __MATH Vector2{ prev->size.x, 0.0f }; // Ok then get the vector of prev pos + prev size(x only)
-
-																							  // Set orig
+						// Set orig
 						it->container.orig_tex_y = it->position.y;
 					}
 				}
 			}
 
 			// Size
-			it->size = (it->container.is_texture ? it->container.texture->getSize() : it->container.font->calculateMetrixOf(it->container.text));
-			if (it->container.new_line)
+			it->size = (it->container.is_texture ? 
+						it->container.texture->getSize( ) : 
+						it->container.font->calculateMetrixOf( it->container.text ));
+
+			if ( it->container.new_line )
 				fullsize.y += it->size.y;
-			else if (it->size.x > fullsize.x)
+			else if ( it->size.x > fullsize.x )
 				fullsize.x = it->size.x;
 		}
 		// Right, lets draw
-		if (it->container.is_texture)
-			it->container.texture->Paint(it->position, { 1, 1 });
+		if ( it->container.is_texture )
+			it->container.texture->Paint( it->position, { 1, 1 } );
 		else
 		{
 			Text text;
-			text.setPosition(it->position);
-			text.setFont(it->container.font);
-			text.setText(it->container.text);
-			text.setMaxClip(it->size);
+			text.setPosition( it->position );
+			text.setFont( it->container.font );
+			text.setText( it->container.text );
+			text.setMaxClip( it->size );
 
 			// Paintaronie
-			_Painter->Paint(text, Pen(it->container.color, 1));
+			painter->Paint( text, Pen( it->container.color, 1 ) );
 		}
 	}
 
 	// We dont wanna raise a modified event if its not needed, obviously.
-	if (getSize() != fullsize)
-		this->setSize(fullsize);
+	if ( local_.size != fullsize )
+		this->setSize( fullsize );
 
-	_changed = false;
-	OnPostPaint().Invoke(this, _Painter);
+	changed_ = false;
+	OnPostPaint( ).Invoke( this, painter );
 }
 
-void RichLabel::appendText(const __LIB String & _Text, __GRAPHICS Font * _Font, const __DX uint & _Color)
+void RichLabel::appendText( String text, std::shared_ptr<Font> font, uint color)
 {
-	_mtext.append(_Text);
+	text_.append( text );
 
-	if (_Text.contains("\n"))
+	if ( text_.contains( "\n" ) )
 	{
-		auto vecs = _Text.split('\n');
-		for (auto text : vecs)
+		auto vecs = text_.split( '\n' );
+		for ( auto text : vecs )
 		{
 			TextContainer container;
-			container.text = text;
-			container.font = _Font;
-			container.color = _Color;
+			container.text = std::move( text );
+			container.font = font;
+			container.color = std::move( color );
 			container.new_line = true;
 			container.is_texture = false;
 			container.is_selected = false;
-			_contrs.push_back(std::move(container));
+			contrs_.push_back( std::move( container ) );
 		}
 	}
 	else
 	{
 		TextContainer container;
-		container.text = _Text;
-		container.font = _Font;
-		container.color = _Color;
+		container.text = std::move( text );
+		container.font = font;
+		container.color = std::move( color );
 		container.new_line = false;
 		container.is_texture = false;
 		container.is_selected = false;
-		_contrs.push_back(std::move(container));
+		contrs_.push_back( std::move( container ) );
 	}
 
-	OnModified().Invoke(this);
-	recalculate_text();
+	OnModified( ).Invoke( this );
+	recalculate_text( );
 }
 
-void RichLabel::appendText(const __LIB String & _Text, __GRAPHICS Font * _Font)
+void RichLabel::appendText( String text, std::shared_ptr<Font> font)
 {
-	appendText(_Text, _Font, __DX Colors::White);
+	appendText( std::move( text ), font, Colors::White );
 }
 
-void RichLabel::appendText(const __LIB String & _Text, const __DX uint & _Color)
+void RichLabel::appendText(String text, uint color)
 {
-	appendText(_Text, getFont(), _Color);
+	appendText( std::move( text ), getFont( ), std::move( color ) );
 }
 
-void RichLabel::appendText(const __LIB String & _Text)
+void RichLabel::appendText( String text )
 {
-	appendText(_Text, getFont(), __DX Colors::White);
+	appendText( std::move( text ), getFont( ), Colors::White );
 }
 
-void RichLabel::appendText(__GRAPHICS Texture * _Texture)
+void RichLabel::appendText(std::shared_ptr<Texture> texture)
 {
-	if (_Texture->getSize() > __MATH Vector2{ 64, 64 })
+	if ( texture->getSize( ) > __MATH Vector2{ 64, 64 } )
 		return;
 	TextContainer container;
 	container.text = "";
@@ -174,86 +179,79 @@ void RichLabel::appendText(__GRAPHICS Texture * _Texture)
 	container.new_line = false;
 	container.is_selected = false;
 	container.is_texture = true;
-	container.texture = _Texture;
-	_contrs.push_back(std::move(container));
-	OnModified().Invoke(this);
-	recalculate_text();
+	container.texture = texture;
+	contrs_.push_back( std::move( container ) );
+	OnModified( ).Invoke( this );
+	recalculate_text( );
 }
 
-__LIB String RichLabel::getText() const
-{
-	return _mtext;
-}
 
-void RichLabel::setText(const __LIB String & _Text)
+void RichLabel::setText(const __LIB String & text)
 {
-	_contrs.clear();
-	_contrs.push_back(TextContainer{ nullptr, _Text, __DX Colors::White, getFont(), false, false });
+	text_ = text;
+	contrs_.clear();
+	contrs_.push_back( TextContainer{ nullptr, text, __DX Colors::White, getFont( ), false, false } );
 	recalculate_text();
 }
 
 RichLabel::RichText * RichLabel::textAt(const int & index)
 {
-	return &_all_text[index];
+	return &all_text_[index];
 }
 
-RichLabel::RichText * RichLabel::textFrom(const std::function<bool(RichText*text)>& _Functor)
+RichLabel::RichText * RichLabel::textFrom(const std::function<bool(RichText*)>& functor)
 {
-	for (auto it = _all_text.begin(); it < _all_text.end(); ++it)
-		if (_Functor(&(*it)))
-			return &(*it);
+	for ( auto&x : all_text_ )
+		if ( functor( &x ) )
+			return &x;
 	return nullptr;
 }
 
-RichLabel::RichText * RichLabel::textFromText(const __LIB String & _Text)
+RichLabel::RichText * RichLabel::textFromText(const __LIB String & text)
 {
-	for (auto it = _all_text.begin(); it < _all_text.end(); ++it)
-		if (it->container.text == _Text)
-			return &(*it);
+	for ( auto&x : all_text_ )
+		if ( x.container.text == text )
+			return &x;
 	return nullptr;
 }
 
-RichLabel::RichText * RichLabel::textInRegion(const __MATH Region & _Region)
+RichLabel::RichText * RichLabel::textInRegion(const __MATH Region & region)
 {
-	for (auto it = _all_text.begin(); it < _all_text.end(); ++it)
-	{
-		if (it->position.Intersects(_Region))
-			return &(*it);
-	}
+	for ( auto &x : all_text_ )
+		if ( x.position.Intersects( region ) )
+			return &x;
 	return nullptr;
 }
 
 void RichLabel::clearText()
 {
-	_text = "";
-	_all_text.clear();
-	_contrs.clear();
-	_mtext = "";
-	_changed = true;
+	text_ = "";
+	all_text_.clear();
+	contrs_.clear();
+	changed_ = true;
 }
 
 AsyncKeeper & RichLabel::AquireMutex()
 {
-	return _kpr;
+	return kpr_;
 }
 
 void RichLabel::recalculate_text()
 {
 	// Setup ze mutex just incase some retard appends text in another thread :|
-	AsyncGuard guard{ _kpr };
+	AsyncGuard guard{ kpr_ };
 
 	// Clear text container
-	_all_text.clear();
+	all_text_.clear();
 
-	for (auto cont : _contrs)
+	for ( auto cont : contrs_ )
 	{
 		RichText text;
-		text.container = cont;
+		text.container = std::move( cont );
 		text.position = { -1, -1 };
 		text.size = { -1, -1 };
-		_all_text.push_back(text);
+		all_text_.push_back( std::move( text ) );
 	}
-
 }
 
 

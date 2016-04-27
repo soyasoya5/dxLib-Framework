@@ -5,66 +5,86 @@
 
 begin_GRAPHICS
 
-Texture * Texture::Create(const __FILEIO Path & _Path, const __GRAPHICS BasePainter *_Painter )
+std::shared_ptr<Texture> Texture::Create(const __FILEIO Path & path, const __GRAPHICS BasePainter *painter )
 {
-	std::ifstream stream( _Path.operator const char *( ), std::ios_base::binary );
+	std::ifstream stream( path.operator const char *( ), std::ios_base::binary );
 	if ( !stream.is_open( ) )
 		return nullptr;
-	return Create( stream, _Painter );
+	return Create( stream, painter );
 }
 
-Texture * Texture::Create(std::istream & _Stream, const __GRAPHICS BasePainter *_Painter)
+std::shared_ptr<Texture> Texture::Create(std::istream & stream, const __GRAPHICS BasePainter *painter)
 {
-	_Stream.seekg( 0, std::ios_base::end );
-	auto size = _Stream.tellg( );
-	_Stream.seekg( 0, std::ios_base::beg );
-	auto buffer = std::make_unique<char*>( new char[size] );
-	_Stream.read( *buffer, size );
-	return Create( *buffer, size, _Painter );
+	auto state = stream.rdstate( );
+	auto pos = stream.tellg( );
+
+	try {
+		stream.seekg( 0, std::ios_base::end );
+		auto size = stream.tellg( );
+		stream.seekg( 0, std::ios_base::beg );
+		auto buffer = std::make_unique<char*>( new char[size] );
+		stream.read( *buffer, size );
+		return Create( *buffer, size, painter );
+	}
+	catch( ... )
+	{
+		stream.setstate( state );
+		stream.seekg( pos );
+	}
+	return nullptr;
 }
 
-Texture * Texture::Create( char* _Buffer, const __DX uint &_Length, const __GRAPHICS BasePainter *_Painter)
+std::shared_ptr<Texture> Texture::Create( char* _Buffer, const __DX uint &_Length, const __GRAPHICS BasePainter *_Painter)
 {
-	auto ptr = std::unique_ptr<Texture>( new Texture( ) );
+	auto ptr = std::shared_ptr<Texture>( new Texture( ) );
 	auto device = (IDirect3DDevice9*)_Painter->native( );
-	auto result = D3DXCreateTextureFromFileInMemory( device, _Buffer, _Length, (LPDIRECT3DTEXTURE9*)&ptr->_texture );
+	auto result = D3DXCreateTextureFromFileInMemory( device, _Buffer, _Length, (LPDIRECT3DTEXTURE9*)&ptr->texture_ );
 
-	if ( FAILED(result) )
+	if ( FAILED( result ) )
 		return nullptr;
 
-	result = D3DXCreateSprite( device, (LPD3DXSPRITE*)&ptr->_sprite );
+	result = D3DXCreateSprite( device, (LPD3DXSPRITE*)&ptr->sprite_ );
 
 	if ( FAILED( result ) )
 	{
-		((LPDIRECT3DTEXTURE9)ptr->_texture)->Release( );
+		((LPDIRECT3DTEXTURE9)ptr->texture_)->Release( );
 		return nullptr;
 	}
 
-	((LPDIRECT3DTEXTURE9)ptr->_texture)->GetLevelDesc( 0, (D3DSURFACE_DESC*)ptr->_desc );
+	((LPDIRECT3DTEXTURE9)ptr->texture_)->GetLevelDesc( 0, (D3DSURFACE_DESC*)ptr->desc_ );
 
-	return ptr.release( );
+	return ptr;
+}
+
+Texture::~Texture()
+{
+	if ( sprite_ )
+		((LPD3DXSPRITE)sprite_)->Release( );
+	
+	if ( texture_ )
+		((LPDIRECT3DTEXTURE9)texture_)->Release( );
 }
 
 
 __MATH Vector2 Texture::getSize() const
 {
-	return __MATH Vector2{ static_cast<float>( ((D3DSURFACE_DESC*)_desc)->Width ), static_cast<float>( ((D3DSURFACE_DESC*)_desc)->Height ) };
+	return __MATH Vector2{ static_cast<float>( ((D3DSURFACE_DESC*)desc_)->Width ), static_cast<float>( ((D3DSURFACE_DESC*)desc_)->Height ) };
 }
 
 void * Texture::native_sprite()
 {
-	return _sprite;
+	return sprite_;
 }
 
 void *Texture::native_texture()
 {
-	return _texture;
+	return texture_;
 }
 
-void Texture::Paint( const __MATH Vector2 & _Position, const __MATH Vector2 & _Scaling)
+void Texture::Paint( const __MATH Vector2 & position, const __MATH Vector2 & scaling)
 {
-	auto sprite = (LPD3DXSPRITE)_sprite;
-	auto texture = (LPDIRECT3DTEXTURE9)_texture;
+	auto sprite = (LPD3DXSPRITE)sprite_;
+	auto texture = (LPDIRECT3DTEXTURE9)texture_;
 	if ( !sprite || !texture )
 		return;
 
@@ -77,11 +97,11 @@ void Texture::Paint( const __MATH Vector2 & _Position, const __MATH Vector2 & _S
 
 	// Scale the matrix
 	D3DXMATRIX Matrix;
-	D3DXMatrixTransformation2D( &Matrix, nullptr, 0, (D3DXVECTOR2*)&_Scaling, nullptr, 0.0f, nullptr );
+	D3DXMatrixTransformation2D( &Matrix, nullptr, 0, (D3DXVECTOR2*)&scaling, nullptr, 0.0f, nullptr );
 	sprite->SetTransform( &Matrix );
 
 	// Fix the position
-	D3DXVECTOR3 pos = { _Position.x * (1 / _Scaling.x), _Position.y * (1 / _Scaling.y), 0 };
+	D3DXVECTOR3 pos = { position.x * (1 / scaling.x), position.y * (1 / scaling.y), 0 };
 
 	// Draw
 	sprite->Draw( texture, nullptr, nullptr, &pos, 0xFFFFFFFF );
@@ -93,12 +113,13 @@ void Texture::Paint( const __MATH Vector2 & _Position, const __MATH Vector2 & _S
 	sprite->End( );
 }
 
-void Texture::Paint(const __MATH Region & _Region)
+void Texture::Paint(const __MATH Region & region)
 {
-	Paint( _Region.position, _Region.size );
+	Paint( region.position, region.size );
 }
 
 Texture::Texture()
+	: sprite_( nullptr ), texture_( nullptr )
 {
 }
 

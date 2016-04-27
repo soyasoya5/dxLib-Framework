@@ -10,7 +10,7 @@ begin_UI
 Button::Button()
 	: Component( )
 {
-	OnModified( ) += [this]( Component * ) { this->_changed = true; };
+	OnModified( ) += [this]( Component* ) { this->_changed = true; };
 }
 
 
@@ -33,14 +33,14 @@ __MATH Vector2 Button::determineText(__MATH Vector2 &pos, __MATH Vector2 &text_s
 	return _determ;
 }
 
-void Button::Paint(__GRAPHICS Window *_Sender, __GRAPHICS BasePainter * _Painter)
+void Button::Paint(Window *sender, BasePainter * painter)
 {
 	static Pen inner, outer{ Colors::White, 1 }, pen_text{ Colors::White, 1 };
 	if ( !isVisible( ) )
 		return;
 	
 	// Raise pre paint event
-	OnPrePaint( ).Invoke( this, _Painter );
+	OnPrePaint( ).Invoke( this, painter );
 
 	// Determine region
 	auto pos = determineRegion( );
@@ -48,7 +48,7 @@ void Button::Paint(__GRAPHICS Window *_Sender, __GRAPHICS BasePainter * _Painter
 	// Get font
 	auto font = getFont( );
 	if ( !font ) // Use dafault font..
-		font = _Painter->defaultFont( );
+		font = painter->defaultFont( );
 
 
 	// Setup text component
@@ -71,11 +71,11 @@ void Button::Paint(__GRAPHICS Window *_Sender, __GRAPHICS BasePainter * _Painter
 	inner.Color( color_inner );
 
 	// Paint
-	_Painter->PaintRectOutlined( pos, inner, outer );
-	_Painter->Paint( text, pen_text );
+	painter->PaintRectOutlined( pos, inner, outer );
+	painter->Paint( text, pen_text );
 
 	// Raise post paint event
-	OnPostPaint( ).Invoke( this, _Painter );
+	OnPostPaint( ).Invoke( this, painter );
 }
 
 

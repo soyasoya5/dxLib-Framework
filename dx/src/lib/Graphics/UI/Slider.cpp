@@ -8,19 +8,19 @@ begin_UI
 Slider::Slider()
 	: Component( )
 {
-	_textbox = new Textbox( );
-	_textbox->setUIID( String("Slider_component_textbox").hash( ) );
-	_textbox->setText( "0%" );
-	_textbox->setFilter( "1234567890" );
-	_textbox->setRightOf( this );
-	_textbox->setAllignedOf( this );
-	_textbox->setSize( { 50, 30 } );
-	_textbox->setLooseFocusKey( '\r' );
-	_textbox->setAllignment( Allignment::Left );
+	textbox_ = std::shared_ptr<Textbox>( new Textbox( ) );
+	textbox_->setUIID( String("Slider_component_textbox").hash( ) );
+	textbox_->setText( "0%" );
+	textbox_->setFilter( "1234567890" );
+	textbox_->setRightOf( this );
+	textbox_->setAllignedOf( this );
+	textbox_->setSize( { 50, 30 } );
+	textbox_->setLooseFocusKey( '\r' );
+	textbox_->setAllignment( Allignment::Left );
 
-	_maxDelta = 100;
+	maxDelta_ = 100;
 	
-	_textbox->OnGainFocus( ) += []( Component *sender )
+	textbox_->OnGainFocus( ) += []( Component *sender )
 	{
 		auto text = sender->getText( );
 		uint npos = text.find( '%' );
@@ -31,19 +31,19 @@ Slider::Slider()
 		sender->setText( text );
 	};
 
-	_textbox->OnLostFocus( ) += [this]( Component *sender )
+	textbox_->OnLostFocus( ) += [this]( Component *sender )
 	{
 		auto text = sender->getText( );
 		uint npos = text.find( '%' );
 		if ( npos == String::bad )
 		{
-			this->_delta = { text.to<float>( ), text.to<float>( ) };
+			this->delta_ = { text.to<float>( ), text.to<float>( ) };
 			text.push_back( '%' );
 			sender->setText( text );
-			if ( this->_delta.x > this->_maxDelta || this->_delta.y > this->_maxDelta )
+			if ( this->delta_.x > this->maxDelta_ || this->delta_.y > this->maxDelta_ )
 			{
-				text = to_string( (int)this->_maxDelta ) + "%";
-				_delta = { _maxDelta, _maxDelta };
+				text = to_string( (int)this->maxDelta_ ) + "%";
+				delta_ = { maxDelta_, maxDelta_ };
 				sender->setText( text );
 			}
 
@@ -52,12 +52,12 @@ Slider::Slider()
 		}
  
 		text.erase( npos, 1 );
-		this->_delta = { text.to<float>( ), text.to<float>( ) };
+		this->delta_ = { text.to<float>( ), text.to<float>( ) };
 
-		if ( this->_delta.x > this->_maxDelta || this->_delta.y > this->_maxDelta )
+		if ( this->delta_.x > this->maxDelta_ || this->delta_.y > this->maxDelta_ )
 		{
-			text = to_string( (int)this->_maxDelta ) + "%";
-			_delta = { _maxDelta, _maxDelta };
+			text = to_string( (int)this->maxDelta_ ) + "%";
+			delta_ = { maxDelta_, maxDelta_ };
 			sender->setText( text );
 		}
 
@@ -67,41 +67,35 @@ Slider::Slider()
 	
 	OnModified( ) += [this]( Component *sender )
 	{
-		this->_changed = true;		
-		this->_textbox->setStyle( this->_style );
-		this->_textbox->setFont( this->_font );
+		this->changed_ = true;		
+		this->textbox_->setStyle( style_ );
+		this->textbox_->setFont( font_ );
 	};
 
-	_changed = true;
+	changed_ = true;
 }
 
-Slider::~Slider()
-{
-	_textbox->Release( );
-	delete _textbox;
-}
-
-void Slider::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Painter)
+void Slider::Paint(Window *sender, BasePainter *painter)
 {
 	static Pen inner, outer{ Colors::White, 1 };
 	if ( !isVisible( ) )
 		return;
-	OnPrePaint( ).Invoke( this, _Painter );
+	OnPrePaint( ).Invoke( this, painter );
 
 	// Determine pos
 	auto pos = determineRegion( );
 
-	if ( _changed )
+	if ( changed_ )
 	{
-		_delta.x = (_wheel.x / (_local.size.x - _wheelSize.x)) * _maxDelta;
-		_delta.y = (_wheel.x / (_local.size.y - _wheelSize.y)) * _maxDelta;
+		delta_.x = (wheel_.x / (local_.size.x - wheelSize_.x)) * maxDelta_;
+		delta_.y = (wheel_.x / (local_.size.y - wheelSize_.y)) * maxDelta_;
 
-		if ( _layout == Horizontal )
-			_textbox->setText( __LIB to_string( (int)_delta.x ) + "%" );
+		if ( layout_ == Horizontal )
+			textbox_->setText( to_string( (int)delta_.x ) + "%" );
 		else
-			_textbox->setText( __LIB to_string( (int)_delta.y ) + "%" );
+			textbox_->setText( to_string( (int)delta_.y ) + "%" );
 
-		_changed = false;
+		changed_ = false;
 	}
 	
 	// Style
@@ -110,127 +104,124 @@ void Slider::Paint(__GRAPHICS Window * _Sender, __GRAPHICS BasePainter * _Painte
 	auto color_outer = 0xFF4B4B4B;
 	auto color_bar = decltype(color_inner)();
 
-	if ( _dragging )
+	if ( dragging_ )
 		color_bar = style.style( );
 	else
 		color_bar  = 0x909090;
 
-	_Painter->PaintRectOutlined( pos, inner, outer );
-	_Painter->PaintRect( { pos.position + _wheel, _wheelSize }, Pen( color_bar, 1 ) );
+	painter->PaintRectOutlined( pos, inner, outer );
+	painter->PaintRect( { pos.position + wheel_, wheelSize_ }, Pen( color_bar, 1 ) );
 	
-	_textbox->Paint( _Sender, _Painter );
+	textbox_->Paint( sender, painter );
 
-	OnPostPaint( ).Invoke( this, _Painter );
+	OnPostPaint( ).Invoke( this, painter );
 }
 
-void Slider::KeyDown(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownArgs & _Args)
+void Slider::KeyDown(Window *sender, KeyDownArgs &args)
 {
-	__super::KeyDown( _Sender, _Args );
-	_textbox->KeyDown( _Sender, _Args );
+	textbox_->KeyDown( sender, args );
 }
 
-void Slider::KeyUp(__GRAPHICS Window * _Sender, __GRAPHICS KeyUpArgs & _Args)
+void Slider::KeyUp(Window *sender, __GRAPHICS KeyUpArgs & args)
 {
-	__super::KeyUp( _Sender, _Args );
-	_textbox->KeyUp( _Sender, _Args );
+	textbox_->KeyUp( sender, args );
 }
 
-void Slider::KeyDownChar(__GRAPHICS Window * _Sender, __GRAPHICS KeyDownCharArgs & _Args)
+void Slider::KeyDownChar(Window *sender, __GRAPHICS KeyDownCharArgs & args)
 {
-	__super::KeyDownChar( _Sender, _Args );
-	_textbox->KeyDownChar( _Sender, _Args );
+	textbox_->KeyDownChar( sender, args );
 }
 
-void Slider::MouseMoved(__GRAPHICS Window * _Sender, __GRAPHICS MouseMovedArgs & _Args)
+void Slider::MouseMoved(Window *sender, __GRAPHICS MouseMovedArgs & args)
 {
 	//If dragging
-	if ( _dragging && inScrollableRegion( _Args.position ) )
+	if ( dragging_ && inScrollableRegion( args.position ) )
 	{
-		if ( _moved.x != 0 && _moved.y != 0 )
+		if ( moved_.x != 0 && moved_.y != 0 )
 		{
-			auto increment = (_Args.position - _determined.position) - (_moved - _determined.position);
+			auto increment = (args.position - determined_.position) - (moved_ - determined_.position);
 			
-			if ( _layout == Horizontal )
+			if ( layout_ == Horizontal )
 			{ 
-				_wheel.x += increment.x;
-				if ( _wheel.x > (_local.size.x - _wheelSize.x) )
-					_wheel.x = (_local.size.x - _wheelSize.x);
-				if ( _wheel.x < 0 )
-					_wheel.x = 0;
+				wheel_.x += increment.x;
+				if ( wheel_.x > (local_.size.x - wheelSize_.x) )
+					wheel_.x = (local_.size.x - wheelSize_.x);
+				if ( wheel_.x < 0 )
+					wheel_.x = 0;
 			}
 			else
 			{ 
-				_wheel.y += increment.y;
-				if ( _wheel.y > (_local.size.y - _wheelSize.y) )
-					_wheel.y = (_local.size.y - _wheelSize.y);
-				if ( _wheel.y < 0 )
-					_wheel.y = 0;
+				wheel_.y += increment.y;
+				if ( wheel_.y > (local_.size.y - wheelSize_.y) )
+					wheel_.y = (local_.size.y - wheelSize_.y);
+				if ( wheel_.y < 0 )
+					wheel_.y = 0;
 			}
 		}
-		_moved = _Args.position;
-		_changed = true;
+		moved_ = args.position;
+		changed_ = true;
 	}
 
-	_textbox->MouseMoved( _Sender, _Args );
+	textbox_->MouseMoved( sender, args );
 }
 
-void Slider::MouseClicked(__GRAPHICS Window * _Sender, __GRAPHICS MouseClickedArgs & _Args)
+void Slider::MouseClicked(Window *sender, __GRAPHICS MouseClickedArgs & args)
 {
 	// If collides anywhere & pressing ctrl, then directly move
 	// the wheel.
-	if ( Collides( _Args.position ) && _Args.ctrl )
+	if ( Collides( args.position ) && args.ctrl )
 	{
 		// Get the sub offset from mouse - determined_position.
-		if ( _layout == Horizontal )
-			_wheel.x = (_Args.position.x) - _determined.position.x;
+		if ( layout_ == Horizontal )
+			wheel_.x = (args.position.x) - determined_.position.x;
 		else // |
-			_wheel.y = (_Args.position.y) - _determined.position.y;
-		this->_changed = true;
+			wheel_.y = (args.position.y) - determined_.position.y;
+		this->changed_ = true;
 	}
 
 	// Collides with the wheel
-	if ( CollidesWheel( _Args.position ) )
-		_dragging = true;
+	if ( CollidesWheel( args.position ) )
+		dragging_ = true;
 	else
 	{
-		_dragging = false;
-		_moved = { 0, 0 };
+		dragging_ = false;
+		moved_ = { 0, 0 };
 	}
 	
-	_textbox->MouseClicked( _Sender, _Args );
+	textbox_->MouseClicked( sender, args );
 }
 
-void Slider::MouseReleased(__GRAPHICS Window * _Sender, __GRAPHICS MouseReleasedArgs & _Args)
+void Slider::MouseReleased(Window *sender, __GRAPHICS MouseReleasedArgs & args)
 {
-	if ( _hovering )
+	if ( hovering_ )
 		OnMouseReleased( ).Invoke( this );
-	_dragging = false;
-	_clicking = false;
-	_moved = { 0, 0 };
-	_textbox->MouseReleased( _Sender, _Args );
+	dragging_ = false;
+	clicking_ = false;
+	moved_ = { 0, 0 };
+	textbox_->MouseReleased( sender, args );
 }
 
 __MATH Vector2 Slider::getDelta() const
 {
-	return _delta;
+	return delta_;
 }
 
 void Slider::setMaxDelta(const float & _Delta)
 {
-	_maxDelta = _Delta;
+	maxDelta_ = _Delta;
 }
 
 float Slider::getMaxDelta() const
 {
-	return _maxDelta;
+	return maxDelta_;
 }
 
 void Slider::setWheel(const float & _Delta)
 {
-	if ( _layout == Horizontal )
-		_wheel.x = _Delta;
+	if ( layout_ == Horizontal )
+		wheel_.x = _Delta;
 	else
-		_wheel.y = _Delta;
+		wheel_.y = _Delta;
 }
 
 
@@ -238,52 +229,52 @@ void Slider::setWheel(const float & _Delta)
 
 float Slider::getWheel( ) const
 {
-	if ( _layout == Horizontal )
-		return _wheel.x;
+	if ( layout_ == Horizontal )
+		return wheel_.x;
 	else
-		return _wheel.y;
+		return wheel_.y;
 }
 
 void Slider::setWheelSize(const __MATH Vector2 & _Size)
 {
-	_wheelSize = _Size;
-	_changed = true;
+	wheelSize_ = _Size;
+	changed_ = true;
 }
 
 __MATH Vector2 Slider::getWheelSize() const
 {
-	return _wheelSize;
+	return wheelSize_;
 }
 
 bool Slider::CollidesWheel(const __MATH Vector2 & _Position)
 {
-	return _Position.Intersects( { _determined.position + _wheel, _wheelSize } );
+	return _Position.Intersects( { determined_.position + wheel_, wheelSize_ } );
 }
 
 bool Slider::inScrollableRegion(const __MATH Vector2 & _Cursor) const
 {
-	return (_layout == Horizontal ? 
-		   _Cursor.Intersects( { { _determined.position.x, 0 }, { _determined.size.x, 100000 } } ) : 
-		   _Cursor.Intersects( { { 0, _determined.position.y }, { 100000, _determined.size.y } } ) );
+	return (layout_ == Horizontal ? 
+		   _Cursor.Intersects( { { determined_.position.x, 0 }, { determined_.size.x, 100000 } } ) : 
+		   _Cursor.Intersects( { { 0, determined_.position.y }, { 100000, determined_.size.y } } ) );
 }
 
-const Textbox * Slider::getTextbox() const
+std::shared_ptr<Textbox> Slider::getTextbox() const
 {
-	return _textbox;
+	return textbox_;
 }
 
 
 void Slider::moveWheelToDelta()
 {
-	if ( _layout == Horizontal )
+	if ( layout_ == Horizontal )
 	{
-		auto wheel = (_delta.x / _maxDelta) * (_local.size.x - _wheelSize.x);
-		_wheel.x = wheel;
+		auto wheel = (delta_.x / maxDelta_) * (local_.size.x - wheelSize_.x);
+		wheel_.x = wheel;
 	}
 	else
 	{
-		auto wheel = (_delta.y / _maxDelta) * (_local.size.y - _wheelSize.y);
-		_wheel.y = wheel;
+		auto wheel = (delta_.y / maxDelta_) * (local_.size.y - wheelSize_.y);
+		wheel_.y = wheel;
 	}
 }
 

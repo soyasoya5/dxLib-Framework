@@ -9,11 +9,11 @@ class Textbox : public Component
 public:
 	Textbox( );
 
-	void Paint( __GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter );
+	void Paint( Window* sender, BasePainter *painter );
 
-	void KeyDownChar( __GRAPHICS Window *_Sender, __GRAPHICS KeyDownCharArgs &_Args ) override;
-	void MouseClicked( __GRAPHICS Window *_Sender, __GRAPHICS MouseClickedArgs &_Args ) override;
-	void MouseReleased( __GRAPHICS Window *_Sender, __GRAPHICS MouseReleasedArgs &_Args ) override;
+	void KeyDownChar( Window *sender, KeyDownCharArgs &args ) override;
+	void MouseClicked( Window *sender, MouseClickedArgs &args ) override;
+	void MouseReleased( Window *sender, MouseReleasedArgs &args ) override;
 
 public:
 	bool getCanWrite( ) const;
@@ -23,32 +23,32 @@ public:
 	char getPasswordChar( ) const;
 	bool getUsePasswordChar( ) const;
 	char getLooseFocusKey( ) const;
-	bool isInFilter( const char &_Key ) const;
+	bool isInFilter( const char &key ) const;
 	bool isWriting( ) const;
 
-	void setLooseFocusKey( const char &_Key );
-	void setCanWrite( const bool &_Can );
-	void setPromptText( const __LIB String &_Text );
-	void setPasswordChar( const char &_Char );
-	void setUsePasswordChar( const bool &_Use );
-	void setMultiline( const bool &_Can );
-	void setFilter( const __LIB String &_Filter );
-	void addFilterCharacter( const char &_Character );
+	void setLooseFocusKey( char key );
+	void setCanWrite( bool can );
+	void setPromptText( String text );
+	void setPasswordChar( char character );
+	void setUsePasswordChar( bool use );
+	void setMultiline( bool can );
+	void setFilter( String filter );
+	void addFilterCharacter( char character );
 	
-	__LIB Event<void(Component*)> &OnLostFocus( );
-	__LIB Event<void(Component*)> &OnGainFocus( );
-	__LIB Event<void(Component*, const char&)> &OnCharacterAdded( );
+	Event<void(Component*)> &OnLostFocus( );
+	Event<void(Component*)> &OnGainFocus( );
+	Event<void(Component*, const char&)> &OnCharacterAdded( );
 private:
-	__MATH Vector2 determineText( __MATH Vector2 &_Pos, __MATH Vector2 &_TextSize );
-	__LIB String _prompt, _filter;
-	bool _canwrite;
-	char _passwordChar, _loose;
-	bool _usePasswordChar;
-	bool _multiline, _blink;
-	__DX uint _lblink;
-	__LIB Event<void(Component*)> _OnLostFocus;
-	__LIB Event<void(Component*)> _OnGainFocus;
-	__LIB Event<void(Component*, const char&)> _OnCharacterAdded;
+	__MATH Vector2 determineText( __MATH Vector2 &pos, __MATH Vector2 &textSize );
+	String prompt_, filter_;
+	bool canwrite_;
+	char passwordChar_, loose_;
+	bool usePasswordChar_;
+	bool multiline_, blink_;
+	uint lblink_;
+	Event<void(Component*)> _OnLostFocus;
+	Event<void(Component*)> _OnGainFocus;
+	Event<void(Component*, const char&)> _OnCharacterAdded;
 };
 
 

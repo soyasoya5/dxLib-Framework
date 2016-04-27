@@ -24,17 +24,17 @@ class StyleManager
 {
 public:
 	StyleManager( ) = default;
-	StyleManager( const __UI Theme &_Theme, const __UI Style &_Style );
+	StyleManager( const __UI Theme &theme, const __UI Style &style );
 
 	__UI Theme theme( ) const;
-	void theme( const __UI Theme &_Theme );
+	void theme( const __UI Theme &theme );
 
 	__UI Style style( ) const;
-	void style( const __UI Style &_Style );
+	void style( const __UI Style &style );
 
 private:
-	__UI Theme _theme;
-	__UI Style _style;
+	__UI Theme theme_;
+	__UI Style style_;
 };
 
 

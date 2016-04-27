@@ -33,7 +33,7 @@ public:
 	///<summary>
 	/// Sets the last error of the application.
 	///</summary>
-	static void setLastError( const int &_Errc );
+	static void setLastError( const int &errc );
 
 	///<summary>
 	/// Gets the last error of the application.
@@ -55,33 +55,46 @@ public:
 	///<summary>
 	/// Register a window to this application, this is automatically done by Window::Create.
 	///</summary>
-	void RegisterWindow( __GRAPHICS Window *_Window );
+	void RegisterWindow( __GRAPHICS Window *window );
+
+	///<summary>
+	/// Unregister a window, automatically called by destructor of Window
+	///</summary>
+	void UnregisterWindow( __GRAPHICS Window *window );
 
 	///<summary>
 	/// Set the tick rate of this application, in milliseconds.
 	///</summary>
-	void setTickRate( const int &_Rate );
+	void setTickRate( const int &rate );
 
 	///<summary>
 	/// Sets the clipboard data
 	///</summary>
-	void setClipboard( const __LIB String &_Data );
+	void setClipboard( const String &data );
 
 	///<summary>
 	/// Gets the clipboard data
 	///</summary>
-	__LIB String getClipboard( ) const;
+	String getClipboard( ) const;
 
 	///<summary>
 	/// Called every tick.
 	///</summary>
-	__LIB Event<void(Application*)> &OnTick( );
+	Event<void(Application*)> &OnTick( );
+
+	template<typename _Callable>
+	void BeginInvoke( _Callable&&callable )
+	{
+		this->invokes_.emplace_back( callable );
+	}
+
 private:
-	bool _running;
-	int _tick;
-	std::vector<Graphics::Window*> _windows;
-	static int _ilasterr;
-	__LIB Event<void(Application*)> _OnTick;
+	bool running_;
+	int tick_;
+	std::vector<Graphics::Window*> windows_;
+	std::vector<function<void()>> invokes_;
+	static int ilasterr_;
+	Event<void(Application*)> _OnTick;
 };
 
 

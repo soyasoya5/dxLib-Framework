@@ -9,10 +9,10 @@ class Button : public Component
 public:
 	Button( );
 	
-	void Paint( __GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter ) override;
+	void Paint( Window *sender, BasePainter *painter ) override;
 	
 private:
-	__MATH Vector2 determineText( __MATH Vector2 &_Pos, __MATH Vector2 &_TextSize );
+	__MATH Vector2 determineText( __MATH Vector2 &pos, __MATH Vector2 &textSize );
 	__MATH Vector2 _determ;
 	bool _changed;
 };

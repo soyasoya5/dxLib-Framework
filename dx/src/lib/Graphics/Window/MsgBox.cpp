@@ -3,22 +3,22 @@
 
 begin_GRAPHICS
 
-MsgBox::MsgBox(const __LIB String & _Message, const __LIB String & _Title, const __DX uint & _Type)
-	: _msg( _Message ), _title( _Title ), _type( _Type ), _parent( nullptr )
+MsgBox::MsgBox(const __LIB String & message, const __LIB String & title, const __DX uint & type)
+	: MsgBox( nullptr, message, title, type )
 {
 }
 
-MsgBox::MsgBox(__GRAPHICS Window * _Parent, const __LIB String & _Message, const __LIB String & _Title, const __DX uint & _Type)
-: _msg( _Message ), _title( _Title ), _type( _Type ), _parent( _Parent )
+MsgBox::MsgBox(__GRAPHICS Window * parent, const __LIB String & message, const __LIB String & title, const __DX uint & type)
+: msg_( message ), title_( title ), type_( type ), parent_( parent )
 {
 }
 
 MsgBox::DialogResult MsgBox::Show()
 {
-	return DialogResult( ::MessageBox( _parent == nullptr ? nullptr : _parent->native_handle( ), 
-									   _msg.c_str( ), 
-									   _title.c_str( ), 
-									   _type ) );
+	return DialogResult( ::MessageBox( parent_ == nullptr ? nullptr : parent_->native_handle( ), 
+									   msg_.c_str( ), 
+									   title_.c_str( ), 
+									   type_ ) );
 }
 
 

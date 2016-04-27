@@ -3,63 +3,63 @@
 begin_GRAPHICS
 
 Text::Text()
-	: _font(nullptr), _text(), _position(), _max( { 500, 200 } ), _allign(Top)
+	: font_( nullptr ), text_( ), position_( ), max_( { 500, 200 } ), allign_(Top)
 {
 }
 
-Text::Text(__GRAPHICS Font * _Font, const __LIB String & _Text, const __MATH Vector2 & _Position, const __MATH Vector2 &_Clip, const __GRAPHICS TextAllignment &_Allignment)
-	: _font( _Font ), _text( _Text ), _position( _Position ), _allign( _Allignment ), _max( _Clip )
+Text::Text(std::shared_ptr<Font> font, const __LIB String & text, const __MATH Vector2 & position, const __MATH Vector2 &clip, const __GRAPHICS TextAllignment &allignment)
+	: font_( font ), text_( text ), position_( position ), allign_( allignment ), max_( clip )
 {
 }
 
-__GRAPHICS Font * Text::getFont() const
+std::shared_ptr<Font> Text::getFont() const
 {
-	return _font;
+	return font_;
 }
 
-void Text::setFont(__GRAPHICS Font * _Font)
+void Text::setFont(std::shared_ptr<Font> _Font)
 {
-	_font = _Font;
+	font_ = _Font;
 }
 
 __GRAPHICS TextAllignment Text::getAllignment() const
 {
-	return _allign;
+	return allign_;
 }
 
-void Text::setAllignment(const __GRAPHICS TextAllignment & _Allignment)
+void Text::setAllignment(const __GRAPHICS TextAllignment & allignment)
 {
-	_allign = _Allignment;
+	allign_ = allignment;
 }
 
 const __LIB String &Text::getText() const
 {
-	return _text;
+	return text_;
 }
 
-void Text::setText(const __LIB String & _Text) 
+void Text::setText(const __LIB String & text) 
 {
-	_text = _Text;
+	text_ = text;
 }
 
 const __MATH Vector2 &Text::getPosition() const
 {
-	return _position;
+	return position_;
 }
 
-void Text::setPosition(const __MATH Vector2 & _Position)
+void Text::setPosition(const __MATH Vector2 & position)
 {
-	_position = _Position;
+	position_ = position;
 }
 
 const __MATH Vector2 &Text::getMaxClip() const
 {
-	return _max;
+	return max_;
 }
 
-void Text::setMaxClip(const __MATH Vector2 & _Clip)
+void Text::setMaxClip(const __MATH Vector2 & clip)
 {
-	_max = _Clip;
+	max_ = clip;
 }
 
 

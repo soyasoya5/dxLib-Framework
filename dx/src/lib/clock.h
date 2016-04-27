@@ -7,8 +7,8 @@ begin_LIB
 class StopWatch
 {
 private:
-	std::chrono::time_point<std::chrono::system_clock> _start, _end;
-	uint _t;
+	std::chrono::time_point<std::chrono::system_clock> start_, end_;
+	uint t_;
 public:
 	///<summary>
 	/// Set the starting point.
@@ -42,8 +42,8 @@ using Clock = StopWatch;
 class DeltaTimer
 {
 private:
-	float _secsPerCount;
-	__int64 _prevTimeStamp;
+	float secsPerCount_;
+	__int64 prevTimeStamp_;
 
 public:
 	DeltaTimer( );

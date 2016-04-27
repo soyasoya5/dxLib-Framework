@@ -10,50 +10,47 @@ class Slider : public Component
 public:
 	Slider( );
 
-	~Slider( );
+	void Paint( Window *sender, BasePainter *painter ) override;
 
-	void Paint( __GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter ) override;
+	void KeyDown( Window *sender, KeyDownArgs &_Args ) override;
 
-	void KeyDown( __GRAPHICS Window *_Sender, __GRAPHICS KeyDownArgs &_Args ) override;
+	void KeyUp( Window *sender, KeyUpArgs &_Args ) override;
 
-	void KeyUp( __GRAPHICS Window *_Sender, __GRAPHICS KeyUpArgs &_Args ) override;
+	void KeyDownChar( Window *sender, KeyDownCharArgs &args ) override;
 
-	void KeyDownChar( __GRAPHICS Window *_Sender, __GRAPHICS KeyDownCharArgs &_Args ) override;
+	void MouseMoved( Window *sender, MouseMovedArgs &args ) override;
 
-	void MouseMoved( __GRAPHICS Window *_Sender, __GRAPHICS MouseMovedArgs &_Args ) override;
+	void MouseClicked( Window *sender, MouseClickedArgs &args ) override;
 
-	void MouseClicked( __GRAPHICS Window *_Sender, __GRAPHICS MouseClickedArgs &_Args ) override;
-
-	void MouseReleased( __GRAPHICS Window *_Sender, __GRAPHICS MouseReleasedArgs &_Args ) override;
+	void MouseReleased( Window *sender, MouseReleasedArgs &args ) override;
 
 	__MATH Vector2 getDelta( ) const;
 
-	void setMaxDelta( const float &_Delta );
+	void setMaxDelta( const float &delta );
 
 	float getMaxDelta( ) const;
 
-	void setWheel( const float &_Delta );
+	void setWheel( const float &delta );
 	
 	float getWheel( ) const;
 
-	void setWheelSize( const __MATH Vector2 &_Size );
+	void setWheelSize( const __MATH Vector2 &size );
 
 	__MATH Vector2 getWheelSize( ) const;
 
+	bool CollidesWheel( const __MATH Vector2 &position );
 
-	bool CollidesWheel( const __MATH Vector2 &_Position );
+	bool inScrollableRegion( const __MATH Vector2 &cursor ) const;
 
-	bool inScrollableRegion( const __MATH Vector2 &_Cursor ) const;
-
-	const Textbox *getTextbox( ) const;
+	std::shared_ptr<Textbox> getTextbox( ) const;
 
 
 private:
 	void moveWheelToDelta( );
-	__MATH Vector2 _moved, _wheel, _wheelSize, _delta;
-	Textbox *_textbox;
-	bool _changed, _dragging;
-	float _maxDelta;
+	__MATH Vector2 moved_, wheel_, wheelSize_, delta_;
+	std::shared_ptr<Textbox> textbox_;
+	bool changed_, dragging_;
+	float maxDelta_;
 };
 
 

@@ -10,28 +10,29 @@ Checkbox::Checkbox()
 	: Component( )
 {
 	Component::OnMouseReleased( ) += []( Component *sender ) { sender->setState( !sender->getState( ) ); }; 
-	_changed = true;
+	changed_ = true;
 }
 
 __MATH Vector2 Checkbox::determineText(__MATH Vector2 &pos, __MATH Vector2 &text_size )
 {
-	if ( _changed ) {
+	if ( changed_ ) 
+	{
 		auto size = getSize( );
 		// Y is always gonna be in the middle for the sake of no clip
-		_determ.y = (size.y / 2 - text_size.y / 2) + pos.y;
-		_determ.x = pos.x + size.x + 10;
-		_changed = false;
+		determ_.y = (size.y / 2 - text_size.y / 2) + pos.y;
+		determ_.x = pos.x + size.x + 10;
+		changed_ = false;
 	}
-	return _determ;
+	return determ_;
 }
 
-void Checkbox::Paint( Window *_Sender, BasePainter *_Painter )
+void Checkbox::Paint( Window* sender, BasePainter *painter )
 {
 	static Pen inner, outer{ Colors::White, 1 }, pen_text{ Colors::White, 1 };
 	if ( !this->isVisible( ) )
 		return;
 
-	OnPrePaint( ) .Invoke( this, _Painter );
+	OnPrePaint( ) .Invoke( this, painter );
 
 	// Determine region
 	auto pos = determineRegion( );
@@ -39,7 +40,7 @@ void Checkbox::Paint( Window *_Sender, BasePainter *_Painter )
 	// Get font
 	auto font = getFont( );
 	if ( !font )
-		font = _Painter->defaultFont( );
+		font = painter->defaultFont( );
 
 	// Setup Text
 	Text text{ font, getText(), { } };
@@ -57,8 +58,8 @@ void Checkbox::Paint( Window *_Sender, BasePainter *_Painter )
 		outer.Color( 0xFF4B4B4B );
 	
 
-	_Painter->PaintRectOutlined( pos, inner, outer );
-	_Painter->Paint( text,  pen_text );
+	painter->PaintRectOutlined( pos, inner, outer );
+	painter->Paint( text,  pen_text );
 
 	// Checked state
 	if ( getState( ) )
@@ -79,12 +80,12 @@ void Checkbox::Paint( Window *_Sender, BasePainter *_Painter )
 		// Line2 target
 		line2.Target( { pos.position + __MATH Vector2{ pos.size.x - 3, 5 } } );
 
-		_Painter->PaintLine( line1 );
-		_Painter->PaintLine( line2 );
+		painter->PaintLine( line1 );
+		painter->PaintLine( line2 );
 	}
 
 
-	OnPostPaint( ).Invoke( this, _Painter );
+	OnPostPaint( ).Invoke( this, painter );
 }
 
 

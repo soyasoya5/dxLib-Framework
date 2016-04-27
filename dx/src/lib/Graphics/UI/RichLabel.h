@@ -10,10 +10,10 @@ class RichLabel : public Component
 public:
 	struct TextContainer
 	{
-		__GRAPHICS Texture *texture;
-		__LIB String text;
-		__DX uint color;
-		__GRAPHICS Font *font;
+		std::shared_ptr<Texture> texture;
+		String text;
+		uint color;
+		std::shared_ptr<Font> font;
 		bool new_line; // If a new line is to be placed after this
 		bool is_texture; // If a tab is to be placed after this (8 spaces)
 		bool is_selected;
@@ -31,42 +31,39 @@ public:
 public:
 	RichLabel();
 
-	void Paint(__GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter);
+	virtual void Paint(Window *sender, BasePainter *painter) override;
 
-	void appendText(const __LIB String &_Text, __GRAPHICS Font *font, const __DX uint &_Color);
+	void appendText( String text, std::shared_ptr<Font> font, uint color );
 
-	void appendText(const __LIB String &_Text, __GRAPHICS Font *font);
+	void appendText( String text, std::shared_ptr<Font> font );
 
-	void appendText(const __LIB String &_Text, const __DX uint &_Color);
+	void appendText( String text, uint color );
 
-	void appendText(const __LIB String &_Text);
+	void appendText( String text );
 
-	void appendText(__GRAPHICS Texture *_Texture);
+	void appendText( std::shared_ptr<Texture> texture );
 
-	__LIB String getText() const override;
+	void setText( const __LIB String &_Text ) override;
 
-	void setText(const __LIB String &_Text) override;
+	RichText *textAt( const int &index );
 
-	RichText *textAt(const int &index);
+	RichText *textFrom( const std::function<bool(RichText*)> &functor );
 
-	RichText *textFrom(const std::function<bool(RichText *text)> &_Functor);
+	RichText *textFromText( const String& text );
 
-	RichText *textFromText(const __LIB String &_Text);
+	RichText *textInRegion( const __MATH Region &region );
 
-	RichText *textInRegion(const __MATH Region &_Region);
-
-	void clearText();
+	void clearText( );
 
 	AsyncKeeper &AquireMutex( );
 
 private:
-	void recalculate_text();
+	void recalculate_text( );
 
-	__LIB AsyncKeeper _kpr;
-	std::vector<RichText> _all_text;
-	std::vector<TextContainer> _contrs;
-	__LIB String _mtext;
-	bool _changed;
+	AsyncKeeper kpr_;
+	std::vector<RichText> all_text_;
+	std::vector<TextContainer> contrs_;
+	bool changed_;
 
 };
 

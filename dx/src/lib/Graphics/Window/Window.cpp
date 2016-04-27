@@ -26,44 +26,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam
 }
 
 
-Window * Window::Create(const __LIB String & _Class, const __LIB String & _Title, const __MATH Region & _Region, DWORD dwStyle, DWORD dwExStyle)
-{
-
-	WNDCLASSEX wc;
-	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.hIcon = LoadIconA(NULL, IDI_APPLICATION);
-	wc.hIconSm = wc.hIcon;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wc.lpszMenuName = _Title.c_str();
-	wc.lpszClassName = _Class.c_str();
-	wc.hInstance = NULL;
-
-	if ( FAILED( RegisterClassExA( &wc ) ) )
-		return nullptr;
-
-	Window* ptr = new Window( );
-	ptr->_region = _Region;
-	ptr->_hwnd = CreateWindowExA( dwExStyle, 
-								  _Class.c_str( ),
-								  _Title.c_str( ),
-								  dwStyle,
-								  _Region.position.x,
-								  _Region.position.y,
-								  _Region.size.x,
-								  _Region.size.y,
-								  NULL, NULL, NULL, ptr );
-
-	auto appl = Application::get( );
-	appl->RegisterWindow( ptr );
-	return ptr;
-}
-
-Window * Window::Create(Window * _Parent, const __LIB String & _Class, const __LIB String & _Title, const __MATH Region & _Region, DWORD dwStyle, DWORD dwExStyle)
+std::shared_ptr<Window> Window::Create(const  String & Class, const  String & Title, const __MATH Region & Region, DWORD dwStyle, DWORD dwExStyle)
 {
 	WNDCLASSEX wc;
 	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
@@ -75,241 +38,271 @@ Window * Window::Create(Window * _Parent, const __LIB String & _Class, const __L
 	wc.hIconSm = wc.hIcon;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wc.lpszMenuName = _Title.c_str();
-	wc.lpszClassName = _Class.c_str();
+	wc.lpszMenuName = Title.c_str();
+	wc.lpszClassName = Class.c_str();
 	wc.hInstance = NULL;
 
 	if ( FAILED( RegisterClassExA( &wc ) ) )
 		return nullptr;
 
-	Window* ptr = new Window( );
-	ptr->_region = _Region;
-	ptr->_hwnd = CreateWindowExA( dwExStyle, 
-								  _Class.c_str( ),
-								  _Title.c_str( ),
+	auto ptr = std::shared_ptr<Window>( new Window( ) );
+	ptr->region_ = Region;
+	ptr->hwnd_ = CreateWindowExA( dwExStyle, 
+								  Class.c_str( ),
+								  Title.c_str( ),
 								  dwStyle,
-								  _Region.position.x,
-								  _Region.position.y,
-								  _Region.size.x,
-								  _Region.size.y,
-								  _Parent->native_handle( ), 
-								  NULL, NULL, ptr );
-	ptr->_parent = _Parent;
+								  Region.position.x,
+								  Region.position.y,
+								  Region.size.x,
+								  Region.size.y,
+								  nullptr, nullptr, NULL, ptr.get( ) );
+
 	auto appl = Application::get( );
-	appl->RegisterWindow( ptr );
+	appl->RegisterWindow( ptr.get( ) );
 	return ptr;
 }
 
-__LIB Event<void(Window*, KeyDownCharArgs&)>& Window::OnKeyDownChar()
+std::shared_ptr<Window> Window::Create(Window * parent, const  String & Class, const  String & Title, const __MATH Region & Region, DWORD dwStyle, DWORD dwExStyle)
+{
+	WNDCLASSEX wc;
+	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = WndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.hIcon = LoadIconA(NULL, IDI_APPLICATION);
+	wc.hIconSm = wc.hIcon;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wc.lpszMenuName = Title.c_str();
+	wc.lpszClassName = Class.c_str();
+	wc.hInstance = NULL;
+
+	if ( FAILED( RegisterClassExA( &wc ) ) )
+		return nullptr;
+
+	auto ptr = std::shared_ptr<Window>( new Window( ) );
+	ptr->region_ = Region;
+	ptr->hwnd_ = CreateWindowExA( dwExStyle, 
+								  Class.c_str( ),
+								  Title.c_str( ),
+								  dwStyle,
+								  Region.position.x,
+								  Region.position.y,
+								  Region.size.x,
+								  Region.size.y,
+								  parent->native_handle( ), 
+								  NULL, NULL, ptr.get( ) );
+	ptr->parent_ = parent;
+	auto appl = Application::get( );
+	appl->RegisterWindow( ptr.get( ) );
+	return ptr;
+}
+
+ Event<void(Window*, KeyDownCharArgs&)>& Window::OnKeyDownChar()
 {
 	return _OnKeyDownChar;
 }
 
-__LIB Event<void(Window*, BasePainter*)>& Window::OnPaint()
+ Event<void(Window*, BasePainter*)>& Window::OnPaint()
 {
 	return _OnPaint;
 }
 
-__LIB Event<void(Window*, MessageDataArgs&)>& Window::OnHandleMessage()
+ Event<void(Window*, MessageDataArgs&)>& Window::OnHandleMessage()
 {
 	return _OnHandleMessage;
 }
 
-__LIB Event<void(Window*)>& Window::OnTick()
+ Event<void(Window*)>& Window::OnTick()
 {
 	return _OnTick;
 }
 
 Window::Window( )
-	: _hwnd( nullptr )
+	: hwnd_( nullptr )
 {
 	
 }
 
-void Window::push_task(Task * _Task)
-{
-	_tasks.push_back( _Task );
-}
-
-void Window::remove_task(std::vector<Task*>::iterator _Where)
-{
-	_tasks.erase( _Where );
-}
-
 Window::~Window( )
 {	// Force the closing of window, no matter what -
-	this->OnWindowClosing( ).clear( );
 	Close( );
 }
 
-bool Window::ClientToScreen(__MATH Vector2 & _Point)
+bool Window::ClientToScreen(__MATH Vector2 & point)
 {
-	return ::ClientToScreen( this->_hwnd, (LPPOINT)&_Point );
+	return ::ClientToScreen( this->hwnd_, (LPPOINT)&point );
 }
 
-bool Window::ScreenToClient(__MATH Vector2 & _Point)
+bool Window::ScreenToClient(__MATH Vector2 & point)
 {
-	return ::ScreenToClient( this->_hwnd, (LPPOINT)&_Point );
+	return ::ScreenToClient( this->hwnd_, (LPPOINT)&point );
 }
 
-__LIB String Window::getTitle()
+ String Window::getTitle()
 {
 	char _Title[255];
-	::GetWindowTextA( this->_hwnd, _Title, 255 );
+	::GetWindowTextA( this->hwnd_, _Title, 255 );
 	return _Title;
 }
 
-void Window::setTitle(const __LIB String & _Title)
+void Window::setTitle(const  String & title)
 {
-	::SetWindowTextA( _hwnd, _Title.c_str( ) );
+	::SetWindowTextA( hwnd_, title.c_str( ) );
 }
 
-__LIB String Window::getClass()
+ String Window::getClass()
 {
-	char _Class[255];
-	::RealGetWindowClassA( this->_hwnd, _Class, 255 );
+	thread_local char _Class[255];
+	::RealGetWindowClassA( this->hwnd_, _Class, 255 );
 	return _Class;
 }
 
 bool Window::Hide()
 {
-	return ::ShowWindow( _hwnd, SW_HIDE );
+	return ::ShowWindow( hwnd_, SW_HIDE );
 }
 
 bool Window::Show()
 {
-	return ::ShowWindow( _hwnd, SW_SHOW );
+	return ::ShowWindow( hwnd_, SW_SHOW );
 }
 
 bool Window::BringToTop()
 {
-	return ::BringWindowToTop( _hwnd );
+	return ::BringWindowToTop( hwnd_ );
 }
 
 
 bool Window::Minimize()
 {
-	return ::ShowWindow( _hwnd, SW_MINIMIZE );
+	return ::ShowWindow( hwnd_, SW_MINIMIZE );
 }
 
 bool Window::Maximize( ) 
 {
-	return ::ShowWindow( _hwnd, SW_MAXIMIZE );
+	return ::ShowWindow( hwnd_, SW_MAXIMIZE );
 }
 
 bool Window::Restore( )
 {
-	return ::ShowWindow( _hwnd, SW_RESTORE );
+	return ::ShowWindow( hwnd_, SW_RESTORE );
 }
 
 bool Window::ForcePaint()
 {
-	return ::SendMessageA( _hwnd, WM_PAINT, 0, 0 );
+	return ::SendMessageA( hwnd_, WM_PAINT, 0, 0 );
 }
 
 bool Window::Enable()
 {
-	return ::EnableWindow( _hwnd, true );
+	return ::EnableWindow( hwnd_, true );
 }
 
 bool Window::Disable()
 {
-	return ::EnableWindow( _hwnd, false );
+	return ::EnableWindow( hwnd_, false );
 }
 
-bool Window::LoadIcon(const __FILEIO Path &_Path)
+bool Window::LoadIcon(const __FILEIO Path &path)
 {
-	DWORD type = _Path.extension_is(".ico") ? IMAGE_ICON : IMAGE_BITMAP;
+	DWORD type = path.extension_is(".ico") ? IMAGE_ICON : IMAGE_BITMAP;
 	auto icon = LoadImageA( NULL,             
-				 		    _Path,
+				 		    path,
 				 		    type,       
 				 		    32,                
 				 			32,                
 			  	 		    LR_LOADFROMFILE );
-	return SUCCEEDED( ::SendMessageA( _hwnd, WM_SETICON, ICON_BIG, (LPARAM)icon ) );
+	return SUCCEEDED( ::SendMessageA( hwnd_, WM_SETICON, ICON_BIG, (LPARAM)icon ) );
 }
 
-bool Window::LoadIconSm(const __FILEIO Path &_Path)
+bool Window::LoadIconSm(const __FILEIO Path &path )
 {
-	DWORD type = _Path.extension_is(".ico") ? IMAGE_ICON : IMAGE_BITMAP;
+	DWORD type = path.extension_is(".ico") ? IMAGE_ICON : IMAGE_BITMAP;
 	auto icon = LoadImageA( NULL,             
-				 		    _Path,
+				 		    path,
 				 		    type,       
 				 		    16,                
 				 			16,                
 			  	 		    LR_LOADFROMFILE );
-	return SUCCEEDED( ::SendMessageA( _hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon ) );
+	return SUCCEEDED( ::SendMessageA( hwnd_, WM_SETICON, ICON_SMALL, (LPARAM)icon ) );
 }
 
 
 __GRAPHICS Window * Window::getParent()
 {
-	return _parent;
+	return parent_;
 }
 
 __GRAPHICS BasePainter * Window::getPainter()
 {
-	return _painter;
+	return painter_;
 }
 
-void Window::SpecializePaint(const PaintStyle_t & _Style)
+void Window::SpecializePaint(const PaintStyle_t & style)
 {
-	_style = _Style;
+	style_ = style;
 }
 
 Window::PaintStyle_t Window::PaintStyle() const
 {
-	return _style;
+	return style_;
 }
 
-void Window::setPainter(__GRAPHICS BasePainter * _Painter, const bool &_Delete_Old)
+void Window::setPainter(__GRAPHICS BasePainter * painter, const bool &delete_old)
 {
-	if ( _Delete_Old && _painter )
-		delete _painter;
-	_painter = _Painter;
+	if ( delete_old && painter_ )
+		delete painter_;
+	painter_ = painter;
 }
 
 bool Window::has_painter() const
 {
-	return _painter;
+	return painter_ != nullptr;
 }
 
 float Window::Width() const
 {
-	return this->_region.size.x;
+	return this->region_.size.x;
 }
 
 float Window::Height() const
 {
-	return this->_region.size.y;
+	return this->region_.size.y;
 }
 
 bool Window::isCtrlHeld() const
 {
-	return _c;
+	return keys_[dx::key_control];
 }
 
 bool Window::isShiftHeld() const
 {
-	return _s;
+	return keys_[dx::key_leftShift] || keys_[dx::key_shift];
+}
+
+bool Window::isKeyDown(uint key) const
+{
+	return keys_[key];
 }
 
 HWND Window::native_handle()
 {
-	return _hwnd;
+	return hwnd_;
 }
 
 void Window::Close()
 {
-	::DestroyWindow( _hwnd );
-	_hwnd = nullptr;
+	::DestroyWindow( hwnd_ );
+	hwnd_ = nullptr;
+	OnWindowClosed( ).Invoke( this );
 }
 
-__LIB TimedTask<void(Window*)>& Window::addTask( const time_point &_When, const std::function<void(Window*)> &_Function )
+Window::Task& Window::addTask( const time_point &when, const std::function<void(Window*)> &functor )
 {
-	auto task = new __LIB TimedTask<void(Window*)>( _Function, _When );
-	_tasks.push_back( task );
-	return *task;
+	tasks_.emplace_back( functor, when );
+	return tasks_.back( );
 }
 
 LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam)
@@ -330,10 +323,10 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 	{
 	case WM_PAINT:
 	{
-		if ( PaintStyle( ) == OnEvent_t && _painter ) {
-			_painter->BeginPaint( );
-			this->OnPaint( ).Invoke( this, _painter );
-			_painter->PresentPaint( );
+		if ( PaintStyle( ) == OnEvent_t && painter_ ) {
+			painter_->BeginPaint( );
+			this->OnPaint( ).Invoke( this, painter_ );
+			painter_->PresentPaint( );
 		}
 	}
 	break;
@@ -345,13 +338,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		KeyDownArgs args;
 		args.handled = false;
 		args.key_code = static_cast<uint>( wParam );
-
-		if ( args.key_code == dx::key_control )
-			this->_c = true;
-		else if ( args.key_code == dx::key_leftShift || args.key_code == dx::key_shift )
-			this->_s = true;
-		args.ctrl = _c;
-		args.shift = _s;
+		keys_[args.key_code] = true;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnKeyDown( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -364,15 +353,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		KeyUpArgs args;
 		args.handled = false;
 		args.key_code = static_cast<uint>( wParam );
-
-		if ( args.key_code == dx::key_control )
-			this->_c = false;
-		else if ( args.key_code == dx::key_leftShift || args.key_code == dx::key_shift )
-			this->_s = false;
-
-		args.ctrl = _c;
-		args.shift = _s;
-
+		keys_[args.key_code] = false;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnKeyUp( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -384,8 +367,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		MouseMovedArgs args;
 		args.handled = false;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = _c;
-		args.shift = _s;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnMouseMoved( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -393,10 +376,10 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 	}
 	case WM_MOVE:
 	{
-		_region.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		region_.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		WindowMovedArgs args;
 		args.handled = false;
-		args.region = _region;
+		args.region = region_;
 		OnWindowMoved( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -405,10 +388,10 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		break;
 	case WM_SIZE:
 	{
-		_region.size = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		region_.size = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		WindowResizeArgs args;
 		args.handled = false;
-		args.region = _region;
+		args.region = region_;
 
 		if ( wParam == SIZE_MINIMIZED ) {
 			OnWindowMinimize( ).Invoke( this );
@@ -429,8 +412,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 1;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = _c;
-		args.shift = _s;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnMouseClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -443,8 +426,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 1;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = _c;
-		args.shift = _s;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnMouseReleased( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -457,8 +440,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = _c;
-		args.shift = _s;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnMouseClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -471,8 +454,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = _c;
-		args.shift = _s;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnMouseReleased( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -485,8 +468,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 1; 
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = _c;
-		args.shift = _s;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnMouseDoubleClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -499,8 +482,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key = 2;
 		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = _c;
-		args.shift = _s;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnMouseDoubleClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -513,8 +496,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.delta = GET_WHEEL_DELTA_WPARAM( wParam );
 		args.direction = args.delta > 0 ? ScrollArgs::Up : ScrollArgs::Down;
-		args.ctrl = _c;
-		args.shift = _s;
+		args.ctrl = keys_[__DX key_control];
+		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
 		OnScroll( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -555,14 +538,13 @@ void Window::HandleTasks()
 {
 	OnTick( ).Invoke( this );
 	auto now = clock::now( );
-	AsyncGuard guard{ _ak_tasks };
-	for ( auto it = _tasks.begin( ); it < _tasks.end( ); ++it )
+	for ( auto it = tasks_.begin( ), end = tasks_.end( ); 
+		  it < end; 
+		  ++it )
 	{
-		auto&x = *it;
-		if ( x->call_task_if_time( now, this ) )
+		if ( it->call_task_if_time( now, this ) )
 		{
-			delete x;
-			_tasks.erase( it );
+			tasks_.erase( it );
 			break;
 		}
 		std::this_thread::sleep_for( std::chrono::nanoseconds( 500 ) );
@@ -572,10 +554,10 @@ void Window::HandleTasks()
 bool Window::PollEvents()
 {
 	static MSG msg{ 0 };
-	if ( !_hwnd )
+	if ( !hwnd_ )
 		return false;
 
-	if ( PeekMessageA( &msg, _hwnd, NULL, NULL, PM_REMOVE ) )
+	if ( PeekMessageA( &msg, hwnd_, NULL, NULL, PM_REMOVE ) )
 	{
 		TranslateMessage( &msg );
 		DispatchMessageA( &msg );
@@ -586,96 +568,96 @@ bool Window::PollEvents()
 
 void Window::HandleComponent(__UI Component * _Comp)
 {
-	this->OnMouseMoved( ) += __LIB EventHandler<MouseMovedSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseMoved, _Comp ) );
-	this->OnMouseClicked() += __LIB EventHandler<MouseClickedSig>(__LIB to_string(_Comp->getUIID()) + "_component", BIND_METHOD_2(&UI::Component::MouseClicked , _Comp));
-	this->OnMouseReleased( ) += __LIB EventHandler<MouseReleasedSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseReleased, _Comp ) );
-	this->OnScroll( ) += __LIB EventHandler<ScrollSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseScrolled, _Comp ) );
-	this->OnKeyDown( ) += __LIB EventHandler<KeyDownSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyDown, _Comp ) );
-	this->OnKeyUp( ) += __LIB EventHandler<KeyUpSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyUp, _Comp ) );
-	this->OnKeyDownChar( ) += __LIB EventHandler<KeyDownCharSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyDownChar, _Comp ) );
-	this->OnMouseDoubleClicked( ) += __LIB EventHandler<MouseClickedSig>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseDoubleClicked, _Comp ) );
-	this->OnPaint( ) += __LIB EventHandler<void(__GRAPHICS Window*, __GRAPHICS BasePainter*)>( __LIB to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::Paint, _Comp ) );
+	this->OnMouseMoved( ) += EventHandler<MouseMovedSig>( to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseMoved, _Comp ) );
+	this->OnMouseClicked() += EventHandler<MouseClickedSig>( to_string(_Comp->getUIID()) + "_component", BIND_METHOD_2(&UI::Component::MouseClicked , _Comp));
+	this->OnMouseReleased( ) += EventHandler<MouseReleasedSig>(  to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseReleased, _Comp ) );
+	this->OnScroll( ) += EventHandler<ScrollSig>(  to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseScrolled, _Comp ) );
+	this->OnKeyDown( ) += EventHandler<KeyDownSig>(  to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyDown, _Comp ) );
+	this->OnKeyUp( ) += EventHandler<KeyUpSig>(  to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyUp, _Comp ) );
+	this->OnKeyDownChar( ) += EventHandler<KeyDownCharSig>(  to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::KeyDownChar, _Comp ) );
+	this->OnMouseDoubleClicked( ) += EventHandler<MouseClickedSig>(  to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseDoubleClicked, _Comp ) );
+	this->OnPaint( ) += EventHandler<void(Window*, BasePainter*)>(  to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::Paint, _Comp ) );
 }
 
 void Window::StopHandlingComponent(__UI Component * _Comp)
 {
-	this->OnMouseMoved( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
-	this->OnMouseClicked( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
-	this->OnMouseReleased( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
-	this->OnScroll( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
-	this->OnKeyDown( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
-	this->OnKeyUp( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
-	this->OnKeyDownChar( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
-	this->OnMouseDoubleClicked( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
-	this->OnPaint( ) -= __LIB to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnMouseMoved( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnMouseClicked( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnMouseReleased( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnScroll( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnKeyDown( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnKeyUp( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnKeyDownChar( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnMouseDoubleClicked( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
+	this->OnPaint( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
 }
 
-__LIB Event<void(Window*, WindowMovedArgs&)>& Window::OnWindowMoved()
+Event<void(Window*, WindowMovedArgs&)>& Window::OnWindowMoved()
 {
 	return _OnWindowMoved;
 }
 
-__LIB Event<void(Window*, WindowResizeArgs&)>& Window::OnWindowResize()
+Event<void(Window*, WindowResizeArgs&)>& Window::OnWindowResize()
 {
 	return _OnWindowResize;
 }
 
-__LIB Event<void(Window*)>& Window::OnWindowMaximize()
+Event<void(Window*)>& Window::OnWindowMaximize()
 {
 	return _OnWindowMaximize;
 }
 
-__LIB Event<void(Window*)>& Window::OnWindowRestored()
+Event<void(Window*)>& Window::OnWindowRestored()
 {
 	return _OnWindowRestored;
 }
 
-__LIB Event<void(Window*)>& Window::OnWindowMinimize()
+ Event<void(Window*)>& Window::OnWindowMinimize()
 {
 	return _OnWindowMinimize;
 }
 
-__LIB Event<void(Window*, WindowClosingArgs&)>& Window::OnWindowClosing()
+ Event<void(Window*, WindowClosingArgs&)>& Window::OnWindowClosing()
 {
 	return _OnWindowClosing;
 }
 
-__LIB Event<void(Window*)>& Window::OnWindowClosed()
+ Event<void(Window*)>& Window::OnWindowClosed()
 {
 	return _OnWindowClosed;
 }
 
-__LIB Event<void(Window*, MouseMovedArgs&)>& Window::OnMouseMoved()
+ Event<void(Window*, MouseMovedArgs&)>& Window::OnMouseMoved()
 {
 	return _OnMouseMoved;
 }
 
-__LIB Event<void(Window*, MouseClickedArgs&)>& Window::OnMouseClicked()
+ Event<void(Window*, MouseClickedArgs&)>& Window::OnMouseClicked()
 {
 	return _OnMouseClicked;
 }
 
-__LIB Event<void(Window*, MouseReleasedArgs&)>& Window::OnMouseReleased()
+ Event<void(Window*, MouseReleasedArgs&)>& Window::OnMouseReleased()
 {
 	return _OnMouseReleased;
 }
 
-__LIB Event<void(Window*, MouseClickedArgs&)>& Window::OnMouseDoubleClicked()
+ Event<void(Window*, MouseClickedArgs&)>& Window::OnMouseDoubleClicked()
 {
 	return _OnMouseDoubleClicked;
 }
 
-__LIB Event<void(Window*, ScrollArgs&)>& Window::OnScroll()
+ Event<void(Window*, ScrollArgs&)>& Window::OnScroll()
 {
 	return _OnScroll;
 }
 
-__LIB Event<void(Window*, KeyDownArgs&)>& Window::OnKeyDown()
+ Event<void(Window*, KeyDownArgs&)>& Window::OnKeyDown()
 {
 	return _OnKeyDown;
 }
 
-__LIB Event<void(Window*, KeyUpArgs&)>& Window::OnKeyUp()
+ Event<void(Window*, KeyUpArgs&)>& Window::OnKeyUp()
 {
 	return _OnKeyUp;
 }

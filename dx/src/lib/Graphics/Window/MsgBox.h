@@ -53,28 +53,28 @@ public:
 	///<summary>
 	///	Construct message box.
 	///</summary>
-	MsgBox( const __LIB String &_Message, 
-			const __LIB String &_Title,
-			const __DX uint &_Type );
+	MsgBox( const __LIB String &message, 
+			const __LIB String &title,
+			const __DX uint &type );
 
 	///<summary>
 	///	Construct message box as a popup from '_Parent'.
 	/// Meaning that '_Parent' will not function untill this
 	/// MsgBox is closed.
 	///</summary>
-	MsgBox( __GRAPHICS Window *_Parent,
-			const __LIB String &_Message, 
-			const __LIB String &_Title,
-			const __DX uint &_Type );
+	MsgBox( __GRAPHICS Window *parent,
+			const __LIB String &message, 
+			const __LIB String &title,
+			const __DX uint &type );
 
 	///<summary>
 	///	Show the dialog.
 	///</summary>
 	DialogResult Show( );
 private:
-	__GRAPHICS Window *_parent;
-	__LIB String _msg, _title;
-	__DX uint _type;
+	__GRAPHICS Window *parent_;
+	__LIB String msg_, title_;
+	__DX uint type_;
 };
 
 end_GRAPHICS

@@ -18,7 +18,7 @@ public:
 	///<summary>
 	///	Construct with Color and Thickness.
 	///</summary>
-	Pen( const __DX uint &_Color, const __DX uint &_Thickness = 1 );
+	Pen( const __DX uint &color, const __DX uint &thickness = 1 );
 
 	///<summary>
 	///	Gets the color of this pen.
@@ -33,15 +33,15 @@ public:
 	///<summary>
 	///	Sets the color of this pen.
 	///</summary>
-	void Color( const __DX uint &_Color );
+	void Color( const __DX uint &color );
 	
 	///<summary>
 	///	Sets the thickness of this pen.
 	///</summary>
-	void Thickness( const __DX uint &_Thickness );
+	void Thickness( const __DX uint &thickness );
 
 private:
-	__DX uint _color, _thickness;
+	__DX uint color_, thickness_;
 };
 
 end_GRAPHICS

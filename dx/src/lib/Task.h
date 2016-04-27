@@ -16,20 +16,20 @@ public:
 	typedef std::function<_Sig> function;
 
 public:
-	TimedTask( const function &_Function, const time_point &_When )
-		: _function( _Function ), _when( _When )
+	TimedTask( const function &function, const time_point &when )
+		: function_( function ), when_( when )
 	{ }
 
 	///<summary>
 	///	Calls the tasks function if enough time has past.
 	///</summary>
 	template<typename ..._Ax>
-	bool call_task_if_time( const time_point &_Now, _Ax&&..._Args )
+	bool call_task_if_time( const time_point &now, _Ax&&...args )
 	{
-		if ( _when.time_since_epoch( ) <= _Now.time_since_epoch( ) )
+		if ( when_.time_since_epoch( ) <= now.time_since_epoch( ) )
 		{
-			if ( _function )
-				_function( std::forward<_Ax>( _Args )... );
+			if ( function_ )
+				function_( std::forward<_Ax>( args )... );
 			Completed( ).Invoke( this );
 			return true;
 		}
@@ -45,8 +45,8 @@ public:
 	}
 
 private:
-	function _function;
-	time_point _when;
+	function function_;
+	time_point when_;
 	__LIB Event<void(TimedTask*)> _Completed;
 };
 

@@ -27,21 +27,21 @@ public:
 	///<summary>
 	/// Construct this Text component.
 	///</summary>
-	Text( __GRAPHICS Font *_Font, 
-		  const __LIB String &_Text, 
-		  const __MATH Vector2 &_Position,
-		  const __MATH Vector2 &_Clip = { 500, 200 }, 
-		  const __GRAPHICS TextAllignment &_Allignment = Top );
+	Text( std::shared_ptr<Font> font, 
+		  const String &text, 
+		  const __MATH Vector2 &position,
+		  const __MATH Vector2 &clip = { 500, 200 }, 
+		  const TextAllignment &allignment = Top );
 
 	///<summary>
 	/// Get the font.
 	///</summary>
-	__GRAPHICS Font* getFont( ) const;
+	std::shared_ptr<Font> getFont( ) const;
 
 	///<summary>
 	/// Set the font.
 	///</summary>
-	void setFont( __GRAPHICS Font *_Font );
+	void setFont( std::shared_ptr<Font> font );
 
 	///<summary>
 	/// Get the text allignment inside the _Clip.
@@ -85,10 +85,10 @@ public:
 
 
 private:
-	__GRAPHICS Font* _font;
-	__GRAPHICS TextAllignment _allign;
-	__LIB String _text;
-	__MATH Vector2 _position, _max;
+	std::shared_ptr<Font> font_;
+	TextAllignment allign_;
+	String text_;
+	__MATH Vector2 position_, max_;
 
 };
 

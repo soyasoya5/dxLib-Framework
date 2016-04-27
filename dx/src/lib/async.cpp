@@ -13,36 +13,36 @@ void AsyncKeeper::unlock()
 }
 
 
-AsyncGuard::AsyncGuard( AsyncKeeper &_Keeper )
-	: _keeper( _Keeper )
+AsyncGuard::AsyncGuard( AsyncKeeper &kpr )
+	: keeper_( kpr )
 {
-	_keeper.lock( );
+	keeper_.lock( );
 }
 
 AsyncGuard::~AsyncGuard( )
 {
-	_keeper.unlock( );
+	keeper_.unlock( );
 }
 
-FlexibleGuard::FlexibleGuard(AsyncKeeper & _Keeper)
-	: _keeper( _Keeper )
+FlexibleGuard::FlexibleGuard(AsyncKeeper & kpr)
+	: keeper_( kpr )
 {
-	_keeper.lock( );
+	keeper_.lock( );
 }
 
 FlexibleGuard::~FlexibleGuard()
 {
-	_keeper.unlock( );
+	keeper_.unlock( );
 }
 
 void FlexibleGuard::lock()
 {
-	_keeper.lock( );
+	keeper_.lock( );
 }
 
 void FlexibleGuard::unlock()
 {
-	_keeper.unlock( );
+	keeper_.unlock( );
 }
 
 

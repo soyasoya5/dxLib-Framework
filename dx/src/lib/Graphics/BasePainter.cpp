@@ -9,9 +9,9 @@ BasePainter * BasePainter::getSingleton()
 	return _Singleton;
 }
 
-void BasePainter::setSingleton(BasePainter * _Putr)
+void BasePainter::setSingleton(BasePainter * ptr)
 {
-	_Singleton = _Putr;
+	_Singleton = ptr;
 }
 
 

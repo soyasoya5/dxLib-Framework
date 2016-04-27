@@ -38,9 +38,9 @@ public:
 	///<summary>
 	///	Create font.
 	///</summary>
-	static Font* Create( const __LIB String &_FontName, 
-						 const __GRAPHICS FontContext &_Context, 
-						 __GRAPHICS BasePainter *_Painter = BasePainter::getSingleton( ) );
+	static std::shared_ptr<Font> Create( const String &fontName, 
+									     const FontContext &context, 
+									     BasePainter *painter = BasePainter::getSingleton( ) );
 
 	///<summary>
 	///	Release font.
@@ -60,12 +60,12 @@ public:
 	///<summary>
 	///	Calculate the size of '_Text' with this font.
 	///</summary>
-	__MATH Vector2 calculateMetrixOf( const __LIB String &_Text );
+	__MATH Vector2 calculateMetrixOf( const String &text );
 private:
-	__MATH Vector2 strSize( const __LIB String &_Text );
-	void* _data;
-	__LIB String _name;
-	__GRAPHICS FontContext _context;
+	__MATH Vector2 strSize( const String &text );
+	void* data_;
+	__LIB String name_;
+	__GRAPHICS FontContext context_;
 	Font();
 };
 

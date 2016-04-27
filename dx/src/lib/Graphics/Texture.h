@@ -13,18 +13,25 @@ public:
 	///<summary>
 	/// Create the texture from path.
 	///</summary>
-	static Texture *Create( const __FILEIO Path &_Path, const __GRAPHICS BasePainter *_Painter = __GRAPHICS BasePainter::getSingleton( ) );
+	static std::shared_ptr<Texture> Create( const __FILEIO Path &path, 
+											const __GRAPHICS BasePainter *painter = __GRAPHICS BasePainter::getSingleton( ) );
 
 	///<summary>
 	/// Create the texture from stream.
 	///</summary>
-	static Texture *Create( std::istream &_Stream, const __GRAPHICS BasePainter *_Painter = __GRAPHICS BasePainter::getSingleton( ) );
+	static std::shared_ptr<Texture> Create( std::istream &stream, 
+											const __GRAPHICS BasePainter *painter = __GRAPHICS BasePainter::getSingleton( ) );
 
 	///<summary>
 	/// Create the texture from buffer in memory.
 	///</summary>
-	static Texture *Create( char* _Buffer, const __DX uint &_Length, const __GRAPHICS BasePainter *_Painter = __GRAPHICS BasePainter::getSingleton( ) );
+	static std::shared_ptr<Texture> Create( char* buffer, 
+											const __DX uint &length, 
+											const __GRAPHICS BasePainter *painter = __GRAPHICS BasePainter::getSingleton( ) );
 
+
+public:
+	~Texture( );
 
 	///<summary>
 	/// Get the size of this texture (NON SCALED)
@@ -44,16 +51,16 @@ public:
 	///<summary>
 	/// Paint this texture to position with scaling. (1, 1) is no scaling.
 	///</summary>
-	void Paint( const __MATH Vector2 &_Position, const __MATH Vector2 &_Scaling );
+	void Paint( const __MATH Vector2 &position, const __MATH Vector2 &scaling );
 
 	///<summary>
 	/// Paint this texture to position with scaling. (1, 1) is no scaling.
 	///</summary>
-	void Paint( const __MATH Region &_Region );
+	void Paint( const __MATH Region &region );
 private:
 	Texture( );
-	void *_sprite, *_texture;
-	unsigned char _desc[32u];
+	void *sprite_, *texture_;
+	unsigned char desc_[32u];
 };
 
 

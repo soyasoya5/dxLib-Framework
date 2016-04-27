@@ -9,15 +9,15 @@ begin_LIB
 
 void StopWatch::Start()
 {
-	_t = GetCurrentThreadId( );
-	_start = now( );
+	t_ = GetCurrentThreadId( );
+	start_ = now( );
 }
 
 void StopWatch::End()
 {
-	if (_t != GetCurrentThreadId())
+	if ( t_ != GetCurrentThreadId( ) )
 		return;
-	_end = now();
+	end_ = now( );
 }
 
 std::chrono::time_point<std::chrono::system_clock> StopWatch::now()
@@ -27,33 +27,32 @@ std::chrono::time_point<std::chrono::system_clock> StopWatch::now()
 
 double StopWatch::Milli()
 {
-	std::chrono::duration<double, std::milli> time = _start - _end;
+	std::chrono::duration<double, std::milli> time = start_ - end_;
 	return std::abs( time.count( ) );
 }
 
 double StopWatch::Nano()
 {
-	std::chrono::duration<double, std::nano> time = _start - _end;
+	std::chrono::duration<double, std::nano> time = start_ - end_;
 	return std::abs( time.count( ) );
 }
 
 DeltaTimer::DeltaTimer()
 {
 	__int64 countsPerSec = 0;
-	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
-	_secsPerCount = 1.0f / (float)countsPerSec;
+	QueryPerformanceFrequency( (LARGE_INTEGER*)&countsPerSec );
+	secsPerCount_ = 1.0f / (float)countsPerSec;
 
-	_prevTimeStamp = 0;
-	QueryPerformanceCounter((LARGE_INTEGER*)&_prevTimeStamp);
+	prevTimeStamp_ = 0;
+	QueryPerformanceCounter( (LARGE_INTEGER*)&prevTimeStamp_ );
 }
 
 float DeltaTimer::GetDeltaTime()
 {
 	__int64 currentTimeStamp = 0;
-	QueryPerformanceCounter((LARGE_INTEGER*)&currentTimeStamp);
-	float timeDiff = (currentTimeStamp - _prevTimeStamp) * _secsPerCount;
-	_prevTimeStamp = currentTimeStamp;
-
+	QueryPerformanceCounter( (LARGE_INTEGER*)&currentTimeStamp );
+	float timeDiff = (currentTimeStamp - prevTimeStamp_) * secsPerCount_;
+	prevTimeStamp_ = currentTimeStamp;
 	return timeDiff;
 }
 

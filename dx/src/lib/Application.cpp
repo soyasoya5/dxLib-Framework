@@ -3,10 +3,10 @@
 
 begin_LIB
 static Application* _Application = nullptr;
-int Application::_ilasterr = 0;
+int Application::ilasterr_ = 0;
 
 Application::Application()
-	: _windows( )
+	: windows_( )
 {
 }
 
@@ -32,23 +32,23 @@ Application * Application::get()
 	return _Application;
 }
 
-void Application::setLastError(const int & _Errc)
+void Application::setLastError(const int & errc )
 {
-	_ilasterr = _Errc;
+	ilasterr_ = errc;
 }
 
 int Application::getLastError()
 {
-	return _ilasterr;
+	return ilasterr_;
 }
 
 int Application::run()
 {
-	_running = true;
-	while( _running )
+	running_ = true;
+	while( running_ )
 	{
 		OnTick( ).Invoke( this );
-		for ( auto&x : _windows )
+		for ( auto&x : windows_ )
 		{
 			x->PollEvents( );
 			x->HandleTasks( );
@@ -60,31 +60,50 @@ int Application::run()
 			}
 			std::this_thread::sleep_for( std::chrono::nanoseconds( 500 ) );
 		}
-		std::this_thread::sleep_for( std::chrono::milliseconds( _tick ) );
+
+		for ( auto &x : invokes_ )
+			x.invoke( );
+
+		invokes_.clear( );
+		std::this_thread::sleep_for( std::chrono::milliseconds( tick_ ) );
 	}
-
-	for ( auto&x : _windows )
-		delete x;
-
 	return getLastError( );
 }
 
 void Application::exit()
 {
-	_running = false;
+	running_ = false;
 }
 
-void Application::RegisterWindow(__GRAPHICS Window * _Window)
+void Application::RegisterWindow(__GRAPHICS Window * window)
 {
-	_windows.push_back( _Window );
+	windows_.push_back( window );
+	window->OnWindowClosed( ) += [this]( __GRAPHICS Window *window )
+	{
+		this->BeginInvoke( [this, window = window]() { this->UnregisterWindow( window ); } );
+	};
 }
 
-void Application::setTickRate(const int & _Rate)
+void Application::UnregisterWindow(__GRAPHICS Window * window)
 {
-	_tick = _Rate;
+	for ( auto it = windows_.begin( ), end = windows_.end( );
+		  it < end;
+		  ++it )
+	{
+		if ( *it == window )
+		{
+			windows_.erase( it );
+			break;
+		}
+	}
 }
 
-void Application::setClipboard(const __LIB String & _Data)
+void Application::setTickRate(const int & rate)
+{
+	tick_ = rate;
+}
+
+void Application::setClipboard(const String & data)
 {
 	if ( FAILED( OpenClipboard( nullptr ) ) )
 		throw std::runtime_error( "'Application::setClipboard' Failed to open clipboard" );
@@ -92,7 +111,7 @@ void Application::setClipboard(const __LIB String & _Data)
 	if ( FAILED( EmptyClipboard( ) ) )
 		throw std::runtime_error( "'Application::setClipboard' Failed to empty clipboard" );
 
-	auto length = _Data.capacity( );
+	auto length = data.capacity( );
 	auto glob = GlobalAlloc( GMEM_MOVEABLE, length );
 	
 	if ( !glob )
@@ -101,7 +120,7 @@ void Application::setClipboard(const __LIB String & _Data)
 		throw std::runtime_error( "'Application::setClipboard' Failed to Allocate glob" );
 	}
 
-	memcpy( GlobalLock( glob ), _Data.c_str( ), length );
+	memcpy( GlobalLock( glob ), data.c_str( ), length );
 	GlobalUnlock( glob );
 	SetClipboardData( CF_TEXT, glob );
 	CloseClipboard( );

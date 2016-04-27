@@ -4,29 +4,29 @@
 
 begin_UI
 
-StyleManager::StyleManager(const __UI Theme & _Theme, const __UI Style & _Style)
-	: _theme(_Theme), _style(_Style)
+StyleManager::StyleManager(const __UI Theme & theme, const __UI Style & style)
+	: theme_( theme ), style_( style )
 {
 }
 
 __UI Theme StyleManager::theme() const
 {
-	return _theme;
+	return theme_;
 }
 
-void StyleManager::theme(const __UI Theme & _Theme)
+void StyleManager::theme(const __UI Theme & theme)
 {
-	_theme = _Theme;
+	theme_ = theme;
 }
 
 __UI Style StyleManager::style() const
 {
-	return _style;
+	return style_;
 }
 
-void StyleManager::style(const __UI Style & _Style)
+void StyleManager::style(const __UI Style & style)
 {
-	_style = _Style;
+	style_ = style;
 }
 
 

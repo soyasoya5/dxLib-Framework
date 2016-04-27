@@ -20,29 +20,24 @@ public:
 	///<summary>
 	/// Construct this Hotkey with _Key as the key and _Name as the Name.
 	///</summary>
-	Hotkey( const __DX uint &_Key, const __LIB String &_Name );
+	Hotkey( __DX uint key, __LIB String name );
 
 	///<summary>
 	/// Construct this Hotkey with an amount of keys as the key and _Name as the Name.
 	///</summary>
-	Hotkey( const std::vector<__DX uint> &_Keys, const __LIB String &_Name );
+	Hotkey( std::vector<__DX uint> keys, __LIB String _Name );
 
 	~Hotkey( );
 
 	///<summary>
 	///	Should be raised whenever the window managing the hotkey raises a KeyDown event
 	///</summary>
-	void OnKeyDown( Window *Sender, KeyDownArgs &_Args );
+	void OnKeyDown( Window* sender, KeyDownArgs &args );
 
 	///<summary>
 	///	Should be raised whenever the window managing the hotkey raises a KeyUp event.
 	///</summary>
-	void OnKeyUp( Window *Sender, KeyUpArgs &_Args );
-
-	///<summary>
-	///	Should be raised whenever the window managing the hotkey raises a KeyUp event.
-	///</summary>
-	void addSubkey( const __DX uint &_Key );
+	void addSubkey( uint key );
 
 
 	///<summary>
@@ -60,9 +55,9 @@ public:
 	///</summary>
 	__LIB Event<void(Hotkey*, __LIB EventArgs&)> &OnHotkey( );
 private:
-	std::vector<std::pair<__DX uint, bool>> _subkeys;
+	std::vector<uint> subkeys_;
+	__LIB String name_;
 	__LIB Event<void(Hotkey*, __LIB EventArgs&)> _OnHotkey;
-	__LIB String _name;
 };
 
 

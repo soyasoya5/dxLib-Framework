@@ -48,15 +48,15 @@ public: // Accessors
 	virtual __MATH Region determineRegion( );
 	virtual __MATH Vector2 getGlobalPosition( ) const;
 	virtual __MATH Vector2 getSize( ) const;
-	virtual __UI StyleManager getStyle( ) const;
-	virtual __UI Component* getLeftOf( ) const;
-	virtual __UI Component* getRightOf( ) const;
-	virtual __UI Component* getBottomOf( ) const;
-	virtual __UI Component* getTopOf( ) const;
-	virtual __UI Component* getAllignedOf( ) const;
-	virtual __UI Component* getParent( ) const;
-	virtual __UI Allignment getAllignment( ) const;
-	virtual __UI Layout getLayout( ) const;
+	virtual  StyleManager getStyle( ) const;
+	virtual  Component* getLeftOf( ) const;
+	virtual  Component* getRightOf( ) const;
+	virtual  Component* getBottomOf( ) const;
+	virtual  Component* getTopOf( ) const;
+	virtual  Component* getAllignedOf( ) const;
+	virtual  Component* getParent( ) const;
+	virtual  Allignment getAllignment( ) const;
+	virtual  Layout getLayout( ) const;
 	virtual int getState( ) const;
 	virtual bool isHovered( ) const;
 	virtual bool isFocused( ) const;
@@ -64,109 +64,109 @@ public: // Accessors
 	virtual bool isEnabled( ) const;
 	virtual bool isVisible( ) const;
 	virtual void* getUserdata( ) const;
-	virtual __GRAPHICS Font* getFont( ) const;
+	virtual std::shared_ptr<Font> getFont( ) const;
 	virtual int getUIID( ) const; 
-	virtual __LIB String getText( ) const;
+	virtual  String getText( ) const;
 
 public: // Modifiers
-	virtual void setLocalRegion( const __MATH Region &_Region );
-	virtual void setLocalPosition( const __MATH Vector2 &_Position );
-	virtual void setGlobalRegion( const __MATH Region &_Region );
-	virtual void setGlobalPosition( const __MATH Vector2 &_Position );
-	virtual void setSize( const __MATH Vector2 &_Size );
-	virtual void setStyle( const __UI StyleManager &_Style );
-	virtual void setLeftOf( __UI Component *_Component );
-	virtual void setRightOf( __UI Component *_Component );
-	virtual void setBottomOf( __UI  Component *_Component );
-	virtual void setTopOf( __UI Component *_Component );
-	virtual void setAllignedOf( __UI Component *_Component );
-	virtual void setParent( __UI Component *_Parent );
-	virtual void setAllignment( const __UI Allignment &_Allignment );
-	virtual void setLayout( const __UI Layout &_Layout );
-	virtual void setState( const int &_State );
-	virtual void setHovered( const bool &_Hovered );
-	virtual void setFocused( const bool &_Focused );
-	virtual void setClicked( const bool &_Clicked );
-	virtual void setEnabled( const bool &_Enabled );
-	virtual void setVisible( const bool &_Visible );
-	virtual void setUserdata( void *_Data );
-	virtual void setFont( __GRAPHICS Font *_Font );
-	virtual void setUIID( const int &_GUID );
-	virtual void setText( const __LIB String &_Text );
+	virtual void setLocalRegion( const __MATH Region &region );
+	virtual void setLocalPosition( const __MATH Vector2 &position );
+	virtual void setGlobalRegion( const __MATH Region &region );
+	virtual void setGlobalPosition( const __MATH Vector2 &position );
+	virtual void setSize( const __MATH Vector2 &size );
+	virtual void setStyle( const  StyleManager &style );
+	virtual void setLeftOf(  Component *component );
+	virtual void setRightOf(  Component *component );
+	virtual void setBottomOf(   Component *component );
+	virtual void setTopOf(  Component *component );
+	virtual void setAllignedOf(  Component *component );
+	virtual void setParent(  Component *parent );
+	virtual void setAllignment( const  Allignment &allignment );
+	virtual void setLayout( const  Layout &layout );
+	virtual void setState( const int &state );
+	virtual void setHovered( const bool &hovered );
+	virtual void setFocused( const bool &focused );
+	virtual void setClicked( const bool &clicked );
+	virtual void setEnabled( const bool &enabled );
+	virtual void setVisible( const bool &visible );
+	virtual void setUserdata( void *data );
+	virtual void setFont( std::shared_ptr<Font> font );
+	virtual void setUIID( const int &id );
+	virtual void setText( const  String &text );
 	virtual void flipLayout( );
 
 public: // Virtuals/Logic
-	virtual void Paint( __GRAPHICS Window *_Sender, __GRAPHICS BasePainter *_Painter ) = 0;
-	virtual void KeyDown( __GRAPHICS Window *_Sender, __GRAPHICS KeyDownArgs &_Args );
-	virtual void KeyUp( __GRAPHICS Window *_Sender, __GRAPHICS KeyUpArgs &_Args );
-	virtual void KeyDownChar( __GRAPHICS Window *_Sender, __GRAPHICS KeyDownCharArgs &_Args );
-	virtual void MouseMoved( __GRAPHICS Window *_Sender, __GRAPHICS MouseMovedArgs &_Args );
-	virtual void MouseClicked( __GRAPHICS Window *_Sender, __GRAPHICS MouseClickedArgs &_Args );
-	virtual void MouseReleased( __GRAPHICS Window *_Sender, __GRAPHICS MouseReleasedArgs &_Args );
-	virtual void MouseScrolled( __GRAPHICS Window *_Sender, __GRAPHICS ScrollArgs &_Args );
-	virtual void MouseDoubleClicked( __GRAPHICS Window *_Sender, __GRAPHICS MouseClickedArgs &_Args );
-	virtual void Release( const bool &_ReleaseChildren = true );
-	virtual bool Collides( const __MATH Vector2 &_With );
-	virtual bool Collides( const __UI Component *_With );
+	virtual void Paint( Window* sender, BasePainter *painter ) = 0;
+	virtual void KeyDown( Window* sender, KeyDownArgs &args );
+	virtual void KeyUp( Window* sender, KeyUpArgs &args );
+	virtual void KeyDownChar( Window* sender, KeyDownCharArgs &args );
+	virtual void MouseMoved( Window* sender, MouseMovedArgs &args );
+	virtual void MouseClicked( Window* sender, MouseClickedArgs &args );
+	virtual void MouseReleased( Window* sender, MouseReleasedArgs &args );
+	virtual void MouseScrolled( Window* sender, ScrollArgs &args );
+	virtual void MouseDoubleClicked( Window* sender, MouseClickedArgs &args );
+	virtual void Release( const bool &release_children = true );
+	virtual bool Collides( const __MATH Vector2 &with );
+	virtual bool Collides( const Component *with );
 
 public:
 	///<summary>
 	///	Raised when anything of this component was modified.
 	///</summary>
-	__LIB Event<void(Component*)>& OnModified( );
+	Event<void(Component*)>& OnModified( );
 
 	///<summary>
 	///	Raised when the mouse enters this Components defined region.
 	///</summary>
-	__LIB Event<void(Component*)>& OnMouseEnter( );
+	Event<void(Component*)>& OnMouseEnter( );
 
 	///<summary>
 	/// Raied when the mouse leaves this Components defined region.
 	///</summary>
-	__LIB Event<void(Component*)>& OnMouseLeave( );
+	Event<void(Component*)>& OnMouseLeave( );
 
 	///<summary>
 	///	Raised when the the mouse is pressed whilst it is inside this Components defined region.
 	///</summary>
-	__LIB Event<void(Component*)>& OnMousePressed( );
+	Event<void(Component*)>& OnMousePressed( );
 
 	///<summary>
 	///	Raised when the the mouse is released whilst it is inside this Components defined region.
 	///</summary>
-	__LIB Event<void(Component*)>& OnMouseReleased( );
+	Event<void(Component*)>& OnMouseReleased( );
 
 	///<summary>
 	///	Raised before the component starts painting.
 	///</summary>
-	__LIB Event<void(Component*, __GRAPHICS BasePainter*)>& OnPrePaint( );
+	Event<void(Component*,  BasePainter*)>& OnPrePaint( );
 
 	///<summary>
 	///	Raised when the component has finished painting.
 	///</summary>
-	__LIB Event<void(Component*, __GRAPHICS BasePainter*)>& OnPostPaint( );
+	Event<void(Component*,  BasePainter*)>& OnPostPaint( );
 
 	///<summary>
 	///	Raised when the components 'Release' method is called.
 	///</summary>
-	__LIB Event<void(Component*)>& OnRelease( );
+	Event<void(Component*)>& OnRelease( );
 
 protected:
-	__LIB String _text;
-	__GRAPHICS Font* _font;
-	__MATH Region _local, _global, _determined;
-	__UI StyleManager _style;
-	__UI Component *_leftOf, *_rightOf, *_bottomOf, *_topOf, *_allignedOf;
-	__UI Component* _parent;
-	std::vector<__UI Component*> _children;
-	__UI Allignment _allignment;
-	__UI Layout _layout;
-	int _state, _guid;
-	bool _hovering, _focusing, _clicking, _enabled, _visible, _region_changed;
-	void *_userdata;
+	 String text_;
+	std::shared_ptr<Font> font_;
+	__MATH Region local_, global_, determined_;
+	 StyleManager style_;
+	 Component *leftOf_, *rightOf_, *bottomOf_, *topOf_, *allignedOf_;
+	 Component* parent_;
+	std::vector< Component*> children_;
+	 Allignment allignment_;
+	 Layout layout_;
+	int state_, uiid_;
+	bool hovering_, focusing_, clicking_, enabled_, visible_, region_changed_;
+	void *userdata_;
 
 private: // Events
-	__LIB Event<void(Component*)> _OnModified, _OnMouseEnter, _OnMouseLeave, _OnMousePressed, _OnMouseReleased, _OnRelease;
-	__LIB Event<void(Component*, __GRAPHICS BasePainter*)> _OnPrePaint, _OnPostPaint;
+	 Event<void(Component*)> _OnModified, _OnMouseEnter, _OnMouseLeave, _OnMousePressed, _OnMouseReleased, _OnRelease;
+	 Event<void(Component*,  BasePainter*)> _OnPrePaint, _OnPostPaint;
 };
 
 end_UI

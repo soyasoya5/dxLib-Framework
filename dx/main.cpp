@@ -3,8 +3,6 @@
 #include <iomanip>
 #include <array>
 
-
-
 #pragma warning( disable : 4996 )
 int main( )
 {
@@ -16,13 +14,11 @@ int main( )
 	appl->setTickRate( 1 );
 
 	// Create window & painter
-
-	//  width: 768     height: 362
 	auto window = dx::Window::Create( "ClassName", "UI Test", { { 300, 300 }, { 930, 362 } } );
 	auto painter = dx::Painter::Create( window );
 	
 	// Only paint on Event
-	window->SpecializePaint( dx::Window::OnTick_t );
+	window->SpecializePaint( dx::Window::OnEvent_t );
 
 	// Show
 	window->Show( );
@@ -32,6 +28,7 @@ int main( )
 
 	window->LoadIcon( "res/icons/Icon.ico" );
 	window->LoadIconSm( "res/icons/Icon.ico" );
+
 
 	// Handle the closing of our window
 	window->OnWindowClosed( ) += []( dx::Window *sender )

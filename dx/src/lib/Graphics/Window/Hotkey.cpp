@@ -4,62 +4,54 @@
 begin_GRAPHICS
 
 Hotkey::Hotkey()
-	: _name( "unamed_hotkey" ), _subkeys( )
+	: name_( "unamed_hotkey" ), subkeys_( )
 {
 }
 
-Hotkey::Hotkey(const __DX uint & _Key, const __LIB String & _Name)
-	: _subkeys( { _Key } ), _name( _Name )
+Hotkey::Hotkey(uint key, String name)
+	: subkeys_( { std::move( key ) } ), name_( std::move( name ) )
 {
 }
 
-Hotkey::Hotkey(const std::vector<__DX uint>& _Keys, const __LIB String & _Name)
-	: _name( _Name ), _subkeys( )
+Hotkey::Hotkey(std::vector<uint> keys, String name)
+	: name_( name ), subkeys_( std::move( keys ) )
 {
-	for ( auto &x : _Keys )
-		addSubkey( x );
 }
 
 Hotkey::~Hotkey()
 {
 }
 
-void Hotkey::OnKeyDown(Window * Sender, KeyDownArgs & _Args)
+void Hotkey::OnKeyDown(Window* sender, KeyDownArgs & args)
 {
-	for ( auto &key : _subkeys )
-		if ( _Args.key_code == key.first )
-			key.second = true;
-	
-	bool c = true;
-	for ( auto &key : _subkeys )
-		if ( !key.second )
-			c = false;
-	if ( c )
-		OnHotkey( ).Invoke( this, EventArgs( ) );
+	auto i = 0u;
+	for ( auto &key : subkeys_ )
+		if ( sender->isKeyDown( key ) )
+			++i;
+
+	// Raise event
+	if ( i != 0 && i == subkeys_.size( ) )
+		_OnHotkey.Invoke( this, EventArgs( ) );
 }
 
-void Hotkey::OnKeyUp(Window * Sender, KeyUpArgs & _Args)
-{
-	for ( auto &key : _subkeys )
-		if ( _Args.key_code == key.first )
-			key.second = false;
-}
 
-void Hotkey::addSubkey(const __DX uint & _Key)
+void Hotkey::addSubkey(uint key)
 {
-	_subkeys.push_back( { _Key, false } );
+	subkeys_.push_back( key );
 }
 
 __LIB String Hotkey::getName()
 {
-	return _name;
+	return name_;
 }
 
 __LIB String Hotkey::sequence_as_string()
 {
 	String res;
-	for ( auto& key : _subkeys )
-		res += __LIB to_string( key.first ) + ", ";
+	for ( auto& key : subkeys_ )
+		res += __LIB to_string( key ) + ", ";
+	if ( !res.empty( ) )
+		res.pop_back( ), res.pop_back( );
 	return res;
 }
 

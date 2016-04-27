@@ -30,33 +30,33 @@ public:
 	///<summary>
 	///	Paint text onto the target buffer.
 	///</summary>
-	virtual void Paint( const __GRAPHICS Text &_Text, const __GRAPHICS Pen &_Pen ) = 0;
+	virtual void Paint( const __GRAPHICS Text &text, const __GRAPHICS Pen &pen ) = 0;
 
 	///<summary>
 	///	Paint a shape onto the target buffer.
 	///</summary>
-	virtual void Paint( const __GRAPHICS Shape &_Shape ) = 0;
+	virtual void Paint( const __GRAPHICS Shape &shape ) = 0;
 
 	///<summary>
 	/// Paint a circle onto the target buffer.
 	///</summary>
-	virtual void Paint( const __GRAPHICS Circle &_Circle ) = 0;
+	virtual void Paint( const __GRAPHICS Circle &circle ) = 0;
 
 	///<summary>
 	///	Paint a rect onto the target buffer.
 	///</sumamry>
-	virtual void PaintRect( const __MATH Region &_Region, const __GRAPHICS Pen &_Pen ) = 0;
+	virtual void PaintRect( const __MATH Region &region, const __GRAPHICS Pen &pen ) = 0;
 
 	///<summary>
 	///	Paint a outlined rect onto the target buffer.
 	/// The outlines thickness is taken from the outer pen. (_PenOuter)
 	///</sumamry>
-	virtual void PaintRectOutlined( const __MATH Region &_Region, const __GRAPHICS Pen &_PenInner, const __GRAPHICS Pen &_PenOuter ) = 0;
+	virtual void PaintRectOutlined( const __MATH Region &region, const __GRAPHICS Pen &inner, const __GRAPHICS Pen &outer ) = 0;
 
 	///<summary>
 	///	Paints a line onto the target buffer.
 	///</summary>
-	virtual void PaintLine( const __GRAPHICS Line &_Line ) = 0;
+	virtual void PaintLine( const __GRAPHICS Line &line ) = 0;
 
 	///<summary>
 	/// 'Paint' the target buffer onto target screen.
@@ -66,12 +66,12 @@ public:
 	///<summary>
 	/// get the default font
 	///</summary>
-	virtual __GRAPHICS Font* defaultFont( ) const = 0;
+	virtual std::shared_ptr<Font> defaultFont( ) const = 0;
 
 	///<summary>
 	/// set the default font.
 	///</summary>
-	virtual void setDefaultFont( __GRAPHICS Font* _Font ) = 0;
+	virtual void setDefaultFont( std::shared_ptr<Font> font ) = 0;
 
 	///<summary>
 	///	A native-ish device, e.g a directx device.
@@ -86,7 +86,7 @@ public:
 	///<summary>
 	///	Set the BasePainter Singleton pointer.
 	///</summary>
-	static void setSingleton( BasePainter *_Putr );
+	static void setSingleton( BasePainter *ptr );
 
 private:
 	static BasePainter* _Singleton;

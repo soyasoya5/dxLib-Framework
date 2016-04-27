@@ -5,43 +5,43 @@
 begin_GRAPHICS
 
 Line::Line()
-	: _pen( ), _pos( ), _target( )
+	: pen_( ), pos_( ), target_( )
 {
 }
 
-Line::Line(const __MATH Vector2 & _Position, const __MATH Vector2 & _Target, const __GRAPHICS Pen & _Pen)
-	: _pos( _Position ), _target( _Target ), _pen( _Pen )
+Line::Line(const __MATH Vector2 & position, const __MATH Vector2 & target, const __GRAPHICS Pen & pen)
+	: pos_( position ), target_( target ), pen_( pen )
 {
 }
 
 __GRAPHICS Pen Line::Pen() const
 {
-	return _pen;
+	return pen_;
 }
 
 __MATH Vector2 Line::Position() const
 {
-	return _pos;
+	return pos_;
 }
 
 __MATH Vector2 Line::Target() const
 {
-	return _target;
+	return target_;
 }
 
-void Line::Pen(const __GRAPHICS Pen & _Pen)
+void Line::Pen(const __GRAPHICS Pen & pen)
 {
-	_pen = _Pen;
+	pen_ = pen;
 }
 
-void Line::Position(const __MATH Vector2 & _Position)
+void Line::Position(const __MATH Vector2 & position)
 {
-	_pos = _Position;
+	pos_ = position;
 }
 
-void Line::Target(const __MATH Vector2 & _Target)
+void Line::Target(const __MATH Vector2 & target)
 {
-	_target = _Target;
+	target_ = target;
 }
 
 end_GRAPHICS
