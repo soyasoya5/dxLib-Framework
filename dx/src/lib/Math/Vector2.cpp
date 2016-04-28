@@ -11,7 +11,7 @@ float Vector2::Dot( const Vector2 &_Other ) const
 	return (x * _Other.x) + (y * _Other.y);
 }
 
-bool Vector2::Intersects(const __MATH Region & _Area) const
+bool Vector2::Intersects(const ::dx::lib::Math::Region & _Area) const
 {
 	return (this->x >= _Area.position.x) && (this->y >= _Area.position.y) &&
 		   (this->x <= _Area.position.x + _Area.size.x) && (this->y <= _Area.position.y + _Area.size.y);

@@ -23,21 +23,21 @@ public:
 	///<summary>
 	///	Clears the target and Begins the scene.
 	///</summary>
-	bool ResetPainter( const __MATH Vector2 &size, __GRAPHICS Window *target );
+	bool ResetPainter( const ::dx::lib::Math::Vector2 &size, ::dx::lib::Graphics::Window *target );
 
 	void BeginPaint( ) override;
 
-	virtual void Paint( const __GRAPHICS Text &text, const __GRAPHICS Pen &pen ) override;
+	virtual void Paint( const ::dx::lib::Graphics::Text &text, const ::dx::lib::Graphics::Pen &pen ) override;
 
-	virtual void Paint( const __GRAPHICS Shape &shape ) override;
+	virtual void Paint( const ::dx::lib::Graphics::Shape &shape ) override;
 
-	virtual void Paint( const __GRAPHICS Circle &circle ) override;
+	virtual void Paint( const ::dx::lib::Graphics::Circle &circle ) override;
 
-	virtual void PaintRect( const __MATH Region &region, const __GRAPHICS Pen &pen ) override;
+	virtual void PaintRect( const ::dx::lib::Math::Region &region, const ::dx::lib::Graphics::Pen &pen ) override;
 
-	virtual void PaintRectOutlined( const __MATH Region &region, const __GRAPHICS Pen &inner, const __GRAPHICS Pen &outer ) override;
+	virtual void PaintRectOutlined( const ::dx::lib::Math::Region &region, const ::dx::lib::Graphics::Pen &inner, const ::dx::lib::Graphics::Pen &outer ) override;
 
-	virtual void PaintLine( const __GRAPHICS Line &line ) override;
+	virtual void PaintLine( const ::dx::lib::Graphics::Line &line ) override;
 
 	virtual void PresentPaint( ) override;
 

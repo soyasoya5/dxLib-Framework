@@ -19,7 +19,7 @@ begin_GRAPHICS
 class WindowMovedArgs : public EventArgs
 {
 public:
-	__MATH Region region;
+	::dx::lib::Math::Region region;
 };
 using WindowResizeArgs = WindowMovedArgs;
 
@@ -32,14 +32,14 @@ public:
 class KeyDownArgs : public EventArgs
 {
 public:
-	__DX uint key_code;
+	::dx::uint key_code;
 	bool shift, ctrl;
 };
 
 class KeyUpArgs : public EventArgs
 {
 public:
-	__DX uint key_code;
+	::dx::uint key_code;
 	bool shift, ctrl;
 };
 
@@ -52,23 +52,23 @@ public:
 class MouseMovedArgs : public EventArgs
 {
 public:
-	__MATH Vector2 position;
+	::dx::lib::Math::Vector2 position;
 	bool shift, ctrl;
 };
 
 class MouseClickedArgs : public EventArgs
 {
 public:
-	__DX uint key;
-	__MATH Vector2 position;
+	::dx::uint key;
+	::dx::lib::Math::Vector2 position;
 	bool shift, ctrl;
 };
 
 class MouseReleasedArgs : public EventArgs
 {
 public:
-	__DX uint key;
-	__MATH Vector2 position;
+	::dx::uint key;
+	::dx::lib::Math::Vector2 position;
 	bool shift, ctrl;
 };
 
@@ -86,7 +86,7 @@ public:
 class MessageDataArgs : public EventArgs
 {
 public:
-	__DX uint Msg;
+	::dx::uint Msg;
 	WPARAM wParam;
 	LPARAM lParam;
 };
@@ -118,9 +118,9 @@ public:
 	///<summary>
 	///	Creates a window.
 	///</summary>
-	static std::shared_ptr<Window> Create( const __LIB String &Class, 
-										   const __LIB String &Title,
-										   const __MATH Region &Region,
+	static std::shared_ptr<Window> Create( const ::dx::lib::String &Class, 
+										   const ::dx::lib::String &Title,
+										   const ::dx::lib::Math::Region &Region,
 										   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
 										   DWORD dwExStyle = 0L );
 
@@ -130,7 +130,7 @@ public:
 	static std::shared_ptr<Window> Create( Window *_Parent,
 										   const String &Class, 
 										   const String &Title,
-										   const __MATH Region &Region,
+										   const ::dx::lib::Math::Region &Region,
 										   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
 										   DWORD dwExStyle = 0L );
 
@@ -144,7 +144,7 @@ public:
 	///<summary>
 	///	Retrieves the tile of this window.
 	///</summary>
-	__LIB String getTitle( );
+	::dx::lib::String getTitle( );
 
 	///<summary>
 	///	Sets the title of this window.
@@ -159,12 +159,12 @@ public:
 	///<summary>
 	///	Converts the client-area coordinates of a specified point to screen coordinates
 	///</summary>
-	bool ClientToScreen( __MATH Vector2 &pointOut );
+	bool ClientToScreen( ::dx::lib::Math::Vector2 &pointOut );
 	
 	///<summary>
 	/// Converts the screen coordinates of a specified point on the screen to client-area coordinates
 	///</summary>
-	bool ScreenToClient( __MATH Vector2 &pointOut );
+	bool ScreenToClient( ::dx::lib::Math::Vector2 &pointOut );
 
 	///<summary>
 	///	Hides the widnow.
@@ -216,13 +216,13 @@ public:
 	/// Load the icon showed in taskbar (32x32). 
 	/// Supports bitmaps and ico's.
 	///</summary>
-	bool LoadIcon( const __FILEIO Path &path );
+	bool LoadIcon( const ::dx::lib::FileIO::Path &path );
 
 	///<summary>
 	/// Load the icon showed in the top left corner of the window.
 	/// Supports bitmaps and ico's.
 	///</summary>
-	bool LoadIconSm( const __FILEIO Path &path );
+	bool LoadIconSm( const ::dx::lib::FileIO::Path &path );
 
 
 	///<summary>
@@ -303,7 +303,7 @@ public: // Others
 	///	This windows internal event loop, called from the respective WindowProc
 	/// you can call this function yourself to inject messages into the loop
 	///</summary>
-	LRESULT HandleInput( HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam );
+	LRESULT HandleInput( HWND hWnd, ::dx::uint Msg, WPARAM wParam, LPARAM lParam );
 
 	///<summary>
 	///	Handle all tasks that has been put on the window.
@@ -331,93 +331,93 @@ public:
 	///</summary>
 	///	Called when the window is moved.
 	///<summary>
-	__LIB Event<void(Window*, WindowMovedArgs&)>& OnWindowMoved( );
+	::dx::lib::Event<void(Window*, WindowMovedArgs&)>& OnWindowMoved( );
 
 	///<summary>
 	///	Called when the window is resized
 	///</summary>
-	__LIB Event<void(Window*, WindowResizeArgs&)>& OnWindowResize( );
+	::dx::lib::Event<void(Window*, WindowResizeArgs&)>& OnWindowResize( );
 	
 	///<summary>
 	///	Called when the window is maximized
 	///</summary>
-	__LIB Event<void(Window*)>& OnWindowMaximize( );
+	::dx::lib::Event<void(Window*)>& OnWindowMaximize( );
 
 	///<sumamry>
 	/// Called when the window is restored from its minimized or maximized state.
 	///</summary>
-	__LIB Event<void(Window*)>& OnWindowRestored( );
+	::dx::lib::Event<void(Window*)>& OnWindowRestored( );
 
 	///<summary>
 	///	Called when the window is minimized to the taskbar
 	///</summary>
-	__LIB Event<void(Window*)>& OnWindowMinimize( );
+	::dx::lib::Event<void(Window*)>& OnWindowMinimize( );
 
 	///<summary>
 	/// Called when the window is about to close, you can cancel
 	/// the closing by setting WindowCloseArgs::ShouldClose to false.
 	///</summary>
-	__LIB Event<void(Window*, WindowClosingArgs&)>& OnWindowClosing( );
+	::dx::lib::Event<void(Window*, WindowClosingArgs&)>& OnWindowClosing( );
 
 	///</summary>
 	/// Called when the window is closed.
 	///<summary>
-	__LIB Event<void(Window*)>& OnWindowClosed( );
+	::dx::lib::Event<void(Window*)>& OnWindowClosed( );
 
 	///<summary>
 	/// Called when the cursor moves
 	///</summary>
-	__LIB Event<void(Window*, MouseMovedArgs&)>& OnMouseMoved( );
+	::dx::lib::Event<void(Window*, MouseMovedArgs&)>& OnMouseMoved( );
 
 	///<summary>
 	///	Called when a mouse button is clicked once.
 	///</summary>
-	__LIB Event<void(Window*, MouseClickedArgs&)>& OnMouseClicked( );
+	::dx::lib::Event<void(Window*, MouseClickedArgs&)>& OnMouseClicked( );
 
 	///<summary>
 	///	Called when a mouse button is released from its previously clicked state.
 	///</summary>
-	__LIB Event<void(Window*, MouseReleasedArgs&)>& OnMouseReleased( );
+	::dx::lib::Event<void(Window*, MouseReleasedArgs&)>& OnMouseReleased( );
 
 	///<summary>
 	///	Called when a mouse button is double clicked
 	///</summary>
-	__LIB Event<void(Window*, MouseClickedArgs&)>& OnMouseDoubleClicked( );
+	::dx::lib::Event<void(Window*, MouseClickedArgs&)>& OnMouseDoubleClicked( );
 
 	///<summary>
 	/// Called when the mouse wheel is scrolled.
 	///</summary>
-	__LIB Event<void(Window*, ScrollArgs&)>& OnScroll( );
+	::dx::lib::Event<void(Window*, ScrollArgs&)>& OnScroll( );
 
 	///<summary>
 	///	Called once for the first key stroke, then continuously called with a delay whilst held.
 	///</summary>
-	__LIB Event<void(Window*, KeyDownArgs&)>& OnKeyDown( );
+	::dx::lib::Event<void(Window*, KeyDownArgs&)>& OnKeyDown( );
 
 	///<summary>
 	///	Called when a key is released from its previously clicked state.
 	///</summary>
-	__LIB Event<void(Window*, KeyUpArgs&)>& OnKeyUp( );
+	::dx::lib::Event<void(Window*, KeyUpArgs&)>& OnKeyUp( );
 
 	///<summary>
 	/// Called after KeyDown has been called with the respective character represenation of the key pressed.
 	///</summary>
-	__LIB Event<void(Window*, KeyDownCharArgs&)>& OnKeyDownChar( );
+	::dx::lib::Event<void(Window*, KeyDownCharArgs&)>& OnKeyDownChar( );
 
 	///<summary>
 	/// Called when the window should paint.
 	///</summary>
-	__LIB Event<void(Window*, BasePainter*)>& OnPaint( );
+	::dx::lib::Event<void(Window*, BasePainter*)>& OnPaint( );
 
 	///<summary>
 	/// You can use this handle custom messages.
 	///</summary>
-	__LIB Event<void(Window*, MessageDataArgs&)>& OnHandleMessage( );
+	::dx::lib::Event<void(Window*, MessageDataArgs&)>& OnHandleMessage( );
 
 	///<summary>
 	/// Called every tick.
 	///</summary>
-	__LIB Event<void(Window*)>& OnTick( );
+	::dx::lib::Event<void(Window*)>& OnTick( );
 
 
 private:
@@ -428,7 +428,7 @@ private:
 	PaintStyle_t style_;
 	std::vector<Task> tasks_;
 	HWND hwnd_;
-	__MATH Region region_;
+	::dx::lib::Math::Region region_;
 	bool keys_[255];
 
 private:

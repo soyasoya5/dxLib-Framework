@@ -90,7 +90,7 @@ public:
 	///<summary>
 	/// Connect the socket to an ip with port.
 	///</summary>
-	TCPResult connect( const __LIB String &_Ip, const __DX uint &_Port );
+	TCPResult connect( const ::dx::lib::String &_Ip, const ::dx::uint &_Port );
 
 	///<summary>
 	/// Shutdown the connection.
@@ -115,7 +115,7 @@ public:
 	///<summary>
 	/// Send a message.
 	///</summary>
-	void send( const __LIB String &_Message );
+	void send( const ::dx::lib::String &_Message );
 
 	///<summary>
 	/// Send a message.

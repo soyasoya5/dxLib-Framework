@@ -48,7 +48,7 @@ TCPSocket::~TCPSocket()
 	delete _impl;
 }
 
-TCPResult TCPSocket::connect(const __LIB String & _Ip, const __DX uint & _Port)
+TCPResult TCPSocket::connect(const ::dx::lib::String & _Ip, const ::dx::uint & _Port)
 {
 	return _impl->create( _Ip, _Port );
 }
@@ -73,7 +73,7 @@ TCPMessage TCPSocket::recv()
 	return _impl->front( );
 }
 
-void TCPSocket::send(const __LIB String & _Message)
+void TCPSocket::send(const ::dx::lib::String & _Message)
 {
 	_impl->send( (char*)_Message.c_str( ), _Message.length( ) );
 }
@@ -151,7 +151,7 @@ TCPResult TCPSocketImpl::socket(const ::dx::String &_Ip, const ::dx::uint &_Port
 	_hints.ai_socktype = SOCK_STREAM;
 	_hints.ai_protocol = IPPROTO_TCP;
 
-	auto res = ::getaddrinfo( _Ip.c_str( ), __LIB to_string( _Port ).c_str( ), &_hints, &_result );
+	auto res = ::getaddrinfo( _Ip.c_str( ), ::dx::lib::to_string( _Port ).c_str( ), &_hints, &_result );
 	if ( res != 0 ) // Failed
 		return TCPResult( res );
 

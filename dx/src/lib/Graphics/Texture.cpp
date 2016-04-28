@@ -5,7 +5,7 @@
 
 begin_GRAPHICS
 
-std::shared_ptr<Texture> Texture::Create(const __FILEIO Path & path, const __GRAPHICS BasePainter *painter )
+std::shared_ptr<Texture> Texture::Create(const ::dx::lib::FileIO::Path & path, const ::dx::lib::Graphics::BasePainter *painter )
 {
 	std::ifstream stream( path.operator const char *( ), std::ios_base::binary );
 	if ( !stream.is_open( ) )
@@ -13,7 +13,7 @@ std::shared_ptr<Texture> Texture::Create(const __FILEIO Path & path, const __GRA
 	return Create( stream, painter );
 }
 
-std::shared_ptr<Texture> Texture::Create(std::istream & stream, const __GRAPHICS BasePainter *painter)
+std::shared_ptr<Texture> Texture::Create(std::istream & stream, const ::dx::lib::Graphics::BasePainter *painter)
 {
 	auto state = stream.rdstate( );
 	auto pos = stream.tellg( );
@@ -34,7 +34,7 @@ std::shared_ptr<Texture> Texture::Create(std::istream & stream, const __GRAPHICS
 	return nullptr;
 }
 
-std::shared_ptr<Texture> Texture::Create( char* _Buffer, const __DX uint &_Length, const __GRAPHICS BasePainter *_Painter)
+std::shared_ptr<Texture> Texture::Create( char* _Buffer, const ::dx::uint &_Length, const ::dx::lib::Graphics::BasePainter *_Painter)
 {
 	auto ptr = std::shared_ptr<Texture>( new Texture( ) );
 	auto device = (IDirect3DDevice9*)_Painter->native( );
@@ -66,9 +66,9 @@ Texture::~Texture()
 }
 
 
-__MATH Vector2 Texture::getSize() const
+::dx::lib::Math::Vector2 Texture::getSize() const
 {
-	return __MATH Vector2{ static_cast<float>( ((D3DSURFACE_DESC*)desc_)->Width ), static_cast<float>( ((D3DSURFACE_DESC*)desc_)->Height ) };
+	return ::dx::lib::Math::Vector2{ static_cast<float>( ((D3DSURFACE_DESC*)desc_)->Width ), static_cast<float>( ((D3DSURFACE_DESC*)desc_)->Height ) };
 }
 
 void * Texture::native_sprite()
@@ -81,7 +81,7 @@ void *Texture::native_texture()
 	return texture_;
 }
 
-void Texture::Paint( const __MATH Vector2 & position, const __MATH Vector2 & scaling)
+void Texture::Paint( const ::dx::lib::Math::Vector2 & position, const ::dx::lib::Math::Vector2 & scaling)
 {
 	auto sprite = (LPD3DXSPRITE)sprite_;
 	auto texture = (LPDIRECT3DTEXTURE9)texture_;
@@ -113,7 +113,7 @@ void Texture::Paint( const __MATH Vector2 & position, const __MATH Vector2 & sca
 	sprite->End( );
 }
 
-void Texture::Paint(const __MATH Region & region)
+void Texture::Paint(const ::dx::lib::Math::Region & region)
 {
 	Paint( region.position, region.size );
 }

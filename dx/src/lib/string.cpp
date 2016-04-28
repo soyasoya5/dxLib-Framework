@@ -431,7 +431,7 @@ void String::erase(const std::pair<uint, uint>& pos)
 	__copy_ct( str._buffer, str.length( ) + 1 );
 }
 
-void String::reserve(const __DX uint & _Size)
+void String::reserve(const ::dx::uint & _Size)
 {
 	__clean( );
 	this->_buffer = new char[_Size];

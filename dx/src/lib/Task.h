@@ -39,7 +39,7 @@ public:
 	///<summary>
 	///	Raised when the task is completed.
 	///</summary>
-	__LIB Event<void(TimedTask*)>& Completed( )
+	::dx::lib::Event<void(TimedTask*)>& Completed( )
 	{
 		return _Completed;
 	}
@@ -47,7 +47,7 @@ public:
 private:
 	function function_;
 	time_point when_;
-	__LIB Event<void(TimedTask*)> _Completed;
+	::dx::lib::Event<void(TimedTask*)> _Completed;
 };
 
 

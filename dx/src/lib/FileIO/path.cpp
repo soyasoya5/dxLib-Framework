@@ -23,7 +23,7 @@ FileIO::Path::operator const char*() const
 	return _path.c_str( );
 }
 
-const __LIB String & Path::string()
+const ::dx::lib::String & Path::string()
 {
 	return _path;
 }
@@ -104,7 +104,7 @@ Path & FileIO::Path::remove_directories()
 	return *this;
 }
 
-bool Path::extension_is(const __LIB String & _Extension) const
+bool Path::extension_is(const ::dx::lib::String & _Extension) const
 {
 	auto ext = Extension( );
 	return ext.string( ).contains( _Extension );

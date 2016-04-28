@@ -30,33 +30,33 @@ public:
 	///<summary>
 	///	Paint text onto the target buffer.
 	///</summary>
-	virtual void Paint( const __GRAPHICS Text &text, const __GRAPHICS Pen &pen ) = 0;
+	virtual void Paint( const ::dx::lib::Graphics::Text &text, const ::dx::lib::Graphics::Pen &pen ) = 0;
 
 	///<summary>
 	///	Paint a shape onto the target buffer.
 	///</summary>
-	virtual void Paint( const __GRAPHICS Shape &shape ) = 0;
+	virtual void Paint( const ::dx::lib::Graphics::Shape &shape ) = 0;
 
 	///<summary>
 	/// Paint a circle onto the target buffer.
 	///</summary>
-	virtual void Paint( const __GRAPHICS Circle &circle ) = 0;
+	virtual void Paint( const ::dx::lib::Graphics::Circle &circle ) = 0;
 
 	///<summary>
 	///	Paint a rect onto the target buffer.
 	///</sumamry>
-	virtual void PaintRect( const __MATH Region &region, const __GRAPHICS Pen &pen ) = 0;
+	virtual void PaintRect( const ::dx::lib::Math::Region &region, const ::dx::lib::Graphics::Pen &pen ) = 0;
 
 	///<summary>
 	///	Paint a outlined rect onto the target buffer.
 	/// The outlines thickness is taken from the outer pen. (_PenOuter)
 	///</sumamry>
-	virtual void PaintRectOutlined( const __MATH Region &region, const __GRAPHICS Pen &inner, const __GRAPHICS Pen &outer ) = 0;
+	virtual void PaintRectOutlined( const ::dx::lib::Math::Region &region, const ::dx::lib::Graphics::Pen &inner, const ::dx::lib::Graphics::Pen &outer ) = 0;
 
 	///<summary>
 	///	Paints a line onto the target buffer.
 	///</summary>
-	virtual void PaintLine( const __GRAPHICS Line &line ) = 0;
+	virtual void PaintLine( const ::dx::lib::Graphics::Line &line ) = 0;
 
 	///<summary>
 	/// 'Paint' the target buffer onto target screen.

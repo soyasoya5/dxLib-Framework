@@ -13,21 +13,21 @@ public:
 	///<summary>
 	/// Create the texture from path.
 	///</summary>
-	static std::shared_ptr<Texture> Create( const __FILEIO Path &path, 
-											const __GRAPHICS BasePainter *painter = __GRAPHICS BasePainter::getSingleton( ) );
+	static std::shared_ptr<Texture> Create( const ::dx::lib::FileIO::Path &path, 
+											const ::dx::lib::Graphics::BasePainter *painter = ::dx::lib::Graphics::BasePainter::getSingleton( ) );
 
 	///<summary>
 	/// Create the texture from stream.
 	///</summary>
 	static std::shared_ptr<Texture> Create( std::istream &stream, 
-											const __GRAPHICS BasePainter *painter = __GRAPHICS BasePainter::getSingleton( ) );
+											const ::dx::lib::Graphics::BasePainter *painter = ::dx::lib::Graphics::BasePainter::getSingleton( ) );
 
 	///<summary>
 	/// Create the texture from buffer in memory.
 	///</summary>
 	static std::shared_ptr<Texture> Create( char* buffer, 
-											const __DX uint &length, 
-											const __GRAPHICS BasePainter *painter = __GRAPHICS BasePainter::getSingleton( ) );
+											const ::dx::uint &length, 
+											const ::dx::lib::Graphics::BasePainter *painter = ::dx::lib::Graphics::BasePainter::getSingleton( ) );
 
 
 public:
@@ -36,7 +36,7 @@ public:
 	///<summary>
 	/// Get the size of this texture (NON SCALED)
 	///</summary>
-	__MATH Vector2 getSize( ) const;
+	::dx::lib::Math::Vector2 getSize( ) const;
 
 	///<summary>
 	///	Get the native sprite of this texture.
@@ -51,12 +51,12 @@ public:
 	///<summary>
 	/// Paint this texture to position with scaling. (1, 1) is no scaling.
 	///</summary>
-	void Paint( const __MATH Vector2 &position, const __MATH Vector2 &scaling );
+	void Paint( const ::dx::lib::Math::Vector2 &position, const ::dx::lib::Math::Vector2 &scaling );
 
 	///<summary>
 	/// Paint this texture to position with scaling. (1, 1) is no scaling.
 	///</summary>
-	void Paint( const __MATH Region &region );
+	void Paint( const ::dx::lib::Math::Region &region );
 private:
 	Texture( );
 	void *sprite_, *texture_;

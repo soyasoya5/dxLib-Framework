@@ -238,7 +238,7 @@ bool Tokenizer::Tokenize()
 		else if (*it == '"')
 		{
 			// Identifier
-			__LIB String id = "";
+			::dx::lib::String id = "";
 			++it;
 			while (it < _filecontent.end())
 			{
@@ -257,7 +257,7 @@ bool Tokenizer::Tokenize()
 			// Hexadecimal e.g 0xDE4DBEEF
 			if (*it == '0' && *(it + 1) == 'x' || *(it + 1) == 'X')
 			{
-				__LIB String id = "";
+				::dx::lib::String id = "";
 				id.push_back(*(it++)); // 0
 				id.push_back(*(it++)); // x
 				while (it < _filecontent.end())
@@ -273,7 +273,7 @@ bool Tokenizer::Tokenize()
 			// Decimal e.g 1337
 			else
 			{
-				__LIB String id = "";
+				::dx::lib::String id = "";
 				id.push_back(*(it++)); // numerical
 				while (it < _filecontent.end())
 				{
@@ -290,7 +290,7 @@ bool Tokenizer::Tokenize()
 		// Any identifer (e.g a keyword etc etc etc)
 		else if (isalpha((unsigned char)*it) || *it == '_')
 		{
-			__LIB String id = "";
+			::dx::lib::String id = "";
 			id.push_back(*(it++)); // Alphameric
 			while (it < _filecontent.end())
 			{
@@ -326,7 +326,7 @@ bool Tokenizer::SendMessage(const TokenizerMessage &msg)
 	return msg.type != TokenizerMessage::Error;
 }
 
-__LIB String Tokenizer::ContentsFile()
+::dx::lib::String Tokenizer::ContentsFile()
 {
 	return _filecontent;
 }
@@ -344,14 +344,14 @@ Event<void( TokenizerMessage )>& Tokenizer::OnMessage()
 	return _OnMessage;
 }
 
-Tokenizer * Tokenizer::CreateFromHeader(const __LIB String & contents)
+Tokenizer * Tokenizer::CreateFromHeader(const ::dx::lib::String & contents)
 {
 	auto token = new Tokenizer();
 	token->_filecontent = contents;
 	return token;
 }
 
-Tokenizer * Tokenizer::CreateFromFile(const __LIB String & file)
+Tokenizer * Tokenizer::CreateFromFile(const ::dx::lib::String & file)
 {
 	auto token = new Tokenizer();
 	token->_filename = file;
@@ -360,13 +360,13 @@ Tokenizer * Tokenizer::CreateFromFile(const __LIB String & file)
 
 
 
-TokenizerMessage::TokenizerMessage(const Message_t &type, const __LIB String &msg, const uint &line)
+TokenizerMessage::TokenizerMessage(const Message_t &type, const ::dx::lib::String &msg, const uint &line)
 	: type(type), message(msg), line(line)
 {
-	formated_mesasge = TypeToString(type) + " " + msg + ": " + __LIB to_string(line) + "\n";
+	formated_mesasge = TypeToString(type) + " " + msg + ": " + ::dx::lib::to_string(line) + "\n";
 }
 
-__LIB String TokenizerMessage::TypeToString(const Message_t & type)
+::dx::lib::String TokenizerMessage::TypeToString(const Message_t & type)
 {
 	if (type == Error)
 		return "[Error]";

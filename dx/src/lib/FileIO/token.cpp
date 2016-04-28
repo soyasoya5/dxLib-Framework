@@ -4,14 +4,14 @@
 begin_FILEIO
 
 
-Token::Token(const Token_t & tok, const __LIB String & identifier, const uint & line, const uint char_count)
+Token::Token(const Token_t & tok, const ::dx::lib::String & identifier, const uint & line, const uint char_count)
 	: _tok(tok), _identifier(identifier), _line(line), _char_count(char_count)
 {
 	if ( isKeyword( identifier ) )
 		_tok = toKeyword( identifier );
 }
 
-Token::Token(const Token_t & tok, const __LIB String & identifier)
+Token::Token(const Token_t & tok, const ::dx::lib::String & identifier)
 	: _tok(tok), _identifier(identifier), _line(0), _char_count(0)
 {
 }
@@ -31,12 +31,12 @@ void Token::setToken(const Token_t &tok)
 	_tok = tok;
 }
 
-__LIB String Token::getIdentifier() const
+::dx::lib::String Token::getIdentifier() const
 {
 	return _identifier;
 }
 
-void Token::setIdentifier(const __LIB String &identifier)
+void Token::setIdentifier(const ::dx::lib::String &identifier)
 {
 	_identifier = identifier;
 }
@@ -61,12 +61,12 @@ void Token::setCharCount(const uint &count)
 	_char_count = count;
 }
 
-bool isKeyword(const __LIB String &id)
+bool isKeyword(const ::dx::lib::String &id)
 {
 	return toKeyword( id ) != token_identifier;
 }
 
-Token_t toKeyword(const __LIB String &id)
+Token_t toKeyword(const ::dx::lib::String &id)
 {
 	if ( id == "if" )
 		return keyword_if;
@@ -109,7 +109,7 @@ Token_t toKeyword(const __LIB String &id)
 	return token_identifier;
 }
 
-__LIB String TokenToString(const Token_t &tok)
+::dx::lib::String TokenToString(const Token_t &tok)
 {
 #define casify(x) case x: return #x;
 	switch (tok)
@@ -182,7 +182,7 @@ __LIB String TokenToString(const Token_t &tok)
 	return "invalid_token";
 }
 
-bool operator==(const Token & lhs, const __LIB String & rhs)
+bool operator==(const Token & lhs, const ::dx::lib::String & rhs)
 {
 	return lhs.getIdentifier( ) == rhs;
 }
@@ -192,7 +192,7 @@ bool operator==(const Token & lhs, const Token_t & rhs)
 	return lhs.getToken( ) == rhs;
 }
 
-bool operator==(const __LIB String & lhs, const Token & rhs)
+bool operator==(const ::dx::lib::String & lhs, const Token & rhs)
 {
 	return rhs == lhs;
 }
@@ -202,7 +202,7 @@ bool operator==(const Token_t & lhs, const Token & rhs)
 	return rhs == lhs;
 }
 
-bool operator!=(const Token & lhs, const __LIB String & rhs)
+bool operator!=(const Token & lhs, const ::dx::lib::String & rhs)
 {
 	return !(lhs == rhs);
 }
@@ -212,7 +212,7 @@ bool operator!=(const Token & lhs, const Token_t & rhs)
 	return !(lhs == rhs);
 }
 
-bool operator!=(const __LIB String & lhs, const Token & rhs)
+bool operator!=(const ::dx::lib::String & lhs, const Token & rhs)
 {
 	return !(rhs == lhs);
 }

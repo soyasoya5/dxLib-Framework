@@ -16,8 +16,8 @@ struct TokenizerMessage
 		Info,
 	};
 	Message_t type;
-	__LIB String message;
-	__LIB String formated_mesasge; // e.g [Error] Not found: 25 (where syntax: [type] message: line\n)
+	::dx::lib::String message;
+	::dx::lib::String formated_mesasge; // e.g [Error] Not found: 25 (where syntax: [type] message: line\n)
 	uint line;
 
 	TokenizerMessage( ) = default;
@@ -25,26 +25,26 @@ struct TokenizerMessage
 	///<summary>
 	/// Construct this TokenizerMessage
 	///</summary>
-	TokenizerMessage( const Message_t &_Type, const __LIB String &_Msg, const __DX uint &_Line );
+	TokenizerMessage( const Message_t &_Type, const ::dx::lib::String &_Msg, const ::dx::uint &_Line );
 
 	///<summary>
 	/// Convert '_Type' to a String.
 	///</summary>
-	static __LIB String TypeToString( const Message_t &_Type );
+	static ::dx::lib::String TypeToString( const Message_t &_Type );
 };
 
 class Tokenizer
 {
 public:
-	typedef std::vector<__FILEIO Token> vector;
+	typedef std::vector<::dx::lib::FileIO::Token> vector;
 	typedef vector::iterator iterator;
 
 private:
-	std::vector<__FILEIO TokenizerMessage> _msgs;
+	std::vector<::dx::lib::FileIO::TokenizerMessage> _msgs;
 	vector _tokens;
-	__LIB String _filename;
-	__LIB String _filecontent;
-	__LIB Event<void( __FILEIO TokenizerMessage )> _OnMessage;
+	::dx::lib::String _filename;
+	::dx::lib::String _filecontent;
+	::dx::lib::Event<void( ::dx::lib::FileIO::TokenizerMessage )> _OnMessage;
 
 	Tokenizer( );
 public:
@@ -56,22 +56,22 @@ public:
 	///<summary>
 	/// The begin iterator of tokens.
 	///</summary>
-	__FILEIO Tokenizer::iterator begin( );
+	::dx::lib::FileIO::Tokenizer::iterator begin( );
 
 	///<summary>
 	/// The end iterator of tokens.
 	///</summary>
-	__FILEIO Tokenizer::iterator end( );
+	::dx::lib::FileIO::Tokenizer::iterator end( );
 
 	///<summary>
 	/// Raise 'OnMessage' event.
 	///</summary>
-	bool SendMessage( const __FILEIO TokenizerMessage& );
+	bool SendMessage( const ::dx::lib::FileIO::TokenizerMessage& );
 
 	///<summary>
 	/// Return the code contents of this Tokenizer.
 	///</summary>
-	__LIB String ContentsFile( );
+	::dx::lib::String ContentsFile( );
 
 	///<summary>
 	/// Clear the tokens.
@@ -81,17 +81,17 @@ public:
 	///<summary>
 	/// Messages from this Tokenizer.
 	///</summary>
-	__LIB Event<void( __FILEIO TokenizerMessage )>& OnMessage( );
+	::dx::lib::Event<void( ::dx::lib::FileIO::TokenizerMessage )>& OnMessage( );
 	
 	///<summary>
 	/// Create tokenizer from code.
 	///</summary>
-	static __FILEIO Tokenizer* CreateFromHeader( const __LIB String &contents );
+	static ::dx::lib::FileIO::Tokenizer* CreateFromHeader( const ::dx::lib::String &contents );
 
 	///<summary>
 	/// Create tokenizer from file.
 	///</summary>
-	static __FILEIO Tokenizer* CreateFromFile( const __LIB String &file );
+	static ::dx::lib::FileIO::Tokenizer* CreateFromFile( const ::dx::lib::String &file );
 };
 
 

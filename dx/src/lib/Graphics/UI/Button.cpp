@@ -14,7 +14,7 @@ Button::Button()
 }
 
 
-__MATH Vector2 Button::determineText(__MATH Vector2 &pos, __MATH Vector2 &text_size )
+::dx::lib::Math::Vector2 Button::determineText(::dx::lib::Math::Vector2 &pos, ::dx::lib::Math::Vector2 &text_size )
 {
 	if ( _changed ) {
 		auto align = getAlignment( );

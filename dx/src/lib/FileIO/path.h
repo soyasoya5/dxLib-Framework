@@ -8,7 +8,7 @@ begin_FILEIO
 class Path
 {
 private:
-	__LIB String _path;
+	::dx::lib::String _path;
 public:
 
 	///<summary>
@@ -19,7 +19,7 @@ public:
 	///<summary>
 	/// Construct this Path with '_Path' as the internal path.
 	///</summary>
-	Path( const __LIB String &_Path );
+	Path( const ::dx::lib::String &_Path );
 
 	///<summary>
 	/// Construct this Path with '_Path' as the internal path.
@@ -34,7 +34,7 @@ public:
 	///<summary>
 	///	Return a DX String.
 	///</summary>
-	const __LIB String & string( );
+	const ::dx::lib::String & string( );
 
 	///<summary>
 	/// Return a C null-terminated string.
@@ -44,55 +44,55 @@ public: // Sub-paths
 	///<summary>
 	/// Get the Previous Branch, e.g A/B/C/D would return 'C'.
 	///</summary>
-	__FILEIO Path Previous( ) const;
+	::dx::lib::FileIO::Path Previous( ) const;
 
 	///<summary>
 	/// Get all the branches upto the previous branch, e.g A/B/C/D would return 'A/B/C'.
 	///</summary>
-	__FILEIO Path UptoPrevious( ) const;
+	::dx::lib::FileIO::Path UptoPrevious( ) const;
 
 	///<summary>
 	/// Get the Root branch. e.g A/B/C/D would return 'A'.
 	///</summary>
-	__FILEIO Path Root( ) const;
+	::dx::lib::FileIO::Path Root( ) const;
 
 	///<summary>
 	///	Get the file name. e.g A/B/C/D.ext would return 'D.ext'.
 	///</summary>
-	__FILEIO Path Filename( ) const;
+	::dx::lib::FileIO::Path Filename( ) const;
 
 	///<summary>
 	/// Get the extension of the filename. e.g A/B/C/D.ext would return '.ext'
 	///</summary>
-	__FILEIO Path Extension( ) const;
+	::dx::lib::FileIO::Path Extension( ) const;
 
 	///<summary>
 	///	Return all the branches INCLUDING the file name (If it has one)
 	///</summary>
-	std::vector<__FILEIO Path> Branches( ) const;
+	std::vector<::dx::lib::FileIO::Path> Branches( ) const;
 	
 	
 public: // Editors
 	///<summary>
 	///	Remove the extension if it has one.
 	///</summary>
-	__FILEIO Path& remove_extension( );
+	::dx::lib::FileIO::Path& remove_extension( );
 
 	///<summary>
 	/// Remove the file name if it has one.
 	///</summary>
-	__FILEIO Path& remove_filename( );
+	::dx::lib::FileIO::Path& remove_filename( );
 
 	///<summary>
 	/// Remove all branches if it has them.
 	///</summary>
-	__FILEIO Path& remove_directories( );
+	::dx::lib::FileIO::Path& remove_directories( );
 
 public: // booleans
 	///<summary>
 	/// Return true if extension is equal to '_Extension'.
 	///</summary>
-	bool extension_is( const __LIB String &_Extension ) const;
+	bool extension_is( const ::dx::lib::String &_Extension ) const;
 
 	///<summary>
 	///	Returns true if this Path has an extension.
@@ -118,12 +118,12 @@ public: // booleans
 ///<summary>
 /// Returns true if Directory '_Path' exists.
 ///</summary>
-bool DirectoryExists( const __FILEIO Path &_Path );
+bool DirectoryExists( const ::dx::lib::FileIO::Path &_Path );
 
 ///<summary>
 /// Returns true if file '_Path' exists.
 ///</summary>
-bool exists( const __FILEIO Path &_Path );
+bool exists( const ::dx::lib::FileIO::Path &_Path );
 
 
 

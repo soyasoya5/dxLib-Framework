@@ -128,17 +128,17 @@ void Slider::KeyDown(Window *sender, KeyDownArgs &args)
 	textbox_->KeyDown( sender, args );
 }
 
-void Slider::KeyUp(Window *sender, __GRAPHICS KeyUpArgs & args)
+void Slider::KeyUp(Window *sender, ::dx::lib::Graphics::KeyUpArgs & args)
 {
 	textbox_->KeyUp( sender, args );
 }
 
-void Slider::KeyDownChar(Window *sender, __GRAPHICS KeyDownCharArgs & args)
+void Slider::KeyDownChar(Window *sender, ::dx::lib::Graphics::KeyDownCharArgs & args)
 {
 	textbox_->KeyDownChar( sender, args );
 }
 
-void Slider::MouseMoved(Window *sender, __GRAPHICS MouseMovedArgs & args)
+void Slider::MouseMoved(Window *sender, ::dx::lib::Graphics::MouseMovedArgs & args)
 {
 	//If dragging
 	if ( dragging_ && inScrollableRegion( args.position ) )
@@ -171,7 +171,7 @@ void Slider::MouseMoved(Window *sender, __GRAPHICS MouseMovedArgs & args)
 	textbox_->MouseMoved( sender, args );
 }
 
-void Slider::MouseClicked(Window *sender, __GRAPHICS MouseClickedArgs & args)
+void Slider::MouseClicked(Window *sender, ::dx::lib::Graphics::MouseClickedArgs & args)
 {
 	// If collides anywhere & pressing ctrl, then directly move
 	// the wheel.
@@ -197,7 +197,7 @@ void Slider::MouseClicked(Window *sender, __GRAPHICS MouseClickedArgs & args)
 	textbox_->MouseClicked( sender, args );
 }
 
-void Slider::MouseReleased(Window *sender, __GRAPHICS MouseReleasedArgs & args)
+void Slider::MouseReleased(Window *sender, ::dx::lib::Graphics::MouseReleasedArgs & args)
 {
 	if ( hovering_ )
 		OnMouseReleased( ).Invoke( this );
@@ -207,7 +207,7 @@ void Slider::MouseReleased(Window *sender, __GRAPHICS MouseReleasedArgs & args)
 	textbox_->MouseReleased( sender, args );
 }
 
-__MATH Vector2 Slider::getDelta() const
+::dx::lib::Math::Vector2 Slider::getDelta() const
 {
 	return delta_;
 }
@@ -241,23 +241,23 @@ float Slider::getWheel( ) const
 		return wheel_.y;
 }
 
-void Slider::setWheelSize(const __MATH Vector2 & _Size)
+void Slider::setWheelSize(const ::dx::lib::Math::Vector2 & _Size)
 {
 	wheelSize_ = _Size;
 	changed_ = true;
 }
 
-__MATH Vector2 Slider::getWheelSize() const
+::dx::lib::Math::Vector2 Slider::getWheelSize() const
 {
 	return wheelSize_;
 }
 
-bool Slider::CollidesWheel(const __MATH Vector2 & _Position)
+bool Slider::CollidesWheel(const ::dx::lib::Math::Vector2 & _Position)
 {
 	return _Position.Intersects( { determined_.position + wheel_, wheelSize_ } );
 }
 
-bool Slider::inScrollableRegion(const __MATH Vector2 & _Cursor) const
+bool Slider::inScrollableRegion(const ::dx::lib::Math::Vector2 & _Cursor) const
 {
 	return (layout_ == Horizontal ? 
 		   _Cursor.Intersects( { { determined_.position.x, 0 }, { determined_.size.x, 10000000 } } ) : 

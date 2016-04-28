@@ -7,7 +7,7 @@ Text::Text()
 {
 }
 
-Text::Text(std::shared_ptr<Font> font, const __LIB String & text, const __MATH Vector2 & position, const __MATH Vector2 &clip, const __GRAPHICS TextAlignment &allignment)
+Text::Text(std::shared_ptr<Font> font, const ::dx::lib::String & text, const ::dx::lib::Math::Vector2 & position, const ::dx::lib::Math::Vector2 &clip, const ::dx::lib::Graphics::TextAlignment &allignment)
 	: font_( font ), text_( text ), position_( position ), allign_( allignment ), max_( clip )
 {
 }
@@ -22,42 +22,42 @@ void Text::setFont(std::shared_ptr<Font> _Font)
 	font_ = _Font;
 }
 
-__GRAPHICS TextAlignment Text::getAlignment() const
+::dx::lib::Graphics::TextAlignment Text::getAlignment() const
 {
 	return allign_;
 }
 
-void Text::setAlignment(const __GRAPHICS TextAlignment & allignment)
+void Text::setAlignment(const ::dx::lib::Graphics::TextAlignment & allignment)
 {
 	allign_ = allignment;
 }
 
-const __LIB String &Text::getText() const
+const ::dx::lib::String &Text::getText() const
 {
 	return text_;
 }
 
-void Text::setText(const __LIB String & text) 
+void Text::setText(const ::dx::lib::String & text) 
 {
 	text_ = text;
 }
 
-const __MATH Vector2 &Text::getPosition() const
+const ::dx::lib::Math::Vector2 &Text::getPosition() const
 {
 	return position_;
 }
 
-void Text::setPosition(const __MATH Vector2 & position)
+void Text::setPosition(const ::dx::lib::Math::Vector2 & position)
 {
 	position_ = position;
 }
 
-const __MATH Vector2 &Text::getMaxClip() const
+const ::dx::lib::Math::Vector2 &Text::getMaxClip() const
 {
 	return max_;
 }
 
-void Text::setMaxClip(const __MATH Vector2 & clip)
+void Text::setMaxClip(const ::dx::lib::Math::Vector2 & clip)
 {
 	max_ = clip;
 }

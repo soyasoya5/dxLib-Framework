@@ -13,12 +13,12 @@ public:
 	///<summary>
 	/// Returns true if this vector2 intersects the '_Area'.
 	///</summary>
-	bool Intersects( const __MATH Region &_Area ) const;
+	bool Intersects( const ::dx::lib::Math::Region &_Area ) const;
 
 	///<summary>
 	/// Return the dot product of this vector.
 	///</summary>
-	float Dot( const __MATH Vector2 &_Other ) const;
+	float Dot( const ::dx::lib::Math::Vector2 &_Other ) const;
 
 	///<summary>
 	/// Return the magnitude of this vector.

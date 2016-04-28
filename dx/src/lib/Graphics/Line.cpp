@@ -9,37 +9,37 @@ Line::Line()
 {
 }
 
-Line::Line(const __MATH Vector2 & position, const __MATH Vector2 & target, const __GRAPHICS Pen & pen)
+Line::Line(const ::dx::lib::Math::Vector2 & position, const ::dx::lib::Math::Vector2 & target, const ::dx::lib::Graphics::Pen & pen)
 	: pos_( position ), target_( target ), pen_( pen )
 {
 }
 
-__GRAPHICS Pen Line::Pen() const
+::dx::lib::Graphics::Pen Line::Pen() const
 {
 	return pen_;
 }
 
-__MATH Vector2 Line::Position() const
+::dx::lib::Math::Vector2 Line::Position() const
 {
 	return pos_;
 }
 
-__MATH Vector2 Line::Target() const
+::dx::lib::Math::Vector2 Line::Target() const
 {
 	return target_;
 }
 
-void Line::Pen(const __GRAPHICS Pen & pen)
+void Line::Pen(const ::dx::lib::Graphics::Pen & pen)
 {
 	pen_ = pen;
 }
 
-void Line::Position(const __MATH Vector2 & position)
+void Line::Position(const ::dx::lib::Math::Vector2 & position)
 {
 	pos_ = position;
 }
 
-void Line::Target(const __MATH Vector2 & target)
+void Line::Target(const ::dx::lib::Math::Vector2 & target)
 {
 	target_ = target;
 }

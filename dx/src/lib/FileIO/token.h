@@ -76,36 +76,36 @@ enum Token_t : uint
 ///<summary>
 /// Returns true if '_Identifier' is a keyword.
 ///</summary>
-bool isKeyword( const __LIB String &_Identifier );
+bool isKeyword( const ::dx::lib::String &_Identifier );
 
 ///<summary>
 /// Convert '_Identifier' to a keyword.
 ///</summary>
-Token_t toKeyword( const __LIB String &_Identifier );
+Token_t toKeyword( const ::dx::lib::String &_Identifier );
 
 ///<summary>
 /// Convert token to string.
 ///</summary>
-__LIB String TokenToString( const Token_t &_Token );
+::dx::lib::String TokenToString( const Token_t &_Token );
 
 
 class Token
 {
 private:
-	__FILEIO Token_t _tok;
-	__LIB String _identifier;
-	__DX uint _line, _char_count;
+	::dx::lib::FileIO::Token_t _tok;
+	::dx::lib::String _identifier;
+	::dx::uint _line, _char_count;
 public:
 
 	///<summary>
 	/// Construct this tokenizer optional more parameters.
 	///</summary>
-	Token( const __FILEIO Token_t& tok, const __LIB String& identifier, const __DX uint& line, const __DX uint char_count );
+	Token( const ::dx::lib::FileIO::Token_t& tok, const ::dx::lib::String& identifier, const ::dx::uint& line, const ::dx::uint char_count );
 
 	///<summary>
 	/// Construct this tokenizer.
 	///</summary>
-	Token( const __FILEIO Token_t& tok, const __LIB String& identifier );
+	Token( const ::dx::lib::FileIO::Token_t& tok, const ::dx::lib::String& identifier );
 
 	///<summary>
 	/// Empty constructor
@@ -115,27 +115,27 @@ public:
 	///<summary>
 	/// Return the token type.
 	///</summary>
-	__FILEIO Token_t getToken( ) const;
+	::dx::lib::FileIO::Token_t getToken( ) const;
 
 	///<summary>
 	/// Set the token type.
 	///</summary>
-	void setToken( const __FILEIO Token_t& );
+	void setToken( const ::dx::lib::FileIO::Token_t& );
 
 	///<summary>
 	/// Get the identifier of this token.
 	///</summary>
-	__LIB String getIdentifier( ) const;
+	::dx::lib::String getIdentifier( ) const;
 
 	///<summary>
 	/// Set the identifier of this token.
 	///</summary>
-	void setIdentifier( const __LIB String& );
+	void setIdentifier( const ::dx::lib::String& );
 	
 	///<summary>
 	/// Get the line of this token.
 	///</summary>
-	__DX uint getLine( ) const;
+	::dx::uint getLine( ) const;
 	
 	///<summary>
 	/// Set the line of this token.
@@ -145,12 +145,12 @@ public:
 	///<summary>
 	///	Get the char count of this token.
 	///</summary>
-	__DX uint getCharCount( ) const;
+	::dx::uint getCharCount( ) const;
 
 	///<summary>
 	///	Set the char count of this token.
 	///</summary>
-	void setCharCount( const __DX uint& );
+	void setCharCount( const ::dx::uint& );
 
 public:
 	
@@ -160,42 +160,42 @@ public:
 ///<summary>
 /// Return true if '_Lhs''s  identifier is equal to _Rhs.
 ///</summary>
-bool operator==( const __FILEIO Token &_Lhs, const __LIB String &_Rhs );
+bool operator==( const ::dx::lib::FileIO::Token &_Lhs, const ::dx::lib::String &_Rhs );
 
 ///<summary>
 /// Return true if '_Lhs''s token is equal to _Rhs.
 ///</summary>
-bool operator==( const __FILEIO Token &_Lhs, const __FILEIO Token_t &_Rhs );
+bool operator==( const ::dx::lib::FileIO::Token &_Lhs, const ::dx::lib::FileIO::Token_t &_Rhs );
 
 ///<summary>
 /// Return true if '_Lhs''s  identifier is equal to _Rhs. (Reversed)
 ///</summary>
-bool operator==( const __LIB String &_Lhs, const Token &_Rhs );
+bool operator==( const ::dx::lib::String &_Lhs, const Token &_Rhs );
 
 ///<summary>
 /// Return true if '_Lhs''s token is equal to _Rhs. (Reversed)
 ///</summary>
-bool operator==( const __FILEIO Token_t &_Lhs, const __FILEIO Token &_Rhs );
+bool operator==( const ::dx::lib::FileIO::Token_t &_Lhs, const ::dx::lib::FileIO::Token &_Rhs );
 
 ///<summary>
 /// Return false if '_Lhs''s  identifier is equal to _Rhs.
 ///</summary>
-bool operator!=( const __FILEIO Token &_Lhs, const __LIB String &_Rhs );
+bool operator!=( const ::dx::lib::FileIO::Token &_Lhs, const ::dx::lib::String &_Rhs );
 
 ///<summary>
 /// Return true if '_Lhs''s token is equal to _Rhs.
 ///</summary>
-bool operator!=( const __FILEIO Token &_Lhs, const __FILEIO Token_t &_Rhs );
+bool operator!=( const ::dx::lib::FileIO::Token &_Lhs, const ::dx::lib::FileIO::Token_t &_Rhs );
 
 ///<summary>
 /// Return true if '_Lhs''s  identifier is equal to _Rhs. (Reversed)
 ///</summary>
-bool operator!=( const __LIB String &_Lhs, const __FILEIO Token &_Rhs );
+bool operator!=( const ::dx::lib::String &_Lhs, const ::dx::lib::FileIO::Token &_Rhs );
 
 ///<summary>
 /// Return true if '_Lhs''s token is equal to _Rhs. (Reversed)
 ///</summary>
-bool operator!=( const __FILEIO Token_t &_Lhs, const __FILEIO Token &_Rhs );
+bool operator!=( const ::dx::lib::FileIO::Token_t &_Lhs, const ::dx::lib::FileIO::Token &_Rhs );
 
 
 end_FILEIO

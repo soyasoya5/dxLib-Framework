@@ -40,22 +40,22 @@ void Hotkey::addSubkey(uint key)
 	subkeys_.push_back( key );
 }
 
-__LIB String Hotkey::getName()
+::dx::lib::String Hotkey::getName()
 {
 	return name_;
 }
 
-__LIB String Hotkey::sequence_as_string()
+::dx::lib::String Hotkey::sequence_as_string()
 {
 	String res;
 	for ( auto& key : subkeys_ )
-		res += __LIB to_string( key ) + ", ";
+		res += ::dx::lib::to_string( key ) + ", ";
 	if ( !res.empty( ) )
 		res.pop_back( ), res.pop_back( );
 	return res;
 }
 
-__LIB Event<void(Hotkey*, __LIB EventArgs&)>& Hotkey::OnHotkey()
+::dx::lib::Event<void(Hotkey*, ::dx::lib::EventArgs&)>& Hotkey::OnHotkey()
 {
 	return _OnHotkey;
 }

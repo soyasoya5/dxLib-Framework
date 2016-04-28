@@ -13,7 +13,7 @@ Checkbox::Checkbox()
 	changed_ = true;
 }
 
-__MATH Vector2 Checkbox::determineText(__MATH Vector2 &pos, __MATH Vector2 &text_size )
+::dx::lib::Math::Vector2 Checkbox::determineText(::dx::lib::Math::Vector2 &pos, ::dx::lib::Math::Vector2 &text_size )
 {
 	if ( changed_ ) 
 	{
@@ -72,13 +72,13 @@ void Checkbox::Paint( Window* sender, BasePainter *painter )
 		line1.Position( { pos.position.x + 2, pos.position.y + 2 } );
 		
 		// Target (Center of component)
-		line1.Target( pos.position + __MATH Vector2{ pos.size.x / 2, pos.size.y - 2 } );
+		line1.Target( pos.position + ::dx::lib::Math::Vector2{ pos.size.x / 2, pos.size.y - 2 } );
 
 		// Line2 pos
 		line2.Position( line1.Target( ) );
 
 		// Line2 target
-		line2.Target( { pos.position + __MATH Vector2{ pos.size.x - 3, 5 } } );
+		line2.Target( { pos.position + ::dx::lib::Math::Vector2{ pos.size.x - 3, 5 } } );
 
 		painter->PaintLine( line1 );
 		painter->PaintLine( line2 );

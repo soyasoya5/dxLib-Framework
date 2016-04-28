@@ -18,8 +18,8 @@ public:
 public:
 	bool getCanWrite( ) const;
 	bool isMultiline( ) const;
-	__LIB String getPromptText( ) const;
-	__LIB String getFilter( ) const;
+	::dx::lib::String getPromptText( ) const;
+	::dx::lib::String getFilter( ) const;
 	char getPasswordChar( ) const;
 	bool getUsePasswordChar( ) const;
 	char getLooseFocusKey( ) const;
@@ -39,7 +39,7 @@ public:
 	Event<void(Component*)> &OnGainFocus( );
 	Event<void(Component*, const char&)> &OnCharacterAdded( );
 private:
-	__MATH Vector2 determineText( __MATH Vector2 &pos, __MATH Vector2 &textSize );
+	::dx::lib::Math::Vector2 determineText( ::dx::lib::Math::Vector2 &pos, ::dx::lib::Math::Vector2 &textSize );
 	String prompt_, filter_;
 	bool canwrite_;
 	char passwordChar_, loose_;

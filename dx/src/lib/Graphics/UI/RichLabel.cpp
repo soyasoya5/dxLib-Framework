@@ -9,7 +9,7 @@ begin_UI
 RichLabel::RichLabel()
 	: Component()
 {
-	OnModified() += __LIB EventHandler<void(Component*)>("Constructor_Watcher",
+	OnModified() += ::dx::lib::EventHandler<void(Component*)>("Constructor_Watcher",
 		[this](Component *component) { this->changed_ = true; });
 	changed_ = true;
 }
@@ -26,7 +26,7 @@ void RichLabel::Paint(Window *sender, BasePainter *painter)
 	auto pos = determineRegion();
 
 
-	__MATH Vector2 fullsize{ 0, 0 };
+	::dx::lib::Math::Vector2 fullsize{ 0, 0 };
 	for ( auto it = all_text_.begin(), begin = all_text_.begin(), end = all_text_.end(); 
 		  it < end; 
 		  ++it )
@@ -77,7 +77,7 @@ void RichLabel::Paint(Window *sender, BasePainter *painter)
 					else
 					{
 						// Set position
-						it->position = prev->position + __MATH Vector2{ prev->size.x, 0.0f }; // Ok then get the vector of prev pos + prev size(x only)
+						it->position = prev->position + ::dx::lib::Math::Vector2{ prev->size.x, 0.0f }; // Ok then get the vector of prev pos + prev size(x only)
 						// Set orig
 						it->container.orig_tex_y = it->position.y;
 					}
@@ -170,7 +170,7 @@ void RichLabel::appendText( String text )
 
 void RichLabel::appendText(std::shared_ptr<Texture> texture)
 {
-	if ( texture->getSize( ) > __MATH Vector2{ 64, 64 } )
+	if ( texture->getSize( ) > ::dx::lib::Math::Vector2{ 64, 64 } )
 		return;
 	TextContainer container;
 	container.text = "";
@@ -186,11 +186,11 @@ void RichLabel::appendText(std::shared_ptr<Texture> texture)
 }
 
 
-void RichLabel::setText(const __LIB String & text)
+void RichLabel::setText(const ::dx::lib::String & text)
 {
 	text_ = text;
 	contrs_.clear();
-	contrs_.push_back( TextContainer{ nullptr, text, __DX Colors::White, getFont( ), false, false } );
+	contrs_.push_back( TextContainer{ nullptr, text, ::dx::Colors::White, getFont( ), false, false } );
 	recalculate_text();
 }
 
@@ -207,7 +207,7 @@ RichLabel::RichText * RichLabel::textFrom(const std::function<bool(RichText*)>& 
 	return nullptr;
 }
 
-RichLabel::RichText * RichLabel::textFromText(const __LIB String & text)
+RichLabel::RichText * RichLabel::textFromText(const ::dx::lib::String & text)
 {
 	for ( auto&x : all_text_ )
 		if ( x.container.text == text )
@@ -215,7 +215,7 @@ RichLabel::RichText * RichLabel::textFromText(const __LIB String & text)
 	return nullptr;
 }
 
-RichLabel::RichText * RichLabel::textInRegion(const __MATH Region & region)
+RichLabel::RichText * RichLabel::textInRegion(const ::dx::lib::Math::Region & region)
 {
 	for ( auto &x : all_text_ )
 		if ( x.position.Intersects( region ) )

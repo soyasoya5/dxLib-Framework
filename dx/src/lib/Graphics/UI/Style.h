@@ -24,17 +24,17 @@ class StyleManager
 {
 public:
 	StyleManager( ) = default;
-	StyleManager( const __UI Theme &theme, const __UI Style &style );
+	StyleManager( const ::dx::lib::Graphics::UI::Theme &theme, const ::dx::lib::Graphics::UI::Style &style );
 
-	__UI Theme theme( ) const;
-	void theme( const __UI Theme &theme );
+	::dx::lib::Graphics::UI::Theme theme( ) const;
+	void theme( const ::dx::lib::Graphics::UI::Theme &theme );
 
-	__UI Style style( ) const;
-	void style( const __UI Style &style );
+	::dx::lib::Graphics::UI::Style style( ) const;
+	void style( const ::dx::lib::Graphics::UI::Style &style );
 
 private:
-	__UI Theme theme_;
-	__UI Style style_;
+	::dx::lib::Graphics::UI::Theme theme_;
+	::dx::lib::Graphics::UI::Style style_;
 };
 
 

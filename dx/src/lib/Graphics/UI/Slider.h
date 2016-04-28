@@ -24,7 +24,7 @@ public:
 
 	void MouseReleased( Window *sender, MouseReleasedArgs &args ) override;
 
-	__MATH Vector2 getDelta( ) const;
+	::dx::lib::Math::Vector2 getDelta( ) const;
 
 	void setMaxDelta( const float &delta );
 
@@ -34,20 +34,20 @@ public:
 	
 	float getWheel( ) const;
 
-	void setWheelSize( const __MATH Vector2 &size );
+	void setWheelSize( const ::dx::lib::Math::Vector2 &size );
 
-	__MATH Vector2 getWheelSize( ) const;
+	::dx::lib::Math::Vector2 getWheelSize( ) const;
 
-	bool CollidesWheel( const __MATH Vector2 &position );
+	bool CollidesWheel( const ::dx::lib::Math::Vector2 &position );
 
-	bool inScrollableRegion( const __MATH Vector2 &cursor ) const;
+	bool inScrollableRegion( const ::dx::lib::Math::Vector2 &cursor ) const;
 
 	std::shared_ptr<Textbox> getTextbox( ) const;
 
 
 private:
 	void moveWheelToDelta( );
-	__MATH Vector2 moved_, wheel_, wheelSize_, delta_;
+	::dx::lib::Math::Vector2 moved_, wheel_, wheelSize_, delta_;
 	std::shared_ptr<Textbox> textbox_;
 	bool changed_, dragging_;
 	float maxDelta_;

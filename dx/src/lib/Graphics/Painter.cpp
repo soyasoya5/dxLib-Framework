@@ -18,18 +18,18 @@ begin_GRAPHICS
 
 Painter * Painter::Create(std::shared_ptr<Window> target, const bool &windowed, const bool &singleton)
 {
-	auto application = __LIB Application::get( );
+	auto application = ::dx::lib::Application::get( );
 
 	if ( !target )
 	{
-		auto ids = __GRAPHICS MsgBox( "Unable to create DirectX9 Painter.\n"
+		auto ids = ::dx::lib::Graphics::MsgBox( "Unable to create DirectX9 Painter.\n"
 									  "Nullpointer passed as Target window.\n"
 									  "If this problem persists open a Issue at:\n"
 									  "https://bitbucket.org/Yamiez/dxlib\n"
 									  "Press \"OK\" to continue the application, \"Cancel\" to exit the application.", 
 									  "Error", 
-									   __GRAPHICS OKCancel | __GRAPHICS IconError ).Show( );
-		if ( ids == __GRAPHICS MsgBox::Ok )
+									   ::dx::lib::Graphics::OKCancel | ::dx::lib::Graphics::IconError ).Show( );
+		if ( ids == ::dx::lib::Graphics::MsgBox::Ok )
 			return nullptr;
 		application->exit( );
 	}
@@ -37,14 +37,14 @@ Painter * Painter::Create(std::shared_ptr<Window> target, const bool &windowed, 
 	auto painter = std::unique_ptr<Painter>( new Painter( ) );
 	if ( FAILED( Direct3DCreate9Ex( D3D9b_SDK_VERSION, (IDirect3D9Ex**)&painter->d3dobj_ ) ) )
 	{
-		auto ids = __GRAPHICS MsgBox( "Unable to create DirectX9 Painter.\n"
+		auto ids = ::dx::lib::Graphics::MsgBox( "Unable to create DirectX9 Painter.\n"
 									  "Direct3DCreate9Ex failed.\n"
 									  "If this problem persists open a Issue at:\n"
 									  "https://bitbucket.org/Yamiez/dxlib\n"
 									  "Press \"OK\" to continue the application, \"Cancel\" to exit the application.", 
 									  "Fatal Error", 
-									   __GRAPHICS OKCancel | __GRAPHICS IconError ).Show( );
-		if ( ids == __GRAPHICS MsgBox::Ok )
+									   ::dx::lib::Graphics::OKCancel | ::dx::lib::Graphics::IconError ).Show( );
+		if ( ids == ::dx::lib::Graphics::MsgBox::Ok )
 			return nullptr;
 		return nullptr;
 	}
@@ -74,14 +74,14 @@ Painter * Painter::Create(std::shared_ptr<Window> target, const bool &windowed, 
 	
 	if ( FAILED(result) )
 	{
-		auto ids = __GRAPHICS MsgBox( "Unable to create DirectX9 Painter.\n"
+		auto ids = ::dx::lib::Graphics::MsgBox( "Unable to create DirectX9 Painter.\n"
 									  "Creating the device failed, See logs for error.\n"
 									  "If this problem persists open a Issue at:\n"
 									  "https://bitbucket.org/Yamiez/dxlib\n"
 									  "Press \"OK\" to continue the application, \"Cancel\" to exit the application.", 
 									  "Fatal Error", 
-									   __GRAPHICS OKCancel | __GRAPHICS IconError ).Show( );
-		if ( ids != __GRAPHICS MsgBox::Ok )
+									   ::dx::lib::Graphics::OKCancel | ::dx::lib::Graphics::IconError ).Show( );
+		if ( ids != ::dx::lib::Graphics::MsgBox::Ok )
 			application->exit( );
 		return nullptr;
 	}
@@ -89,21 +89,21 @@ Painter * Painter::Create(std::shared_ptr<Window> target, const bool &windowed, 
 	result = D3DXCreateLine( (IDirect3DDevice9*)painter->device_, (ID3DXLine**)&painter->line_ );
 	if ( FAILED(result) )
 	{
-		auto ids = __GRAPHICS MsgBox( "Unable to create DirectX9 Line.\n"
+		auto ids = ::dx::lib::Graphics::MsgBox( "Unable to create DirectX9 Line.\n"
 									  "Creating a ID3DXLine failed, you can continue but you are recommended to restart.\n"
 									  "If this problem persists open a Issue at:\n"
 									  "https://bitbucket.org/Yamiez/dxlib\n"
 									  "Press \"OK\" to continue the application, \"Cancel\" to exit the application.", 
 									  "Slight Error", 
-									   __GRAPHICS OKCancel | __GRAPHICS IconError ).Show( );
-		if ( ids == __GRAPHICS MsgBox::Cancel )
+									   ::dx::lib::Graphics::OKCancel | ::dx::lib::Graphics::IconError ).Show( );
+		if ( ids == ::dx::lib::Graphics::MsgBox::Cancel )
 			application->exit( );
 		return nullptr;
 	}
 
 	target->setPainter( painter.get( ) );
 
-	target->OnWindowResize( ) += __LIB EventHandler<void(__GRAPHICS Window*, __GRAPHICS WindowMovedArgs&)>( target->getClass( ) + "_Painter_Resize",
+	target->OnWindowResize( ) += ::dx::lib::EventHandler<void(::dx::lib::Graphics::Window*, ::dx::lib::Graphics::WindowMovedArgs&)>( target->getClass( ) + "_Painter_Resize",
 								  []( Window *sender, WindowMovedArgs &args )
 								  {
 										auto painter = (Painter*)sender->getPainter( );
@@ -133,7 +133,7 @@ Painter::~Painter()
 		((ID3DXLine*)line_)->Release( );
 }
 
-bool Painter::ResetPainter(const __MATH Vector2 & _Size, __GRAPHICS Window *_Target)
+bool Painter::ResetPainter(const ::dx::lib::Math::Vector2 & _Size, ::dx::lib::Graphics::Window *_Target)
 {
 	if ( target_.get( ) != _Target )
 	{ 
@@ -164,7 +164,7 @@ void Painter::BeginPaint()
 	((IDirect3DDevice9*)device_)->BeginScene( );
 }
 
-void Painter::Paint( const __GRAPHICS Text & text, const __GRAPHICS Pen & pen)
+void Painter::Paint( const ::dx::lib::Graphics::Text & text, const ::dx::lib::Graphics::Pen & pen)
 {
 	auto font_type = text.getFont( );
 	if ( !font_type )
@@ -181,15 +181,15 @@ void Painter::Paint( const __GRAPHICS Text & text, const __GRAPHICS Pen & pen)
 	font->DrawTextA( nullptr, texts.c_str( ), -1, &rect, format, pen.Color( ) );
 }
 
-void Painter::Paint(const __GRAPHICS Shape & shape)
+void Painter::Paint(const ::dx::lib::Graphics::Shape & shape)
 {
 }
 
-void Painter::Paint(const __GRAPHICS Circle & circle)
+void Painter::Paint(const ::dx::lib::Graphics::Circle & circle)
 {
 }
 
-void Painter::PaintRect( const __MATH Region & region, const __GRAPHICS Pen & pen)
+void Painter::PaintRect( const ::dx::lib::Math::Region & region, const ::dx::lib::Graphics::Pen & pen)
 {
 	static D3DRECT rect_angle;
 	rect_angle = { static_cast<LONG>( region.position.x ), 
@@ -199,9 +199,9 @@ void Painter::PaintRect( const __MATH Region & region, const __GRAPHICS Pen & pe
 	((IDirect3DDevice9*)device_)->Clear( 1, &rect_angle, D3DCLEAR_TARGET, pen.Color( ), 1.f, 0 );
 }
 
-void Painter::PaintRectOutlined( const __MATH Region &region, const __GRAPHICS Pen &inner, const __GRAPHICS Pen &outer )
+void Painter::PaintRectOutlined( const ::dx::lib::Math::Region &region, const ::dx::lib::Graphics::Pen &inner, const ::dx::lib::Graphics::Pen &outer )
 {
-	__MATH Region outer_region = region;
+	::dx::lib::Math::Region outer_region = region;
 	auto outThick = outer.Thickness( );
 	outer_region.position.x -= outThick;
 	outer_region.position.y -= outThick;
@@ -212,7 +212,7 @@ void Painter::PaintRectOutlined( const __MATH Region &region, const __GRAPHICS P
 	PaintRect( region, inner );
 }
 
-void Painter::PaintLine(const __GRAPHICS Line & line)
+void Painter::PaintLine(const ::dx::lib::Graphics::Line & line)
 {
 	auto pen = line.Pen( );
 	auto target = line.Target( );

@@ -50,8 +50,8 @@ void Textbox::Paint(Window *sender, BasePainter *painter)
 	// ________ line
 	Line line;
 	line.Pen( outer );
-	line.Position( pos.position + __MATH Vector2{ 0, pos.size.y } );
-	line.Target( pos.position + __MATH Vector2{ pos.size.x, pos.size.y } );
+	line.Position( pos.position + ::dx::lib::Math::Vector2{ 0, pos.size.y } );
+	line.Target( pos.position + ::dx::lib::Math::Vector2{ pos.size.x, pos.size.y } );
 
 	painter->PaintLine( line );
 	painter->Paint( text, pen_text );
@@ -66,7 +66,7 @@ void Textbox::Paint(Window *sender, BasePainter *painter)
 
 		if ( blink_ ) 
 		{
-			__MATH Vector2 lpos = text.getPosition( );
+			::dx::lib::Math::Vector2 lpos = text.getPosition( );
 			lpos.x += textsize.x + 2;
 			lpos.y = pos.position.y + 2;
 			auto tlpos = lpos;
@@ -148,12 +148,12 @@ bool Textbox::isMultiline() const
 	return multiline_;
 }
 
-__LIB String Textbox::getPromptText() const
+::dx::lib::String Textbox::getPromptText() const
 {
 	return prompt_;
 }
 
-__LIB String Textbox::getFilter() const
+::dx::lib::String Textbox::getFilter() const
 {
 	return filter_;
 }
@@ -235,24 +235,24 @@ void Textbox::addFilterCharacter(char character)
 	OnModified( ).Invoke( this );
 }
 
-__LIB Event<void(Component*)>& Textbox::OnLostFocus()
+::dx::lib::Event<void(Component*)>& Textbox::OnLostFocus()
 {
 	return _OnLostFocus;
 }
 
-__LIB Event<void(Component*)>& Textbox::OnGainFocus()
+::dx::lib::Event<void(Component*)>& Textbox::OnGainFocus()
 {
 	return _OnGainFocus;
 }
-__LIB Event<void(Component*, const char&)> &Textbox::OnCharacterAdded( )
+::dx::lib::Event<void(Component*, const char&)> &Textbox::OnCharacterAdded( )
 {
 	return _OnCharacterAdded;
 }
 
 
-__MATH Vector2 Textbox::determineText(__MATH Vector2 & pos, __MATH Vector2 & text_size)
+::dx::lib::Math::Vector2 Textbox::determineText(::dx::lib::Math::Vector2 & pos, ::dx::lib::Math::Vector2 & text_size)
 {
-	__MATH Vector2 ret;
+	::dx::lib::Math::Vector2 ret;
 	auto align = getAlignment( );
 	auto size = getSize( );
 

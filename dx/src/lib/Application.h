@@ -55,12 +55,12 @@ public:
 	///<summary>
 	/// Register a window to this application, this is automatically done by Window::Create.
 	///</summary>
-	void RegisterWindow( __GRAPHICS Window *window );
+	void RegisterWindow( ::dx::lib::Graphics::Window *window );
 
 	///<summary>
 	/// Unregister a window, automatically called by destructor of Window
 	///</summary>
-	void UnregisterWindow( __GRAPHICS Window *window );
+	void UnregisterWindow( ::dx::lib::Graphics::Window *window );
 
 	///<summary>
 	/// Set the tick rate of this application, in milliseconds.

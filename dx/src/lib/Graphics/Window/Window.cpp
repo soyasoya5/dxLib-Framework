@@ -10,7 +10,7 @@ begin_GRAPHICS
 
 
 
-LRESULT CALLBACK WndProc( HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam )
+LRESULT CALLBACK WndProc( HWND hWnd, ::dx::uint Msg, WPARAM wParam, LPARAM lParam )
 {
 	switch (Msg)
 	{
@@ -26,7 +26,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam
 }
 
 
-std::shared_ptr<Window> Window::Create(const  String & Class, const  String & Title, const __MATH Region & Region, DWORD dwStyle, DWORD dwExStyle)
+std::shared_ptr<Window> Window::Create(const  String & Class, const  String & Title, const ::dx::lib::Math::Region & Region, DWORD dwStyle, DWORD dwExStyle)
 {
 	WNDCLASSEX wc;
 	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
@@ -62,7 +62,7 @@ std::shared_ptr<Window> Window::Create(const  String & Class, const  String & Ti
 	return ptr;
 }
 
-std::shared_ptr<Window> Window::Create(Window * parent, const  String & Class, const  String & Title, const __MATH Region & Region, DWORD dwStyle, DWORD dwExStyle)
+std::shared_ptr<Window> Window::Create(Window * parent, const  String & Class, const  String & Title, const ::dx::lib::Math::Region & Region, DWORD dwStyle, DWORD dwExStyle)
 {
 	WNDCLASSEX wc;
 	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
@@ -130,12 +130,12 @@ Window::~Window( )
 	Close( );
 }
 
-bool Window::ClientToScreen(__MATH Vector2 & point)
+bool Window::ClientToScreen(::dx::lib::Math::Vector2 & point)
 {
 	return ::ClientToScreen( this->hwnd_, (LPPOINT)&point );
 }
 
-bool Window::ScreenToClient(__MATH Vector2 & point)
+bool Window::ScreenToClient(::dx::lib::Math::Vector2 & point)
 {
 	return ::ScreenToClient( this->hwnd_, (LPPOINT)&point );
 }
@@ -205,7 +205,7 @@ bool Window::Disable()
 	return ::EnableWindow( hwnd_, false );
 }
 
-bool Window::LoadIcon(const __FILEIO Path &path)
+bool Window::LoadIcon(const ::dx::lib::FileIO::Path &path)
 {
 	DWORD type = path.extension_is(".ico") ? IMAGE_ICON : IMAGE_BITMAP;
 	auto icon = LoadImageA( NULL,             
@@ -217,7 +217,7 @@ bool Window::LoadIcon(const __FILEIO Path &path)
 	return SUCCEEDED( ::SendMessageA( hwnd_, WM_SETICON, ICON_BIG, (LPARAM)icon ) );
 }
 
-bool Window::LoadIconSm(const __FILEIO Path &path )
+bool Window::LoadIconSm(const ::dx::lib::FileIO::Path &path )
 {
 	DWORD type = path.extension_is(".ico") ? IMAGE_ICON : IMAGE_BITMAP;
 	auto icon = LoadImageA( NULL,             
@@ -230,12 +230,12 @@ bool Window::LoadIconSm(const __FILEIO Path &path )
 }
 
 
-__GRAPHICS Window * Window::getParent()
+::dx::lib::Graphics::Window * Window::getParent()
 {
 	return parent_;
 }
 
-__GRAPHICS BasePainter * Window::getPainter()
+::dx::lib::Graphics::BasePainter * Window::getPainter()
 {
 	return painter_;
 }
@@ -250,7 +250,7 @@ Window::PaintStyle_t Window::PaintStyle() const
 	return style_;
 }
 
-void Window::setPainter(__GRAPHICS BasePainter * painter, const bool &delete_old)
+void Window::setPainter(::dx::lib::Graphics::BasePainter * painter, const bool &delete_old)
 {
 	if ( delete_old && painter_ )
 		delete painter_;
@@ -305,7 +305,7 @@ Window::Task& Window::addTask( const time_point &when, const std::function<void(
 	return tasks_.back( );
 }
 
-LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lParam)
+LRESULT Window::HandleInput(HWND hWnd, ::dx::uint Msg, WPARAM wParam, LPARAM lParam)
 {
 	MessageDataArgs data;
 	data.handled = false;
@@ -339,8 +339,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key_code = static_cast<uint>( wParam );
 		keys_[args.key_code] = true;
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnKeyDown( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -354,8 +354,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.key_code = static_cast<uint>( wParam );
 		keys_[args.key_code] = false;
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnKeyUp( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -366,9 +366,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 	{
 		MouseMovedArgs args;
 		args.handled = false;
-		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.position = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnMouseMoved( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -376,7 +376,7 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 	}
 	case WM_MOVE:
 	{
-		region_.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		region_.position = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		WindowMovedArgs args;
 		args.handled = false;
 		args.region = region_;
@@ -388,7 +388,7 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		break;
 	case WM_SIZE:
 	{
-		region_.size = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		region_.size = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
 		WindowResizeArgs args;
 		args.handled = false;
 		args.region = region_;
@@ -411,9 +411,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		MouseClickedArgs args;
 		args.handled = false;
 		args.key = 1;
-		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.position = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnMouseClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -425,9 +425,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		MouseReleasedArgs args;
 		args.handled = false;
 		args.key = 1;
-		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.position = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnMouseReleased( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -439,9 +439,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		MouseClickedArgs args;
 		args.handled = false;
 		args.key = 2;
-		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.position = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnMouseClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -453,9 +453,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		MouseReleasedArgs args;
 		args.handled = false;
 		args.key = 2;
-		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.position = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnMouseReleased( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -467,9 +467,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		MouseClickedArgs args;
 		args.handled = false;
 		args.key = 1; 
-		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.position = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnMouseDoubleClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -481,9 +481,9 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		MouseClickedArgs args;
 		args.handled = false;
 		args.key = 2;
-		args.position = __MATH Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.position = ::dx::lib::Math::Vector2{ static_cast<float>(p.x), static_cast<float>(p.y) };
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnMouseDoubleClicked( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -496,8 +496,8 @@ LRESULT Window::HandleInput(HWND hWnd, __DX uint Msg, WPARAM wParam, LPARAM lPar
 		args.handled = false;
 		args.delta = GET_WHEEL_DELTA_WPARAM( wParam );
 		args.direction = args.delta > 0 ? ScrollArgs::Up : ScrollArgs::Down;
-		args.ctrl = keys_[__DX key_control];
-		args.shift = keys_[__DX key_leftShift] || keys_[__DX key_shift];
+		args.ctrl = keys_[::dx::key_control];
+		args.shift = keys_[::dx::key_leftShift] || keys_[::dx::key_shift];
 		OnScroll( ).Invoke( this, args );
 		if ( args.handled )
 			ForcePaint( );
@@ -566,7 +566,7 @@ bool Window::PollEvents()
 	return true;
 }
 
-void Window::HandleComponent(__UI Component * _Comp)
+void Window::HandleComponent(::dx::lib::Graphics::UI::Component * _Comp)
 {
 	this->OnMouseMoved( ) += EventHandler<MouseMovedSig>( to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::MouseMoved, _Comp ) );
 	this->OnMouseClicked() += EventHandler<MouseClickedSig>( to_string(_Comp->getUIID()) + "_component", BIND_METHOD_2(&UI::Component::MouseClicked , _Comp));
@@ -579,7 +579,7 @@ void Window::HandleComponent(__UI Component * _Comp)
 	this->OnPaint( ) += EventHandler<void(Window*, BasePainter*)>(  to_string( _Comp->getUIID( ) ) + "_component", BIND_METHOD_2( &UI::Component::Paint, _Comp ) );
 }
 
-void Window::StopHandlingComponent(__UI Component * _Comp)
+void Window::StopHandlingComponent(::dx::lib::Graphics::UI::Component * _Comp)
 {
 	this->OnMouseMoved( ) -=  to_string( _Comp->getUIID( ) ) + "_component";
 	this->OnMouseClicked( ) -=  to_string( _Comp->getUIID( ) ) + "_component";

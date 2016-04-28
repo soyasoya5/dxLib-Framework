@@ -42,12 +42,12 @@ public:
 	virtual ~Component( );
 
 public: // Accessors
-	virtual __MATH Region getLocalRegion( ) const;
-	virtual __MATH Vector2 getLocalPosition( ) const;
-	virtual __MATH Region getGlobalRegion( ) const;
-	virtual __MATH Region determineRegion( );
-	virtual __MATH Vector2 getGlobalPosition( ) const;
-	virtual __MATH Vector2 getSize( ) const;
+	virtual ::dx::lib::Math::Region getLocalRegion( ) const;
+	virtual ::dx::lib::Math::Vector2 getLocalPosition( ) const;
+	virtual ::dx::lib::Math::Region getGlobalRegion( ) const;
+	virtual ::dx::lib::Math::Region determineRegion( );
+	virtual ::dx::lib::Math::Vector2 getGlobalPosition( ) const;
+	virtual ::dx::lib::Math::Vector2 getSize( ) const;
 	virtual  StyleManager getStyle( ) const;
 	virtual  Component* getLeftOf( ) const;
 	virtual  Component* getRightOf( ) const;
@@ -69,11 +69,11 @@ public: // Accessors
 	virtual  String getText( ) const;
 
 public: // Modifiers
-	virtual void setLocalRegion( const __MATH Region &region );
-	virtual void setLocalPosition( const __MATH Vector2 &position );
-	virtual void setGlobalRegion( const __MATH Region &region );
-	virtual void setGlobalPosition( const __MATH Vector2 &position );
-	virtual void setSize( const __MATH Vector2 &size );
+	virtual void setLocalRegion( const ::dx::lib::Math::Region &region );
+	virtual void setLocalPosition( const ::dx::lib::Math::Vector2 &position );
+	virtual void setGlobalRegion( const ::dx::lib::Math::Region &region );
+	virtual void setGlobalPosition( const ::dx::lib::Math::Vector2 &position );
+	virtual void setSize( const ::dx::lib::Math::Vector2 &size );
 	virtual void setStyle( const  StyleManager &style );
 	virtual void setLeftOf(  Component *component );
 	virtual void setRightOf(  Component *component );
@@ -106,7 +106,7 @@ public: // Virtuals/Logic
 	virtual void MouseScrolled( Window* sender, ScrollArgs &args );
 	virtual void MouseDoubleClicked( Window* sender, MouseClickedArgs &args );
 	virtual void Release( const bool &release_children = true );
-	virtual bool Collides( const __MATH Vector2 &with );
+	virtual bool Collides( const ::dx::lib::Math::Vector2 &with );
 	virtual bool Collides( const Component *with );
 
 public:
@@ -153,7 +153,7 @@ public:
 protected:
 	 String text_;
 	std::shared_ptr<Font> font_;
-	__MATH Region local_, global_, determined_;
+	::dx::lib::Math::Region local_, global_, determined_;
 	 StyleManager style_;
 	 Component *leftOf_, *rightOf_, *bottomOf_, *topOf_, *alignedOf_;
 	 Component* parent_;

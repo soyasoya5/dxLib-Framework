@@ -10,7 +10,7 @@ template<typename _Tx>
 class Buffer
 {
 public:
-	using _MyT = typename __DX remove_all<_Tx>::type;
+	using _MyT = typename ::dx::remove_all<_Tx>::type;
 
 	///<summary>
 	///	Empty constructor
@@ -22,7 +22,7 @@ public:
 	///<summary>
 	/// Copy '_Buffer'.
 	///</summary>
-	Buffer( _MyT* _Buffer, const __DX uint &_Length )
+	Buffer( _MyT* _Buffer, const ::dx::uint &_Length )
 	{
 		this->copy_from( _Buffer, _Length );
 	}
@@ -48,7 +48,7 @@ public:
 	///<summary>
 	/// Sets the size of this buffer to _Length, does not save state.
 	///</summary>
-	void reserve( const __DX uint &_Length )
+	void reserve( const ::dx::uint &_Length )
 	{
 		this->tidy( );
 		_length = _Length;
@@ -58,7 +58,7 @@ public:
 	///<summary>
 	/// Sets the size of this buffer to _Length and reassigns whats possible of the previous array.
 	///</summary>
-	__DX uint resize( const __DX uint &_Length )
+	::dx::uint resize( const ::dx::uint &_Length )
 	{
 		Buffer<_MyT> tmp = std::move( *this );
 		this->reserve( _Length );
@@ -80,7 +80,7 @@ public:
 	///<summary>
 	///	Assignment
 	///</summary>
-	void assign( const __DX uint &_Offset, _MyT *_It, _MyT *_It2 )
+	void assign( const ::dx::uint &_Offset, _MyT *_It, _MyT *_It2 )
 	{
 		auto _myIt = this->begin( ) + _Offset;
 		auto _end = this->end( );
@@ -100,7 +100,7 @@ public:
 	///<summary>
 	/// Appends buffer.
 	///</summary>
-	void append( _MyT *_Buffer, __DX uint _Length )
+	void append( _MyT *_Buffer, ::dx::uint _Length )
 	{
 		append( _Buffer, _Buffer + _Length );
 	}
@@ -119,7 +119,7 @@ public:
 	///<summary>
 	/// Copies existing buffer into this buffer.
 	///</summary>
-	void copy_from( _MyT *_Buffer, const __DX uint &_Length )
+	void copy_from( _MyT *_Buffer, const ::dx::uint &_Length )
 	{
 		this->resize( _Length );
 		this->assign( _Buffer, _Buffer + _Length );
@@ -177,7 +177,7 @@ public:
 
 private:
 	_MyT *_buffer;
-	__DX uint _length;
+	::dx::uint _length;
 };
 
 

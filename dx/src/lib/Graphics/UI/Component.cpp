@@ -18,22 +18,22 @@ Component::~Component()
 	Release( );
 }
 
-__MATH Region Component::getLocalRegion() const
+::dx::lib::Math::Region Component::getLocalRegion() const
 {
 	return local_;
 }
 
-__MATH Vector2 Component::getLocalPosition() const
+::dx::lib::Math::Vector2 Component::getLocalPosition() const
 {
 	return local_.position;
 }
 
-__MATH Region Component::getGlobalRegion() const
+::dx::lib::Math::Region Component::getGlobalRegion() const
 {
 	return global_;
 }
 
-__MATH Region Component::determineRegion()
+::dx::lib::Math::Region Component::determineRegion()
 {
 	if ( region_changed_ ) 
 	{
@@ -77,57 +77,57 @@ __MATH Region Component::determineRegion()
 	return determined_;
 }
 
-__MATH Vector2 Component::getGlobalPosition() const
+::dx::lib::Math::Vector2 Component::getGlobalPosition() const
 {
 	return global_.position;
 }
 
-__MATH Vector2 Component::getSize() const
+::dx::lib::Math::Vector2 Component::getSize() const
 {
 	return local_.size;
 }
 
-__UI StyleManager Component::getStyle() const
+::dx::lib::Graphics::UI::StyleManager Component::getStyle() const
 {
 	return style_;
 }
 
-__UI Component * Component::getLeftOf() const
+::dx::lib::Graphics::UI::Component * Component::getLeftOf() const
 {
 	return leftOf_;
 }
 
-__UI Component * Component::getRightOf() const
+::dx::lib::Graphics::UI::Component * Component::getRightOf() const
 {
 	return rightOf_;
 }
 
-__UI Component * Component::getBottomOf() const
+::dx::lib::Graphics::UI::Component * Component::getBottomOf() const
 {
 	return bottomOf_;
 }
 
-__UI Component * Component::getTopOf() const
+::dx::lib::Graphics::UI::Component * Component::getTopOf() const
 {
 	return topOf_;
 }
 
-__UI Component * Component::getAlignedOf() const
+::dx::lib::Graphics::UI::Component * Component::getAlignedOf() const
 {
 	return alignedOf_;
 }
 
-__UI Component * Component::getParent() const
+::dx::lib::Graphics::UI::Component * Component::getParent() const
 {
 	return parent_;
 }
 
-__UI Alignment Component::getAlignment() const
+::dx::lib::Graphics::UI::Alignment Component::getAlignment() const
 {
 	return alignment_;
 }
 
-__UI Layout Component::getLayout() const
+::dx::lib::Graphics::UI::Layout Component::getLayout() const
 {
 	return layout_;
 }
@@ -177,12 +177,12 @@ int Component::getUIID() const
 	return uiid_;
 }
 
-__LIB String Component::getText() const
+::dx::lib::String Component::getText() const
 {
 	return text_;
 }
 
-void Component::setLocalRegion(const __MATH Region & region)
+void Component::setLocalRegion(const ::dx::lib::Math::Region & region)
 {
 	local_ = region;
 	global_.size = local_.size;
@@ -204,7 +204,7 @@ void Component::setLocalRegion(const __MATH Region & region)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setLocalPosition(const __MATH Vector2 & position)
+void Component::setLocalPosition(const ::dx::lib::Math::Vector2 & position)
 {
 	local_.position = position;
 	region_changed_ = true;
@@ -225,7 +225,7 @@ void Component::setLocalPosition(const __MATH Vector2 & position)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setGlobalRegion(const __MATH Region & region)
+void Component::setGlobalRegion(const ::dx::lib::Math::Region & region)
 {
 	global_ = region;
 	local_.size = global_.size;
@@ -247,7 +247,7 @@ void Component::setGlobalRegion(const __MATH Region & region)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setGlobalPosition(const __MATH Vector2 & position)
+void Component::setGlobalPosition(const ::dx::lib::Math::Vector2 & position)
 {
 	global_.position = position;
 	region_changed_ = true;
@@ -268,7 +268,7 @@ void Component::setGlobalPosition(const __MATH Vector2 & position)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setSize(const __MATH Vector2 & size)
+void Component::setSize(const ::dx::lib::Math::Vector2 & size)
 {
 	local_.size = size;
 	global_.size = size;
@@ -276,13 +276,13 @@ void Component::setSize(const __MATH Vector2 & size)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setStyle(const __UI StyleManager & style)
+void Component::setStyle(const ::dx::lib::Graphics::UI::StyleManager & style)
 {
 	style_ = style;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setLeftOf(__UI Component * component)
+void Component::setLeftOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( leftOf_ )
 		leftOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_leftof";
@@ -290,7 +290,7 @@ void Component::setLeftOf(__UI Component * component)
 	leftOf_ = component;
 	
 	if ( leftOf_ )
-		leftOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_leftof", 
+		leftOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_leftof", 
 								  [this]( Component* sender )
 								  {
 									  region_changed_ = true;
@@ -299,7 +299,7 @@ void Component::setLeftOf(__UI Component * component)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setRightOf(__UI Component * component)
+void Component::setRightOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( rightOf_ )
 		rightOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_rightof";
@@ -307,7 +307,7 @@ void Component::setRightOf(__UI Component * component)
 	rightOf_ = component;
 	
 	if ( rightOf_ )
-		rightOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_rightof", 
+		rightOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_rightof", 
 								  [this]( Component* sender )
 								  {
 									  region_changed_ = true;
@@ -316,15 +316,15 @@ void Component::setRightOf(__UI Component * component)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setBottomOf(__UI Component * component)
+void Component::setBottomOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( bottomOf_ )
-		bottomOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_bottomof" );
+		bottomOf_->OnModified( ).remove_handler( ::dx::lib::to_string( this->getUIID( ) ) + "_bottomof" );
 
 	bottomOf_ = component;
 	
 	if ( bottomOf_ )
-		bottomOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_bottomof", 
+		bottomOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_bottomof", 
 								  [this]( Component* sender )
 								  {
 									  region_changed_ = true;
@@ -333,7 +333,7 @@ void Component::setBottomOf(__UI Component * component)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setTopOf(__UI Component * component)
+void Component::setTopOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( topOf_ )
 		topOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_topof";
@@ -341,7 +341,7 @@ void Component::setTopOf(__UI Component * component)
 	topOf_ = component;
 	
 	if ( topOf_ )
-		topOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_topof",
+		topOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_topof",
 								  [this]( Component* sender )
 								  {
 									  region_changed_ = true;
@@ -350,7 +350,7 @@ void Component::setTopOf(__UI Component * component)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setAlignedOf(__UI Component * component)
+void Component::setAlignedOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( alignedOf_ )
 		alignedOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_alignedof";
@@ -358,7 +358,7 @@ void Component::setAlignedOf(__UI Component * component)
 	alignedOf_ = component;
 	
 	if ( alignedOf_ )
-		alignedOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_alignedof",
+		alignedOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_alignedof",
 										[this]( Component* sender )
 										{
 											  region_changed_ = true;
@@ -367,19 +367,19 @@ void Component::setAlignedOf(__UI Component * component)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setParent(__UI Component * parent)
+void Component::setParent(::dx::lib::Graphics::UI::Component * parent)
 {
 	parent_ = parent;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setAlignment(const __UI Alignment & allignment)
+void Component::setAlignment(const ::dx::lib::Graphics::UI::Alignment & allignment)
 {
 	alignment_ = allignment;
 	OnModified( ).Invoke( this );
 }
 
-void Component::setLayout(const __UI Layout & layout)
+void Component::setLayout(const ::dx::lib::Graphics::UI::Layout & layout)
 {
 	layout_ = layout;
 	OnModified( ).Invoke( this );
@@ -439,7 +439,7 @@ void Component::setUIID(const int & id)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setText(const __LIB String & text)
+void Component::setText(const ::dx::lib::String & text)
 {
 	text_ = text;
 	OnModified( ).Invoke( this );
@@ -527,53 +527,53 @@ void Component::Release(const bool & releaseChildren)
 	}
 }
 
-bool Component::Collides(const __MATH Vector2 & with)
+bool Component::Collides(const ::dx::lib::Math::Vector2 & with)
 {
 	auto region = determineRegion( );
 	return with.Intersects( region );
 }
 
-bool Component::Collides(const __UI Component * with)
+bool Component::Collides(const ::dx::lib::Graphics::UI::Component * with)
 {
 	return Collides( with->getLocalPosition( ) + with->getGlobalPosition( ) );
 }
 
-__LIB Event<void(Component*)>& Component::OnModified( )
+::dx::lib::Event<void(Component*)>& Component::OnModified( )
 {
 	return _OnModified;
 }
 
-__LIB Event<void(Component*)>& Component::OnMouseEnter()
+::dx::lib::Event<void(Component*)>& Component::OnMouseEnter()
 {
 	return _OnMouseEnter;
 }
 
-__LIB Event<void(Component*)>& Component::OnMouseLeave()
+::dx::lib::Event<void(Component*)>& Component::OnMouseLeave()
 {
 	return _OnMouseLeave;
 }
 
-__LIB Event<void(Component*)>& Component::OnMousePressed()
+::dx::lib::Event<void(Component*)>& Component::OnMousePressed()
 {
 	return _OnMousePressed;
 }
 
-__LIB Event<void(Component*)>& Component::OnMouseReleased()
+::dx::lib::Event<void(Component*)>& Component::OnMouseReleased()
 {
 	return _OnMouseReleased;
 }
 
-__LIB Event<void(Component*, __GRAPHICS BasePainter*)>& Component::OnPrePaint()
+::dx::lib::Event<void(Component*, ::dx::lib::Graphics::BasePainter*)>& Component::OnPrePaint()
 {
 	return _OnPrePaint;
 }
 
-__LIB Event<void(Component*, __GRAPHICS BasePainter*)>& Component::OnPostPaint()
+::dx::lib::Event<void(Component*, ::dx::lib::Graphics::BasePainter*)>& Component::OnPostPaint()
 {
 	return _OnPostPaint;
 }
 
-__LIB Event<void(Component*)>& Component::OnRelease()
+::dx::lib::Event<void(Component*)>& Component::OnRelease()
 {
 	return _OnRelease;
 }

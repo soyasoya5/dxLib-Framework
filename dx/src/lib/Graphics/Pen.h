@@ -18,30 +18,30 @@ public:
 	///<summary>
 	///	Construct with Color and Thickness.
 	///</summary>
-	Pen( const __DX uint &color, const __DX uint &thickness = 1 );
+	Pen( const ::dx::uint &color, const ::dx::uint &thickness = 1 );
 
 	///<summary>
 	///	Gets the color of this pen.
 	///</summary>
-	__DX uint Color( ) const;
+	::dx::uint Color( ) const;
 	
 	///<summary>
 	///	Gets the thickness of this pen.
 	///</summary>
-	__DX uint Thickness( ) const;
+	::dx::uint Thickness( ) const;
 	
 	///<summary>
 	///	Sets the color of this pen.
 	///</summary>
-	void Color( const __DX uint &color );
+	void Color( const ::dx::uint &color );
 	
 	///<summary>
 	///	Sets the thickness of this pen.
 	///</summary>
-	void Thickness( const __DX uint &thickness );
+	void Thickness( const ::dx::uint &thickness );
 
 private:
-	__DX uint color_, thickness_;
+	::dx::uint color_, thickness_;
 };
 
 end_GRAPHICS

@@ -52,7 +52,7 @@ int Application::run()
 		{
 			x->PollEvents( );
 			x->HandleTasks( );
-			if ( x->PaintStyle( ) == __GRAPHICS Window::OnTick_t && x->has_painter( ) ) {
+			if ( x->PaintStyle( ) == ::dx::lib::Graphics::Window::OnTick_t && x->has_painter( ) ) {
 				auto painter = x->getPainter( );
 				painter->BeginPaint( );
 				x->OnPaint( ).Invoke( x, painter );
@@ -75,16 +75,16 @@ void Application::exit()
 	running_ = false;
 }
 
-void Application::RegisterWindow(__GRAPHICS Window * window)
+void Application::RegisterWindow(::dx::lib::Graphics::Window * window)
 {
 	windows_.push_back( window );
-	window->OnWindowClosed( ) += [this]( __GRAPHICS Window *window )
+	window->OnWindowClosed( ) += [this]( ::dx::lib::Graphics::Window *window )
 	{
 		this->BeginInvoke( [this, window = window]() { this->UnregisterWindow( window ); } );
 	};
 }
 
-void Application::UnregisterWindow(__GRAPHICS Window * window)
+void Application::UnregisterWindow(::dx::lib::Graphics::Window * window)
 {
 	for ( auto it = windows_.begin( ), end = windows_.end( );
 		  it < end;
@@ -127,7 +127,7 @@ void Application::setClipboard(const String & data)
 	GlobalFree( glob );
 }
 
-__LIB String Application::getClipboard() const
+::dx::lib::String Application::getClipboard() const
 {
 	if ( FAILED( OpenClipboard( nullptr ) ) )
 		throw std::runtime_error( "'Application::setClipboard' Failed to open clipboard" );
@@ -139,7 +139,7 @@ __LIB String Application::getClipboard() const
 	return string;
 }
 
-__LIB Event<void(Application*)>& Application::OnTick()
+::dx::lib::Event<void(Application*)>& Application::OnTick()
 {
 	return _OnTick;
 }

@@ -3,12 +3,12 @@
 
 begin_GRAPHICS
 
-MsgBox::MsgBox(const __LIB String & message, const __LIB String & title, const __DX uint & type)
+MsgBox::MsgBox(const ::dx::lib::String & message, const ::dx::lib::String & title, const ::dx::uint & type)
 	: MsgBox( nullptr, message, title, type )
 {
 }
 
-MsgBox::MsgBox(__GRAPHICS Window * parent, const __LIB String & message, const __LIB String & title, const __DX uint & type)
+MsgBox::MsgBox(::dx::lib::Graphics::Window * parent, const ::dx::lib::String & message, const ::dx::lib::String & title, const ::dx::uint & type)
 : msg_( message ), title_( title ), type_( type ), parent_( parent )
 {
 }

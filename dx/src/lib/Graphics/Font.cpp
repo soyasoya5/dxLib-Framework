@@ -24,16 +24,16 @@ void * Font::raw()
 	return data_;
 }
 
-__GRAPHICS FontContext Font::context()
+::dx::lib::Graphics::FontContext Font::context()
 {
 	return context_;
 }
 
-__MATH Vector2 Font::calculateMetrixOf(const __LIB String & text)
+::dx::lib::Math::Vector2 Font::calculateMetrixOf(const ::dx::lib::String & text)
 {
 	if ( text.contains( " " ) )
 	{
-		__MATH Vector2 size{ 0, 0 };
+		::dx::lib::Math::Vector2 size{ 0, 0 };
 		auto strs = text.split( ' ' );
 		for ( auto &x : strs )
 		{
@@ -50,7 +50,7 @@ __MATH Vector2 Font::calculateMetrixOf(const __LIB String & text)
 	return strSize( text );
 }
 
-__MATH Vector2 Font::strSize(const __LIB String & _Text)
+::dx::lib::Math::Vector2 Font::strSize(const ::dx::lib::String & _Text)
 {
 	auto font = (ID3DXFont*)this->data_;
 	if ( !font )
@@ -60,7 +60,7 @@ __MATH Vector2 Font::strSize(const __LIB String & _Text)
 	return { float(rect_textSize.right - rect_textSize.left), float(rect_textSize.bottom - rect_textSize.top) };
 }
 
-std::shared_ptr<Font> Font::Create( const __LIB String &fontName, const __GRAPHICS FontContext &context, BasePainter *painter )
+std::shared_ptr<Font> Font::Create( const ::dx::lib::String &fontName, const ::dx::lib::Graphics::FontContext &context, BasePainter *painter )
 {
 	auto font = std::shared_ptr<Font>( new Font( ) );
 

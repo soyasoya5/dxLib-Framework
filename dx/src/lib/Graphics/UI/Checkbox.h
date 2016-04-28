@@ -13,8 +13,8 @@ public:
 	void Paint( Window *sender, BasePainter *painter ) override;
 
 private:
-	__MATH Vector2 determineText( __MATH Vector2 &pos, __MATH Vector2 &textSize );
-	__MATH Vector2 determ_;
+	::dx::lib::Math::Vector2 determineText( ::dx::lib::Math::Vector2 &pos, ::dx::lib::Math::Vector2 &textSize );
+	::dx::lib::Math::Vector2 determ_;
 	bool changed_;
 
 };

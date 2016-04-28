@@ -23,8 +23,8 @@ public:
 	struct RichText
 	{
 		TextContainer container;
-		__MATH Vector2 size; // Size (Pre calculated)
-		__MATH Vector2 position; // Position, calculated every time _all_Text is changed.
+		::dx::lib::Math::Vector2 size; // Size (Pre calculated)
+		::dx::lib::Math::Vector2 position; // Position, calculated every time _all_Text is changed.
 	};
 
 
@@ -43,7 +43,7 @@ public:
 
 	void appendText( std::shared_ptr<Texture> texture );
 
-	void setText( const __LIB String &_Text ) override;
+	void setText( const ::dx::lib::String &_Text ) override;
 
 	RichText *textAt( const int &index );
 
@@ -51,7 +51,7 @@ public:
 
 	RichText *textFromText( const String& text );
 
-	RichText *textInRegion( const __MATH Region &region );
+	RichText *textInRegion( const ::dx::lib::Math::Region &region );
 
 	void clearText( );
 

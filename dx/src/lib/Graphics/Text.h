@@ -29,8 +29,8 @@ public:
 	///</summary>
 	Text( std::shared_ptr<Font> font, 
 		  const String &text, 
-		  const __MATH Vector2 &position,
-		  const __MATH Vector2 &clip = { 500, 200 }, 
+		  const ::dx::lib::Math::Vector2 &position,
+		  const ::dx::lib::Math::Vector2 &clip = { 500, 200 }, 
 		  const TextAlignment &allignment = Top );
 
 	///<summary>
@@ -46,49 +46,49 @@ public:
 	///<summary>
 	/// Get the text allignment inside the _Clip.
 	///</summary>
-	__GRAPHICS TextAlignment getAlignment( ) const;
+	::dx::lib::Graphics::TextAlignment getAlignment( ) const;
 
 	///<summary>
 	/// Set the text allignment.
 	///</summary>
-	void setAlignment( const __GRAPHICS TextAlignment &_Alignment );
+	void setAlignment( const ::dx::lib::Graphics::TextAlignment &_Alignment );
 
 	///<summary>
 	///	Get the text.
 	///</summary>
-	const __LIB String &getText( ) const;
+	const ::dx::lib::String &getText( ) const;
 
 	///<summary>
 	/// Set the text.
 	///</summary>
-	void setText( const __LIB String &_Text );
+	void setText( const ::dx::lib::String &_Text );
 
 	///<summary>
 	/// Get the position.
 	///</summary>
-	const __MATH Vector2 &getPosition( ) const;
+	const ::dx::lib::Math::Vector2 &getPosition( ) const;
 
 	///<summary>
 	/// Set the position.
 	///</summary>
-	void setPosition( const __MATH Vector2 &_Position );
+	void setPosition( const ::dx::lib::Math::Vector2 &_Position );
 
 	///<summary>
 	/// Get the clipping.
 	///</summary>
-	const __MATH Vector2 &getMaxClip( ) const;
+	const ::dx::lib::Math::Vector2 &getMaxClip( ) const;
 
 	///<summary>
 	/// Set the clipping.
 	///</summary>
-	void setMaxClip( const __MATH Vector2 &_Clip );
+	void setMaxClip( const ::dx::lib::Math::Vector2 &_Clip );
 
 
 private:
 	std::shared_ptr<Font> font_;
 	TextAlignment allign_;
 	String text_;
-	__MATH Vector2 position_, max_;
+	::dx::lib::Math::Vector2 position_, max_;
 
 };
 

@@ -18,7 +18,7 @@ struct FontContext
 	{}
 
 	int Height;
-	__DX uint Width /* Can be ignored */, 
+	::dx::uint Width /* Can be ignored */, 
 			  Weight, 
 			  MipLevels /* Can be Ignored */;
 	bool Italic;
@@ -31,7 +31,7 @@ struct FontContext
 class Font
 {
 public:
-	static const __DX uint SPACE_CHARACTER_WIDTH = 10;
+	static const ::dx::uint SPACE_CHARACTER_WIDTH = 10;
 
 	~Font( );
 
@@ -55,17 +55,17 @@ public:
 	///<summary>
 	///	The font context.
 	///</summary>
-	__GRAPHICS FontContext context( );
+	::dx::lib::Graphics::FontContext context( );
 
 	///<summary>
 	///	Calculate the size of '_Text' with this font.
 	///</summary>
-	__MATH Vector2 calculateMetrixOf( const String &text );
+	::dx::lib::Math::Vector2 calculateMetrixOf( const String &text );
 private:
-	__MATH Vector2 strSize( const String &text );
+	::dx::lib::Math::Vector2 strSize( const String &text );
 	void* data_;
-	__LIB String name_;
-	__GRAPHICS FontContext context_;
+	::dx::lib::String name_;
+	::dx::lib::Graphics::FontContext context_;
 	Font();
 };
 
