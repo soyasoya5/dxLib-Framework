@@ -8,18 +8,22 @@ begin_UI
 Slider::Slider()
 	: Component( )
 {
+	// Textbox to change the value of the slider
+	// by using a textbox instead of the wheel.
 	textbox_ = std::shared_ptr<Textbox>( new Textbox( ) );
 	textbox_->setUIID( String("Slider_component_textbox").hash( ) );
 	textbox_->setText( "0%" );
 	textbox_->setFilter( "1234567890" );
 	textbox_->setRightOf( this );
-	textbox_->setAllignedOf( this );
+	textbox_->setAlignedOf( this );
 	textbox_->setSize( { 50, 30 } );
 	textbox_->setLooseFocusKey( '\r' );
-	textbox_->setAllignment( Allignment::Left );
+	textbox_->setAlignment( Alignment::Left );
 
 	maxDelta_ = 100;
 	
+	// When the textbox gains focus remove the '%'
+	// character, otherwise there will be parsing errors
 	textbox_->OnGainFocus( ) += []( Component *sender )
 	{
 		auto text = sender->getText( );
@@ -31,6 +35,8 @@ Slider::Slider()
 		sender->setText( text );
 	};
 
+	// When we lose focus then add the '%' again 
+	// and also recalculate the delta and move the wheel.
 	textbox_->OnLostFocus( ) += [this]( Component *sender )
 	{
 		auto text = sender->getText( );
@@ -254,8 +260,8 @@ bool Slider::CollidesWheel(const __MATH Vector2 & _Position)
 bool Slider::inScrollableRegion(const __MATH Vector2 & _Cursor) const
 {
 	return (layout_ == Horizontal ? 
-		   _Cursor.Intersects( { { determined_.position.x, 0 }, { determined_.size.x, 100000 } } ) : 
-		   _Cursor.Intersects( { { 0, determined_.position.y }, { 100000, determined_.size.y } } ) );
+		   _Cursor.Intersects( { { determined_.position.x, 0 }, { determined_.size.x, 10000000 } } ) : 
+		   _Cursor.Intersects( { { 0, determined_.position.y }, { 10000000, determined_.size.y } } ) );
 }
 
 std::shared_ptr<Textbox> Slider::getTextbox() const

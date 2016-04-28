@@ -17,14 +17,14 @@ Button::Button()
 __MATH Vector2 Button::determineText(__MATH Vector2 &pos, __MATH Vector2 &text_size )
 {
 	if ( _changed ) {
-		auto allign = getAllignment( );
+		auto align = getAlignment( );
 		auto size = getSize( );
 		// Y is always gonna be in the middle for the sake of no clip
 		_determ.y = (size.y / 2 - text_size.y / 2) + pos.y;
 
-		if ( allign == Allignment::Center )
+		if ( align == Alignment::Center )
 			_determ.x = ( size.x / 2 - text_size.x / 2 ) + pos.x;
-		else if ( allign == Allignment::Left )
+		else if ( align == Alignment::Left )
 			_determ.x = pos.x + 5;
 		else
 			_determ.x = pos.x + size.x - (text_size.x + 5);

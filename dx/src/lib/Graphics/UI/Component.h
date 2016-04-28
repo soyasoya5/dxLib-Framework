@@ -14,7 +14,7 @@ begin_UI
 
 
 // Allignment enum
-enum Allignment
+enum Alignment
 {
 	Center,
 	Left,
@@ -53,9 +53,9 @@ public: // Accessors
 	virtual  Component* getRightOf( ) const;
 	virtual  Component* getBottomOf( ) const;
 	virtual  Component* getTopOf( ) const;
-	virtual  Component* getAllignedOf( ) const;
+	virtual  Component* getAlignedOf( ) const;
 	virtual  Component* getParent( ) const;
-	virtual  Allignment getAllignment( ) const;
+	virtual  Alignment getAlignment( ) const;
 	virtual  Layout getLayout( ) const;
 	virtual int getState( ) const;
 	virtual bool isHovered( ) const;
@@ -79,9 +79,9 @@ public: // Modifiers
 	virtual void setRightOf(  Component *component );
 	virtual void setBottomOf(   Component *component );
 	virtual void setTopOf(  Component *component );
-	virtual void setAllignedOf(  Component *component );
+	virtual void setAlignedOf(  Component *component );
 	virtual void setParent(  Component *parent );
-	virtual void setAllignment( const  Allignment &allignment );
+	virtual void setAlignment( const  Alignment &allignment );
 	virtual void setLayout( const  Layout &layout );
 	virtual void setState( const int &state );
 	virtual void setHovered( const bool &hovered );
@@ -155,10 +155,10 @@ protected:
 	std::shared_ptr<Font> font_;
 	__MATH Region local_, global_, determined_;
 	 StyleManager style_;
-	 Component *leftOf_, *rightOf_, *bottomOf_, *topOf_, *allignedOf_;
+	 Component *leftOf_, *rightOf_, *bottomOf_, *topOf_, *alignedOf_;
 	 Component* parent_;
 	std::vector< Component*> children_;
-	 Allignment allignment_;
+	 Alignment alignment_;
 	 Layout layout_;
 	int state_, uiid_;
 	bool hovering_, focusing_, clicking_, enabled_, visible_, region_changed_;

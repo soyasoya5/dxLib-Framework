@@ -173,7 +173,7 @@ void Painter::Paint( const __GRAPHICS Text & text, const __GRAPHICS Pen & pen)
 	auto texts = text.getText( );
 	auto pos = text.getPosition( );
 	auto clip = text.getMaxClip( );
-	auto format = text.getAllignment( );
+	auto format = text.getAlignment( );
 	RECT rect{ static_cast<LONG>( pos.x ), 
 			   static_cast<LONG>( pos.y ), 
 			   static_cast<LONG>( pos.x + clip.x ), 

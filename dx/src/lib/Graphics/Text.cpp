@@ -7,7 +7,7 @@ Text::Text()
 {
 }
 
-Text::Text(std::shared_ptr<Font> font, const __LIB String & text, const __MATH Vector2 & position, const __MATH Vector2 &clip, const __GRAPHICS TextAllignment &allignment)
+Text::Text(std::shared_ptr<Font> font, const __LIB String & text, const __MATH Vector2 & position, const __MATH Vector2 &clip, const __GRAPHICS TextAlignment &allignment)
 	: font_( font ), text_( text ), position_( position ), allign_( allignment ), max_( clip )
 {
 }
@@ -22,12 +22,12 @@ void Text::setFont(std::shared_ptr<Font> _Font)
 	font_ = _Font;
 }
 
-__GRAPHICS TextAllignment Text::getAllignment() const
+__GRAPHICS TextAlignment Text::getAlignment() const
 {
 	return allign_;
 }
 
-void Text::setAllignment(const __GRAPHICS TextAllignment & allignment)
+void Text::setAlignment(const __GRAPHICS TextAlignment & allignment)
 {
 	allign_ = allignment;
 }

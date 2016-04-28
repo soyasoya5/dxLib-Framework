@@ -18,7 +18,7 @@ int main( )
 	auto painter = dx::Painter::Create( window );
 	
 	// Only paint on Event
-	window->SpecializePaint( dx::Window::OnEvent_t );
+	window->SpecializePaint( dx::Window::OnTick_t );
 
 	// Show
 	window->Show( );
@@ -50,6 +50,15 @@ int main( )
 		painter->PaintRect( { { 0, 0 }, { sender->Width( ), sender->Height( ) } }, dx::Pen( dx::Colors::DarkSlateGray, 1 ) );
 		texture->Paint( { 15, 15 }, { 1, 1 } );
 	};
+
+	dx::Slider slider;
+	slider.setUIID( 1 ); // ID
+	slider.setLayout( dx::Horizontal );
+	slider.setLocalRegion( { { 100, 100 }, { 200, 30 } } );
+	slider.setWheelSize( { 10, 30 } );
+	slider.setStyle( dx::StyleManager( dx::Theme::Dark, dx::Style::Blue ) );
+		
+	window->HandleComponent( &slider );
 
 	return appl->run( );
 }

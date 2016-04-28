@@ -6,7 +6,7 @@ begin_UI
 Component::Component()
 	: local_( ), global_( ), style_( Dark, Blue ), leftOf_( nullptr ),
 	  rightOf_( nullptr ), bottomOf_( nullptr ), topOf_( nullptr ),
-	  parent_( nullptr ), allignment_( Center ), layout_( Horizontal ),
+	  parent_( nullptr ), alignment_( Center ), layout_( Horizontal ),
 	  state_( 0 ), hovering_( false ), focusing_( false ), clicking_( false ),
 	  enabled_( true ), visible_( true ), userdata_( nullptr ), region_changed_( true )
 {
@@ -63,13 +63,13 @@ __MATH Region Component::determineRegion()
 			determined_.position.y = detTop.position.y - 15;
 		}
 		
-		if ( allignedOf_ && ( determined_.position.x == 0 || determined_.position.y == 0 ) )
+		if ( alignedOf_ && ( determined_.position.x == 0 || determined_.position.y == 0 ) )
 		{
-			auto detAllign = allignedOf_->determineRegion( );
+			auto detAlign = alignedOf_->determineRegion( );
 			if ( determined_.position.y == 0 )
-				determined_.position.y = detAllign.position.y;
+				determined_.position.y = detAlign.position.y;
 			if ( determined_.position.x == 0 )
-				determined_.position.x = detAllign.position.x;
+				determined_.position.x = detAlign.position.x;
 		}
 		region_changed_ = false;
 	}
@@ -112,9 +112,9 @@ __UI Component * Component::getTopOf() const
 	return topOf_;
 }
 
-__UI Component * Component::getAllignedOf() const
+__UI Component * Component::getAlignedOf() const
 {
-	return allignedOf_;
+	return alignedOf_;
 }
 
 __UI Component * Component::getParent() const
@@ -122,9 +122,9 @@ __UI Component * Component::getParent() const
 	return parent_;
 }
 
-__UI Allignment Component::getAllignment() const
+__UI Alignment Component::getAlignment() const
 {
-	return allignment_;
+	return alignment_;
 }
 
 __UI Layout Component::getLayout() const
@@ -198,8 +198,8 @@ void Component::setLocalRegion(const __MATH Region & region)
 	else if ( topOf_ )
 		topOf_->region_changed_ = true;
 
-	if ( allignedOf_ )
-		allignedOf_->region_changed_ = true;
+	if ( alignedOf_ )
+		alignedOf_->region_changed_ = true;
 
 	OnModified( ).Invoke( this );
 }
@@ -219,8 +219,8 @@ void Component::setLocalPosition(const __MATH Vector2 & position)
 	else if ( topOf_ )
 		topOf_->region_changed_ = true;
 
-	if ( allignedOf_ )
-		allignedOf_->region_changed_ = true;
+	if ( alignedOf_ )
+		alignedOf_->region_changed_ = true;
 
 	OnModified( ).Invoke( this );
 }
@@ -241,8 +241,8 @@ void Component::setGlobalRegion(const __MATH Region & region)
 	else if ( topOf_ )
 		topOf_->region_changed_ = true;
 
-	if ( allignedOf_ )
-		allignedOf_->region_changed_ = true;
+	if ( alignedOf_ )
+		alignedOf_->region_changed_ = true;
 
 	OnModified( ).Invoke( this );
 }
@@ -262,8 +262,8 @@ void Component::setGlobalPosition(const __MATH Vector2 & position)
 	else if ( topOf_ )
 		topOf_->region_changed_ = true;
 
-	if ( allignedOf_ )
-		allignedOf_->region_changed_ = true;
+	if ( alignedOf_ )
+		alignedOf_->region_changed_ = true;
 
 	OnModified( ).Invoke( this );
 }
@@ -285,7 +285,7 @@ void Component::setStyle(const __UI StyleManager & style)
 void Component::setLeftOf(__UI Component * component)
 {
 	if ( leftOf_ )
-		leftOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_leftof" );
+		leftOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_leftof";
 
 	leftOf_ = component;
 	
@@ -302,7 +302,7 @@ void Component::setLeftOf(__UI Component * component)
 void Component::setRightOf(__UI Component * component)
 {
 	if ( rightOf_ )
-		rightOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_rightof" );
+		rightOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_rightof";
 
 	rightOf_ = component;
 	
@@ -336,7 +336,7 @@ void Component::setBottomOf(__UI Component * component)
 void Component::setTopOf(__UI Component * component)
 {
 	if ( topOf_ )
-		topOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_topof" );
+		topOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_topof";
 
 	topOf_ = component;
 	
@@ -350,15 +350,15 @@ void Component::setTopOf(__UI Component * component)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setAllignedOf(__UI Component * component)
+void Component::setAlignedOf(__UI Component * component)
 {
-	if ( allignedOf_ )
-		allignedOf_->OnModified( ).remove_handler( __LIB to_string( this->getUIID( ) ) + "_allignedof" );
+	if ( alignedOf_ )
+		alignedOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_alignedof";
 
-	allignedOf_ = component;
+	alignedOf_ = component;
 	
-	if ( allignedOf_ )
-		allignedOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_allignedof",
+	if ( alignedOf_ )
+		alignedOf_->OnModified( ) += __LIB EventHandler<void(Component*)>( __LIB to_string( this->getUIID( ) ) + "_alignedof",
 										[this]( Component* sender )
 										{
 											  region_changed_ = true;
@@ -373,9 +373,9 @@ void Component::setParent(__UI Component * parent)
 	OnModified( ).Invoke( this );
 }
 
-void Component::setAllignment(const __UI Allignment & allignment)
+void Component::setAlignment(const __UI Alignment & allignment)
 {
-	allignment_ = allignment;
+	alignment_ = allignment;
 	OnModified( ).Invoke( this );
 }
 

@@ -6,7 +6,7 @@
 begin_GRAPHICS
 class Font;
 
-enum TextAllignment
+enum TextAlignment
 {
 	Left = DT_LEFT,
 	Right = DT_RIGHT,
@@ -31,7 +31,7 @@ public:
 		  const String &text, 
 		  const __MATH Vector2 &position,
 		  const __MATH Vector2 &clip = { 500, 200 }, 
-		  const TextAllignment &allignment = Top );
+		  const TextAlignment &allignment = Top );
 
 	///<summary>
 	/// Get the font.
@@ -46,12 +46,12 @@ public:
 	///<summary>
 	/// Get the text allignment inside the _Clip.
 	///</summary>
-	__GRAPHICS TextAllignment getAllignment( ) const;
+	__GRAPHICS TextAlignment getAlignment( ) const;
 
 	///<summary>
 	/// Set the text allignment.
 	///</summary>
-	void setAllignment( const __GRAPHICS TextAllignment &_Allignment );
+	void setAlignment( const __GRAPHICS TextAlignment &_Alignment );
 
 	///<summary>
 	///	Get the text.
@@ -86,7 +86,7 @@ public:
 
 private:
 	std::shared_ptr<Font> font_;
-	TextAllignment allign_;
+	TextAlignment allign_;
 	String text_;
 	__MATH Vector2 position_, max_;
 
