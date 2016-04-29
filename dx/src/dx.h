@@ -417,8 +417,9 @@ namespace dx {
 		namespace FileIO
 		{
 			class Path;
-			enum Token_t;
-			class Token;
+			enum token_t;
+			struct Token;
+			struct File;
 			class Tokenizer;
 			struct TokenizerMessage;
 			template<typename _Type>

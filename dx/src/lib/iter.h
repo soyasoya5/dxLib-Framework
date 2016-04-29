@@ -10,6 +10,7 @@ begin_LIB
 
 template<typename Px>
 class Iterator
+	: std::iterator<std::random_access_iterator_tag, Px>
 {
 private:
 	template<typename Px>
@@ -25,7 +26,7 @@ public:
 	///<summary>
 	/// Returns a pointer to the element.
 	///</summary>
-	Px* get( )
+	pointer get( )
 	{
 		return reinterpret_cast<Px*>( _arr + _count );
 	}
@@ -33,7 +34,7 @@ public:
 	///<summary>
 	/// Return the lenth of the internal array.
 	///</summary>
-	const size_t& length( ) const
+	const difference_type& length( ) const
 	{
 		return _len;
 	}
@@ -41,7 +42,7 @@ public:
 	///<summary>
 	/// Return the index of this iterator.
 	///</summary>
-	const size_t& index( ) const
+	const difference_type& index( ) const
 	{
 		return _count;
 	}
@@ -51,7 +52,7 @@ public: // Operators
 	/// Return a copy of this iterator that has its index decreased by '_Offset'.
 	///</summary>
 	template<typename off_t>
-	Iterator<Px> operator-( const off_t& _Offset )
+	_MyT operator-( const off_t& _Offset )
 	{
 		return (CreateIterator( _arr, _len, _count - _Offset ));
 	}
@@ -60,7 +61,7 @@ public: // Operators
 	/// Return a copy of this iterator that has its index increased by '_Offset'.
 	///</summary>
 	template<typename off_t>
-	Iterator<Px> operator+( const off_t& _Offset )
+	_MyT operator+( const off_t& _Offset )
 	{
 		return (CreateIterator( _arr, _len, _count + _Offset ));
 	}
@@ -69,7 +70,7 @@ public: // Operators
 	/// Increase index by '_Offset'.
 	///</summary>
 	template<typename off_t>
-	Iterator<Px>& operator+=( const off_t& _Offset )
+	_MyT& operator+=( const off_t& _Offset )
 	{
 		_count += _Offset;
 		return (*this);
@@ -79,7 +80,7 @@ public: // Operators
 	/// Decrease index by '_Offset'.
 	///</summary>
 	template<typename off_t>
-	Iterator<Px>& operator-=( const off_t& _Offset )
+	_MyT& operator-=( const off_t& _Offset )
 	{
 		_count -= _Offset;
 		return (*this);
@@ -88,7 +89,7 @@ public: // Operators
 	///<summary>
 	/// Dereference the element.
 	///</summary>
-	Px& operator*( )
+	reference operator*( )
 	{
 		return (_arr[_count]);
 	};
@@ -96,7 +97,7 @@ public: // Operators
 	///<summary>
 	/// Return a pointer to the element.
 	///</summary>
-	Px* operator->( )
+	pointer operator->( )
 	{
 		return get( );
 	}
@@ -194,6 +195,7 @@ public: // Operators
 
 template<typename Px>
 class ReverseIterator
+	: std::iterator<std::random_access_iterator_tag, Px>
 {
 	template<typename Px>
 	friend ReverseIterator<Px> CreateReverseIterator(Px*, size_t, size_t);
@@ -208,15 +210,15 @@ public:
 	///<summary>
 	/// Returns a pointer to the element.
 	///</summary>
-	Px* get( )
+	pointer get( )
 	{
-		return reinterpret_cast<Px*>( _arr + (_len - 1) - _count );
+		return reinterpret_cast<pointer>( _arr + (_len - 1) - _count );
 	}
 
 	///<summary>
 	/// Return the lenth of the internal array.
 	///</summary>
-	const size_t& length( ) const
+	const difference_type& length( ) const
 	{
 		return _len;
 	}
@@ -224,7 +226,7 @@ public:
 	///<summary>
 	/// Return the index of this iterator.
 	///</summary>
-	const size_t& index( ) const
+	const difference_type& index( ) const
 	{
 		return _count;
 	}
@@ -233,7 +235,7 @@ public: // Operators
 	/// Return a copy of this iterator that has its index decreased by '_Offset'.
 	///</summary>
 	template<typename off_t>
-	Iterator<Px> operator-( const off_t& _Offset )
+	_MyT operator-( const off_t& _Offset )
 	{
 		return (CreateIterator( _arr, _len, _count - _Offset ));
 	}
@@ -242,7 +244,7 @@ public: // Operators
 	/// Return a copy of this iterator that has its index increased by '_Offset'.
 	///</summary>
 	template<typename off_t>
-	Iterator<Px> operator+( const off_t& _Offset )
+	_MyT operator+( const off_t& _Offset )
 	{
 		return (CreateIterator( _arr, _len, _count + _Offset ));
 	}
@@ -251,7 +253,7 @@ public: // Operators
 	/// Increase index by '_Offset'.
 	///</summary>
 	template<typename off_t>
-	Iterator<Px>& operator+=( const off_t& _Offset )
+	_MyT& operator+=( const off_t& _Offset )
 	{
 		_count += _Offset;
 		return (*this);
@@ -261,7 +263,7 @@ public: // Operators
 	/// Decrease index by '_Offset'.
 	///</summary>
 	template<typename off_t>
-	Iterator<Px>& operator-=( const off_t& _Offset )
+	_MyT& operator-=( const off_t& _Offset )
 	{
 		_count -= _Offset;
 		return (*this);
@@ -270,7 +272,7 @@ public: // Operators
 	///<summary>
 	/// Dereference the element.
 	///</summary>
-	Px& operator*( )
+	reference operator*( )
 	{
 		return (_arr[_count]);
 	};
@@ -278,7 +280,7 @@ public: // Operators
 	///<summary>
 	/// Return a pointer to the element.
 	///</summary>
-	Px* operator->( )
+	pointer operator->( )
 	{
 		return get( );
 	}
