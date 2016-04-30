@@ -3,6 +3,7 @@
 #include "../Line.h"
 #include "../Font.h"
 #include "../Pen.h"
+#include "../../Application.h"
 
 begin_UI
 
@@ -103,13 +104,19 @@ void Textbox::KeyDownChar(Window *sender, KeyDownCharArgs & args)
 		if ( key == '\n' && !isMultiline( ) )
 			return;
 		
+		if ( (key == 'v' || key == 'V' || key == '\x16') && sender->isCtrlHeld( ) )
+		{
+			text_.append( Application::get( )->getClipboard( ) );
+			args.handled = true;
+			return;
+		}
+
 		if ( key == '\b' && !text_.empty( ) )
 			text_.pop_back( );
 		else if ( key != '\b' && isInFilter( key ) )
 			text_.push_back( key );
 		OnCharacterAdded( ).Invoke( this, key );
 
-		sender->ForcePaint( );
 		args.handled = true;
 	}
 }

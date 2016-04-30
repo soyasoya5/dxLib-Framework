@@ -294,9 +294,12 @@ HWND Window::native_handle()
 
 void Window::Close()
 {
-	::DestroyWindow( hwnd_ );
-	hwnd_ = nullptr;
-	OnWindowClosed( ).Invoke( this );
+	if ( hwnd_ )
+	{
+		::DestroyWindow( hwnd_ );
+		hwnd_ = nullptr;
+		OnWindowClosed( ).Invoke( this );
+	}
 }
 
 Window::Task& Window::addTask( const time_point &when, const std::function<void(Window*)> &functor )

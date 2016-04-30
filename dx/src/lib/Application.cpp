@@ -18,6 +18,7 @@ Application * Application::Create()
 	
 	// Initalize stuff
 	_Application = appl;
+	_Application->running_ = true;
 
 	return appl;
 }
@@ -44,7 +45,6 @@ int Application::getLastError()
 
 int Application::run()
 {
-	running_ = true;
 	while( running_ )
 	{
 		OnTick( ).Invoke( this );

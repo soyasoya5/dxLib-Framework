@@ -122,9 +122,9 @@ void RichLabel::appendText( String text, std::shared_ptr<Font> font, uint color)
 {
 	text_.append( text );
 
-	if ( text_.contains( "\n" ) )
+	if ( text.contains( "\n" ) )
 	{
-		auto vecs = text_.split( '\n' );
+		auto vecs = text.split( '\n' );
 		for ( auto text : vecs )
 		{
 			TextContainer container;

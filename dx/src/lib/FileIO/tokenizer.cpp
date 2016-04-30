@@ -12,9 +12,13 @@ Tokenizer::Tokenizer(File file)
 void Tokenizer::tokenize()
 {
 	if ( !file_.loaded )
+	{
+		file_.contents.clear( );
 		file_.contents.append( std::istreambuf_iterator<char>( std::ifstream( file_.name ) ), std::istreambuf_iterator<char>( ) );
+	}
 
 	tokens_.clear( );
+	line_ = 1;
 	auto it = file_.contents.begin( ), end = file_.contents.end( );
 	while( good( it, end ) )
 	{
