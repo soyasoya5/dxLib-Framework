@@ -4,12 +4,16 @@ begin_LIB
 
 void AsyncKeeper::lock()
 {
-	_mu.lock( );
+	while( data_ )
+		std::this_thread::sleep_for( std::chrono::nanoseconds( 5000 ) );
+	t_ = GetCurrentThreadId( );
+	data_ = true;
 }
 
 void AsyncKeeper::unlock()
 {
-	_mu.unlock( );
+	data_ = false;
+	t_ = 0;
 }
 
 

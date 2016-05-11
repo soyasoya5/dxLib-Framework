@@ -8,7 +8,7 @@
 begin_UI
 
 Textbox::Textbox()
-	: Component( )
+	: Component( ), canwrite_( false ), blink_( false )
 {
 }
 
@@ -97,6 +97,8 @@ void Textbox::KeyDownChar(Window *sender, KeyDownCharArgs & args)
 		if ( key == loose_ )
 		{
 			canwrite_ = false;
+			blink_ = false;
+			args.handled = true;
 			OnLostFocus( ).Invoke( this );
 			return;
 		}
@@ -114,8 +116,10 @@ void Textbox::KeyDownChar(Window *sender, KeyDownCharArgs & args)
 		if ( key == '\b' && !text_.empty( ) )
 			text_.pop_back( );
 		else if ( key != '\b' && isInFilter( key ) )
+		{
 			text_.push_back( key );
-		OnCharacterAdded( ).Invoke( this, key );
+			OnCharacterAdded( ).Invoke( this, key );
+		}
 
 		args.handled = true;
 	}
@@ -123,11 +127,24 @@ void Textbox::KeyDownChar(Window *sender, KeyDownCharArgs & args)
 
 void Textbox::MouseClicked(Window *sender, MouseClickedArgs & args)
 {
-	__super::MouseClicked( sender, args );
-	if ( !isClicked( ) ) 
+	if ( args.handled )
+		return;
+
+	if ( this->hovering_ && !this->clicking_ )
 	{
-		canwrite_ = false;
-		OnLostFocus( ).Invoke( this );
+		OnMousePressed( ).Invoke( this );
+		this->clicking_ = true;
+		args.handled = true;
+		canwrite_ = true;
+	}
+	else
+	{
+		if ( canwrite_ )
+		{
+			OnLostFocus( ).Invoke( this );
+			args.handled = true;
+		}
+		this->clicking_ = canwrite_ = false;
 	}
 }
 
@@ -137,11 +154,21 @@ void Textbox::MouseReleased(Window *sender, MouseReleasedArgs & args)
 	{
 		if ( isClicked( ) )
 		{
+			blink_ = false;
 			canwrite_ = true;
 			setClicked( false );
 			OnMousePressed( ).Invoke( this );
 			OnGainFocus( ).Invoke( this );
 		}
+	}
+	else
+	{
+		if ( canwrite_ )
+		{
+			OnLostFocus( ).Invoke( this );
+			args.handled = true;
+		}
+		canwrite_ = false;
 	}
 }
 

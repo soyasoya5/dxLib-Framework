@@ -26,6 +26,8 @@ public:
 
 	::dx::lib::Math::Vector2 getDelta( ) const;
 
+	void setDelta( float delta );
+	
 	void setMaxDelta( const float &delta );
 
 	float getMaxDelta( ) const;
@@ -44,9 +46,9 @@ public:
 
 	std::shared_ptr<Textbox> getTextbox( ) const;
 
+	void moveWheelToDelta( );
 
 private:
-	void moveWheelToDelta( );
 	::dx::lib::Math::Vector2 moved_, wheel_, wheelSize_, delta_;
 	std::shared_ptr<Textbox> textbox_;
 	bool changed_, dragging_;

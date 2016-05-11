@@ -1,4 +1,3 @@
-//#define DONT_LINK_GRAPHICS
 #include "src\api"
 #include <iomanip>
 #include <array>
@@ -6,7 +5,6 @@
 #pragma warning( disable : 4996 )
 int main( )
 {
-	//FreeConsole( );
 	// Create application
 	auto appl = dx::Application::Create( );
 

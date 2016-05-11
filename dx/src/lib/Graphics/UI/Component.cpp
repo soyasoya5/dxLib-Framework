@@ -18,6 +18,11 @@ Component::~Component()
 	Release( );
 }
 
+bool Component::empty() const
+{
+	return children_.empty( );
+}
+
 ::dx::lib::Math::Region Component::getLocalRegion() const
 {
 	return local_;
@@ -122,6 +127,11 @@ Component::~Component()
 	return parent_;
 }
 
+std::vector<Component*> Component::getChildren() const
+{
+	return children_;
+}
+
 ::dx::lib::Graphics::UI::Alignment Component::getAlignment() const
 {
 	return alignment_;
@@ -180,6 +190,11 @@ int Component::getUIID() const
 ::dx::lib::String Component::getText() const
 {
 	return text_;
+}
+
+void Component::clear()
+{
+	this->children_.clear( );
 }
 
 void Component::setLocalRegion(const ::dx::lib::Math::Region & region)
@@ -273,6 +288,20 @@ void Component::setSize(const ::dx::lib::Math::Vector2 & size)
 	local_.size = size;
 	global_.size = size;
 	region_changed_ = true;
+
+	if ( leftOf_ )
+		leftOf_->region_changed_ = true;
+	else if ( rightOf_ )
+		rightOf_->region_changed_ = true;
+	
+	if ( bottomOf_ )
+		bottomOf_->region_changed_ = true;
+	else if ( topOf_ )
+		topOf_->region_changed_ = true;
+
+	if ( alignedOf_ )
+		alignedOf_->region_changed_ = true;
+
 	OnModified( ).Invoke( this );
 }
 
@@ -285,85 +314,66 @@ void Component::setStyle(const ::dx::lib::Graphics::UI::StyleManager & style)
 void Component::setLeftOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( leftOf_ )
-		leftOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_leftof";
+		leftOf_->OnModified( ) -= "leftof_modified";
 
 	leftOf_ = component;
-	
+
 	if ( leftOf_ )
-		leftOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_leftof", 
-								  [this]( Component* sender )
-								  {
-									  region_changed_ = true;
-								  	  this->OnModified( ).Invoke( this );
-								  });
+		leftOf_->OnModified( ) += EventHandler<void(Component*)>( "leftof_modified", [this]( Component *component ) { this->region_changed_ = true; } );
+
 	OnModified( ).Invoke( this );
 }
 
 void Component::setRightOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( rightOf_ )
-		rightOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_rightof";
+		rightOf_->OnModified( ) -= "rightof_modified";
 
 	rightOf_ = component;
-	
+
 	if ( rightOf_ )
-		rightOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_rightof", 
-								  [this]( Component* sender )
-								  {
-									  region_changed_ = true;
-								  	  this->OnModified( ).Invoke( this );
-								  });
+		rightOf_->OnModified( ) += EventHandler<void(Component*)>( "rightof_modified", [this]( Component *component ) { this->region_changed_ = true; } );
+
 	OnModified( ).Invoke( this );
 }
 
 void Component::setBottomOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( bottomOf_ )
-		bottomOf_->OnModified( ).remove_handler( ::dx::lib::to_string( this->getUIID( ) ) + "_bottomof" );
+		bottomOf_->OnModified( ) -= "bottomof_modified";
 
 	bottomOf_ = component;
-	
+
 	if ( bottomOf_ )
-		bottomOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_bottomof", 
-								  [this]( Component* sender )
-								  {
-									  region_changed_ = true;
-								  	  this->OnModified( ).Invoke( this );
-								  });
+		bottomOf_->OnModified( ) += EventHandler<void(Component*)>( "bottomof_modified", [this]( Component *component ) { this->region_changed_ = true; } );
+
 	OnModified( ).Invoke( this );
 }
 
 void Component::setTopOf(::dx::lib::Graphics::UI::Component * component)
 {
-	if ( topOf_ )
-		topOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_topof";
+	if ( alignedOf_ )
+		alignedOf_->OnModified( ) -= "topof_modified";
 
 	topOf_ = component;
-	
+
 	if ( topOf_ )
-		topOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_topof",
-								  [this]( Component* sender )
-								  {
-									  region_changed_ = true;
-								  	  this->OnModified( ).Invoke( this );
-								  });
+		topOf_->OnModified( ) += EventHandler<void(Component*)>( "topof_modified", [this]( Component *component ) { this->region_changed_ = true; } );
+
 	OnModified( ).Invoke( this );
 }
 
 void Component::setAlignedOf(::dx::lib::Graphics::UI::Component * component)
 {
 	if ( alignedOf_ )
-		alignedOf_->OnModified( ) -= to_string( this->getUIID( ) ) + "_alignedof";
+		alignedOf_->OnModified( ) -= "alignedof_modified";
 
 	alignedOf_ = component;
-	
-	if ( alignedOf_ )
-		alignedOf_->OnModified( ) += ::dx::lib::EventHandler<void(Component*)>( ::dx::lib::to_string( this->getUIID( ) ) + "_alignedof",
-										[this]( Component* sender )
-										{
-											  region_changed_ = true;
-											  this->OnModified( ).Invoke( this );
-										});
+
+	if ( leftOf_ != alignedOf_ && rightOf_ != alignedOf_ && 
+		 bottomOf_ != alignedOf_ && topOf_ != alignedOf_ && leftOf_ )
+		alignedOf_->OnModified( ) += EventHandler<void(Component*)>( "alignedof_modified", [this]( Component *component ) { this->region_changed_ = true; } );
+
 	OnModified( ).Invoke( this );
 }
 
@@ -451,7 +461,19 @@ void Component::flipLayout()
 		setLayout( Vertical );
 	else
 		setLayout( Horizontal );
+}
 
+void Component::remove_child(Component * child)
+{
+	for ( auto it = children_.begin( ), end = children_.end( ); it < end; ++it )
+	{
+		auto x = *it;
+		if ( x == child )
+		{
+			children_.erase( it );
+			break;
+		}
+	}
 }
 
 void Component::KeyDown(Window* sender, KeyDownArgs &args)
@@ -530,7 +552,8 @@ void Component::Release(const bool & releaseChildren)
 bool Component::Collides(const ::dx::lib::Math::Vector2 & with)
 {
 	auto region = determineRegion( );
-	return with.Intersects( region );
+	auto size = local_.size;
+	return with.Intersects( { region.position, size } );
 }
 
 bool Component::Collides(const ::dx::lib::Graphics::UI::Component * with)

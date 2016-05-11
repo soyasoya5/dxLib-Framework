@@ -402,7 +402,7 @@ bool String::contains(const String &str) const
 bool String::hasCapital() const
 {
 	for ( auto&x : *this )
-		if ( x > 'A' && x < 'Z' )
+		if ( (x >= 'A' && x <= 'Z') || (x >= 'a' && x <= 'z') )
 			return true;
 	return false;
 }
@@ -410,7 +410,7 @@ bool String::hasCapital() const
 bool String::hasNumerical() const
 {
 	for ( auto&x : *this )
-		if ( x > '0' && x < '9' )
+		if ( x >= '0' && x <= '9' )
 			return true;
 	return false;
 }
@@ -470,7 +470,7 @@ std::vector<String> String::split(const char & splitter) const
 	auto copy = *this;
 	while( true )
 	{
-		pos = copy.find( splitter, pos );
+		pos = copy.find( splitter );
 		if ( pos != bad )
 		{
 			ret.push_back( copy.substr( 0, pos ) );

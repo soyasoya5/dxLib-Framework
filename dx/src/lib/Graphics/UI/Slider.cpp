@@ -166,6 +166,7 @@ void Slider::MouseMoved(Window *sender, ::dx::lib::Graphics::MouseMovedArgs & ar
 		}
 		moved_ = args.position;
 		changed_ = true;
+		args.handled = true;
 	}
 
 	textbox_->MouseMoved( sender, args );
@@ -183,11 +184,15 @@ void Slider::MouseClicked(Window *sender, ::dx::lib::Graphics::MouseClickedArgs 
 		else // |
 			wheel_.y = (args.position.y) - determined_.position.y;
 		this->changed_ = true;
+		args.handled = true;
 	}
 
 	// Collides with the wheel
 	if ( CollidesWheel( args.position ) )
+	{
 		dragging_ = true;
+		args.handled = true;
+	}
 	else
 	{
 		dragging_ = false;
@@ -200,7 +205,10 @@ void Slider::MouseClicked(Window *sender, ::dx::lib::Graphics::MouseClickedArgs 
 void Slider::MouseReleased(Window *sender, ::dx::lib::Graphics::MouseReleasedArgs & args)
 {
 	if ( hovering_ )
+	{
 		OnMouseReleased( ).Invoke( this );
+		args.handled = true;
+	}
 	dragging_ = false;
 	clicking_ = false;
 	moved_ = { 0, 0 };
@@ -210,6 +218,11 @@ void Slider::MouseReleased(Window *sender, ::dx::lib::Graphics::MouseReleasedArg
 ::dx::lib::Math::Vector2 Slider::getDelta() const
 {
 	return delta_;
+}
+
+void Slider::setDelta(float delta)
+{
+	delta_.x = delta_.y = delta;
 }
 
 void Slider::setMaxDelta(const float & _Delta)
@@ -276,12 +289,15 @@ void Slider::moveWheelToDelta()
 	{
 		auto wheel = (delta_.x / maxDelta_) * (local_.size.x - wheelSize_.x);
 		wheel_.x = wheel;
+		this->textbox_->setText( to_string( delta_.x ) );
 	}
 	else
 	{
 		auto wheel = (delta_.y / maxDelta_) * (local_.size.y - wheelSize_.y);
 		wheel_.y = wheel;
+		this->textbox_->setText( to_string( delta_.y ) );
 	}
+
 }
 
 end_UI

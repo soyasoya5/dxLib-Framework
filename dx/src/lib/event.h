@@ -24,13 +24,16 @@ public:
 	{}
 
 	template<typename..._Ax>
-	void invoke( _Ax&&...args )
+	typename callable::result_type invoke( _Ax&&...args )
 	{
 		if ( callable_ )
-			callable_( std::forward<_Ax>( args )... );
+			return callable_( std::forward<_Ax>( args )... );
+		return typename callable::result_type( );
 	}
 
 	auto& target( ) { return callable_; }
+
+	operator bool( ) { return callable_.operator bool(); }
 };
 
 

@@ -332,12 +332,12 @@ public: // ::dx::lib::String function
 	template<typename T >
 	T to( ) const
 	{
-		T t;
+		T t = T();
 		std::stringstream ss( this->_buffer );
-		if ( ::isxdigit( (unsigned char)*begin( ) ) )
-			ss >> std::hex >> t;
-		else
+		if ( ::isdigit( *begin( ) ) )
 			ss >> t;
+		else if ( ::isxdigit( (unsigned char)*begin( ) ) )
+			ss >> std::hex >> t;
 		return t;
 	}
 

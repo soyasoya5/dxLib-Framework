@@ -36,7 +36,7 @@ void Tokenizer::tokenize()
 			while( good( it, end ) )
 			{
 				if ( *it == '*' && *(it + 1) == '/' )
-				{ ++it, ++it; continue; }
+				{ ++it, ++it; break; }
 				
 				++it;
 			}

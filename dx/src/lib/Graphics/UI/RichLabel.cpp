@@ -10,7 +10,10 @@ RichLabel::RichLabel()
 	: Component()
 {
 	OnModified() += ::dx::lib::EventHandler<void(Component*)>("Constructor_Watcher",
-		[this](Component *component) { this->changed_ = true; });
+		[this](Component *component) 
+	{
+		this->changed_ = true; 
+	});
 	changed_ = true;
 }
 
@@ -93,6 +96,9 @@ void RichLabel::Paint(Window *sender, BasePainter *painter)
 				fullsize.y += it->size.y;
 			else if ( it->size.x > fullsize.x )
 				fullsize.x = it->size.x;
+
+			if ( fullsize.y == 0 )
+				fullsize.y = it->size.y;
 		}
 		// Right, lets draw
 		if ( it->container.is_texture )
@@ -111,7 +117,7 @@ void RichLabel::Paint(Window *sender, BasePainter *painter)
 	}
 
 	// We dont wanna raise a modified event if its not needed, obviously.
-	if ( local_.size != fullsize )
+	if ( local_.size != fullsize && fullsize != Math::Vector2{ 0, 0 } )
 		this->setSize( fullsize );
 
 	changed_ = false;

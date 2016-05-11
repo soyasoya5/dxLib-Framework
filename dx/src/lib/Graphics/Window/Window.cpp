@@ -26,7 +26,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, ::dx::uint Msg, WPARAM wParam, LPARAM lPara
 }
 
 
-std::shared_ptr<Window> Window::Create(const  String & Class, const  String & Title, const ::dx::lib::Math::Region & Region, DWORD dwStyle, DWORD dwExStyle)
+Window* Window::Create(const  String & Class, const  String & Title, const ::dx::lib::Math::Region & Region, DWORD dwStyle, DWORD dwExStyle)
 {
 	WNDCLASSEX wc;
 	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
@@ -45,7 +45,7 @@ std::shared_ptr<Window> Window::Create(const  String & Class, const  String & Ti
 	if ( FAILED( RegisterClassExA( &wc ) ) )
 		return nullptr;
 
-	auto ptr = std::shared_ptr<Window>( new Window( ) );
+	auto ptr = std::unique_ptr<Window>( new Window( ) );
 	ptr->region_ = Region;
 	ptr->hwnd_ = CreateWindowExA( dwExStyle, 
 								  Class.c_str( ),
@@ -59,10 +59,10 @@ std::shared_ptr<Window> Window::Create(const  String & Class, const  String & Ti
 
 	auto appl = Application::get( );
 	appl->RegisterWindow( ptr.get( ) );
-	return ptr;
+	return ptr.release( );
 }
 
-std::shared_ptr<Window> Window::Create(Window * parent, const  String & Class, const  String & Title, const ::dx::lib::Math::Region & Region, DWORD dwStyle, DWORD dwExStyle)
+Window *Window::Create(Window * parent, const  String & Class, const  String & Title, const ::dx::lib::Math::Region & Region, DWORD dwStyle, DWORD dwExStyle)
 {
 	WNDCLASSEX wc;
 	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
@@ -81,7 +81,7 @@ std::shared_ptr<Window> Window::Create(Window * parent, const  String & Class, c
 	if ( FAILED( RegisterClassExA( &wc ) ) )
 		return nullptr;
 
-	auto ptr = std::shared_ptr<Window>( new Window( ) );
+	auto ptr = std::unique_ptr<Window>( new Window( ) );
 	ptr->region_ = Region;
 	ptr->hwnd_ = CreateWindowExA( dwExStyle, 
 								  Class.c_str( ),
@@ -96,7 +96,7 @@ std::shared_ptr<Window> Window::Create(Window * parent, const  String & Class, c
 	ptr->parent_ = parent;
 	auto appl = Application::get( );
 	appl->RegisterWindow( ptr.get( ) );
-	return ptr;
+	return ptr.release( );
 }
 
  Event<void(Window*, KeyDownCharArgs&)>& Window::OnKeyDownChar()
@@ -126,8 +126,7 @@ Window::Window( )
 }
 
 Window::~Window( )
-{	// Force the closing of window, no matter what -
-	Close( );
+{
 }
 
 bool Window::ClientToScreen(::dx::lib::Math::Vector2 & point)

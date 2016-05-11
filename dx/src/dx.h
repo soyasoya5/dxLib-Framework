@@ -30,6 +30,55 @@
 
 namespace dx {
 
+	namespace details {
+
+		struct printer_cout
+		{
+			template<typename F>
+			void operator()( F &&f ) { std::cout << std::forward<F>( f ); }
+		};
+
+		template<typename task, typename...Args>
+		struct arg_exploder;
+
+		template<typename task>
+		struct arg_exploder<task>
+		{
+			static void do_task( ) { };
+		};
+
+		template<typename task, typename F>
+		struct arg_exploder<task, F>
+		{
+			static void do_task( F &&f )
+			{
+				task()( std::forward<F>( f ) );
+			}
+		};
+
+		template<typename task, typename F, typename...Args>
+		struct arg_exploder<task, F, Args...>
+		{
+			static void do_task( F &&f, Args&&...args )
+			{
+				task()( std::forward<F>( f ) );
+				arg_exploder<task, Args...>::do_task( std::forward<Args>( args )... );
+			}
+		};
+	}
+
+	template<typename printer = details::printer_cout, typename...Args>
+	void print( Args&&...args )
+	{
+		details::arg_exploder<printer, Args...>::do_task( std::forward<Args>( args )... );
+	}
+
+	template<typename printer = details::printer_cout, typename...Args>
+	void println( Args&&...args )
+	{
+		print<printer>( std::forward<Args>( args )..., "\n" );
+	}
+
 	// Standard typedefs
 	typedef unsigned int uint;
 	typedef unsigned long ulong;

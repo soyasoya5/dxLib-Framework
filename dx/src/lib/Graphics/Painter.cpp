@@ -16,7 +16,7 @@
 
 begin_GRAPHICS
 
-Painter * Painter::Create(std::shared_ptr<Window> target, const bool &windowed, const bool &singleton)
+Painter * Painter::Create(Window *target, const bool &windowed, const bool &singleton)
 {
 	auto application = ::dx::lib::Application::get( );
 

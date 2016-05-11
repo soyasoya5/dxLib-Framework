@@ -61,6 +61,7 @@ int Application::run()
 			std::this_thread::sleep_for( std::chrono::nanoseconds( 500 ) );
 		}
 
+		FlexibleGuard guard{ kpr_ };
 		for ( auto &x : invokes_ )
 			x.invoke( );
 
@@ -78,10 +79,6 @@ void Application::exit()
 void Application::RegisterWindow(::dx::lib::Graphics::Window * window)
 {
 	windows_.push_back( window );
-	window->OnWindowClosed( ) += [this]( ::dx::lib::Graphics::Window *window )
-	{
-		this->BeginInvoke( [this, window = window]() { this->UnregisterWindow( window ); } );
-	};
 }
 
 void Application::UnregisterWindow(::dx::lib::Graphics::Window * window)

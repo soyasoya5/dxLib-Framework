@@ -3,6 +3,7 @@
 #include "../dx.h"
 #include "string.h"
 #include "event.h"
+#include "async.h"
 
 begin_GRAPHICS class Window; end_GRAPHICS
 
@@ -85,6 +86,7 @@ public:
 	template<typename _Callable>
 	void BeginInvoke( _Callable&&callable )
 	{
+		AsyncGuard guard{ kpr_ };
 		this->invokes_.emplace_back( callable );
 	}
 
@@ -95,6 +97,7 @@ private:
 	std::vector<function<void()>> invokes_;
 	static int ilasterr_;
 	Event<void(Application*)> _OnTick;
+	AsyncKeeper kpr_;
 };
 
 

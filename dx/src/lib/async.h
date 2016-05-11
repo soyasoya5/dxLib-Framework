@@ -7,7 +7,9 @@ begin_LIB
 class AsyncKeeper
 {
 private:
-	std::mutex _mu;
+	std::atomic_bool data_;
+	std::atomic_uint t_;
+
 public:
 	///<summary>
 	/// Lock the internal mutex.

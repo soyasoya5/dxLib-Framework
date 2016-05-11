@@ -15,14 +15,11 @@ Checkbox::Checkbox()
 
 ::dx::lib::Math::Vector2 Checkbox::determineText(::dx::lib::Math::Vector2 &pos, ::dx::lib::Math::Vector2 &text_size )
 {
-	if ( changed_ ) 
-	{
-		auto size = getSize( );
-		// Y is always gonna be in the middle for the sake of no clip
-		determ_.y = (size.y / 2 - text_size.y / 2) + pos.y;
-		determ_.x = pos.x + size.x + 10;
-		changed_ = false;
-	}
+	auto size = getSize( );
+	// Y is always gonna be in the middle for the sake of no clip
+	determ_.y = (size.y / 2 - text_size.y / 2) + pos.y;
+	determ_.x = pos.x + size.x + 10;
+	changed_ = false;
 	return determ_;
 }
 

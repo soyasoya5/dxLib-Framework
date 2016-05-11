@@ -17,7 +17,7 @@ public:
 	///<summary>
 	/// Create a Painter for '_Target' window.
 	///</summary>
-	static Painter *Create( std::shared_ptr<Window> target, const bool &windowed = true, const bool &singleton = true );
+	static Painter *Create( Window *target, const bool &windowed = true, const bool &singleton = true );
 	~Painter( );
 
 	///<summary>

@@ -42,6 +42,7 @@ public:
 	virtual ~Component( );
 
 public: // Accessors
+	virtual bool empty( ) const;
 	virtual ::dx::lib::Math::Region getLocalRegion( ) const;
 	virtual ::dx::lib::Math::Vector2 getLocalPosition( ) const;
 	virtual ::dx::lib::Math::Region getGlobalRegion( ) const;
@@ -55,6 +56,7 @@ public: // Accessors
 	virtual  Component* getTopOf( ) const;
 	virtual  Component* getAlignedOf( ) const;
 	virtual  Component* getParent( ) const;
+	virtual std::vector<Component*> getChildren( ) const;
 	virtual  Alignment getAlignment( ) const;
 	virtual  Layout getLayout( ) const;
 	virtual int getState( ) const;
@@ -69,6 +71,7 @@ public: // Accessors
 	virtual  String getText( ) const;
 
 public: // Modifiers
+	virtual void clear( );
 	virtual void setLocalRegion( const ::dx::lib::Math::Region &region );
 	virtual void setLocalPosition( const ::dx::lib::Math::Vector2 &position );
 	virtual void setGlobalRegion( const ::dx::lib::Math::Region &region );
@@ -94,6 +97,7 @@ public: // Modifiers
 	virtual void setUIID( const int &id );
 	virtual void setText( const  String &text );
 	virtual void flipLayout( );
+	virtual void remove_child( Component *child );
 
 public: // Virtuals/Logic
 	virtual void Paint( Window* sender, BasePainter *painter ) = 0;
@@ -105,7 +109,7 @@ public: // Virtuals/Logic
 	virtual void MouseReleased( Window* sender, MouseReleasedArgs &args );
 	virtual void MouseScrolled( Window* sender, ScrollArgs &args );
 	virtual void MouseDoubleClicked( Window* sender, MouseClickedArgs &args );
-	virtual void Release( const bool &release_children = true );
+	virtual void Release( const bool &release_children = false );
 	virtual bool Collides( const ::dx::lib::Math::Vector2 &with );
 	virtual bool Collides( const Component *with );
 

@@ -118,21 +118,21 @@ public:
 	///<summary>
 	///	Creates a window.
 	///</summary>
-	static std::shared_ptr<Window> Create( const ::dx::lib::String &Class, 
-										   const ::dx::lib::String &Title,
-										   const ::dx::lib::Math::Region &Region,
-										   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
-										   DWORD dwExStyle = 0L );
+	static Window* Create( const ::dx::lib::String &Class, 
+						   const ::dx::lib::String &Title,
+						   const ::dx::lib::Math::Region &Region,
+						   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
+						   DWORD dwExStyle = 0L );
 
 	///<summary>
 	///	Creates a window that is a child of _Parent
 	///</summary>
-	static std::shared_ptr<Window> Create( Window *_Parent,
-										   const String &Class, 
-										   const String &Title,
-										   const ::dx::lib::Math::Region &Region,
-										   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
-										   DWORD dwExStyle = 0L );
+	static Window *Create( Window *_Parent,
+						   const String &Class, 
+						   const String &Title,
+						   const ::dx::lib::Math::Region &Region,
+						   DWORD dwStyle = WS_OVERLAPPEDWINDOW,
+						   DWORD dwExStyle = 0L );
 
 
 public:
